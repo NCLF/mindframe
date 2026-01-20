@@ -83,6 +83,48 @@ export async function sendWebAppButton(
 }
 
 /**
+ * Send photo with caption and optional buttons
+ */
+export async function sendPhoto(
+  chatId: number | string,
+  photoUrl: string,
+  caption: string,
+  options?: {
+    parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+    replyMarkup?: object;
+  }
+) {
+  return telegramRequest('sendPhoto', {
+    chat_id: chatId,
+    photo: photoUrl,
+    caption,
+    parse_mode: options?.parseMode || 'HTML',
+    reply_markup: options?.replyMarkup,
+  });
+}
+
+/**
+ * Send photo with Web App button
+ */
+export async function sendPhotoWithWebApp(
+  chatId: number | string,
+  photoUrl: string,
+  caption: string,
+  buttons: Array<{ text: string; webAppUrl?: string; url?: string }>
+) {
+  const inlineKeyboard = buttons.map(btn => [{
+    text: btn.text,
+    ...(btn.webAppUrl ? { web_app: { url: btn.webAppUrl } } : { url: btn.url }),
+  }]);
+
+  return sendPhoto(chatId, photoUrl, caption, {
+    replyMarkup: {
+      inline_keyboard: inlineKeyboard,
+    },
+  });
+}
+
+/**
  * Set bot commands
  */
 export async function setCommands(

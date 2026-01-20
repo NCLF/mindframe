@@ -346,6 +346,7 @@ export default function GeneratePage() {
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}
           text={result.text}
+          audioBase64={result.audioBase64}
         />
       </div>
     );

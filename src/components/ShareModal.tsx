@@ -8,21 +8,71 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Copy, Check, Send, MessageCircle } from 'lucide-react';
+import { Copy, Check, Send, MessageCircle, Music, Download } from 'lucide-react';
 
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   text: string;
+  audioBase64?: string;
   title?: string;
 }
 
-export function ShareModal({ isOpen, onClose, text, title = 'Поделиться' }: ShareModalProps) {
+export function ShareModal({ isOpen, onClose, text, audioBase64, title = 'Поделиться' }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   const shareUrl = 'https://t.me/Mind_Frame_bot';
   const shortText = text.length > 200 ? text.slice(0, 200) + '...' : text;
   const fullShareText = `🧠 MindFrame - Моя аффирмация\n\n"${shortText}"\n\nПопробуй: ${shareUrl}`;
+
+  // Convert base64 to File
+  const base64ToFile = (base64: string, filename: string): File => {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'audio/mpeg' });
+    return new File([blob], filename, { type: 'audio/mpeg' });
+  };
+
+  // Check if Web Share API supports files
+  const canShareFiles = typeof navigator !== 'undefined' &&
+    navigator.canShare &&
+    audioBase64 &&
+    navigator.canShare({ files: [new File([''], 'test.mp3', { type: 'audio/mpeg' })] });
+
+  // Share with audio file
+  const handleShareWithAudio = async () => {
+    if (!audioBase64 || !navigator.share) return;
+
+    setSharing(true);
+    try {
+      const audioFile = base64ToFile(audioBase64, 'mindframe-affirmation.mp3');
+      await navigator.share({
+        title: 'MindFrame - Моя аффирмация',
+        text: fullShareText,
+        files: [audioFile],
+      });
+      onClose();
+    } catch (err) {
+      // User cancelled or error - ignore
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  // Download audio file
+  const handleDownload = () => {
+    if (!audioBase64) return;
+
+    const link = document.createElement('a');
+    link.href = `data:audio/mpeg;base64,${audioBase64}`;
+    link.download = 'mindframe-affirmation.mp3';
+    link.click();
+  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(fullShareText);
@@ -56,6 +106,31 @@ export function ShareModal({ isOpen, onClose, text, title = 'Поделитьс�
         </DialogHeader>
 
         <div className="space-y-3">
+          {/* Share with Audio (if supported) */}
+          {canShareFiles && (
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-3 border-purple-500 bg-purple-900/30 hover:bg-purple-900/50"
+              onClick={handleShareWithAudio}
+              disabled={sharing}
+            >
+              <Music className="h-5 w-5 text-purple-400" />
+              <span>{sharing ? 'Отправка...' : 'Отправить с аудио'}</span>
+            </Button>
+          )}
+
+          {/* Download Audio */}
+          {audioBase64 && (
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-3 border-slate-700 bg-slate-800 hover:bg-slate-700"
+              onClick={handleDownload}
+            >
+              <Download className="h-5 w-5 text-emerald-400" />
+              <span>Скачать аудио</span>
+            </Button>
+          )}
+
           {/* Telegram */}
           <Button
             variant="outline"
@@ -63,7 +138,7 @@ export function ShareModal({ isOpen, onClose, text, title = 'Поделитьс�
             onClick={handleTelegramShare}
           >
             <Send className="h-5 w-5 text-blue-400" />
-            <span>Telegram</span>
+            <span>Telegram (текст)</span>
           </Button>
 
           {/* WhatsApp */}
@@ -73,7 +148,7 @@ export function ShareModal({ isOpen, onClose, text, title = 'Поделитьс�
             onClick={handleWhatsAppShare}
           >
             <MessageCircle className="h-5 w-5 text-green-400" />
-            <span>WhatsApp</span>
+            <span>WhatsApp (текст)</span>
           </Button>
 
           {/* VK */}
@@ -85,7 +160,7 @@ export function ShareModal({ isOpen, onClose, text, title = 'Поделитьс�
             <svg className="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.862-.523-2.049-1.709-1.033-1.005-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.12-5.339-3.202-2.17-3.048-2.763-5.339-2.763-5.814 0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.864 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.204.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .373.17.508.271.508.22 0 .407-.135.813-.542 1.254-1.406 2.15-3.574 2.15-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.049.17.49-.085.744-.576.744z"/>
             </svg>
-            <span>ВКонтакте</span>
+            <span>ВКонтакте (текст)</span>
           </Button>
 
           {/* Copy */}

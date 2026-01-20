@@ -46,6 +46,16 @@ interface GenerationResult {
   audioBase64: string;
 }
 
+// Strip ElevenLabs v3 pause tags from display text
+const stripPauseTags = (text: string): string => {
+  return text
+    .replace(/\[short pause\]/gi, '')
+    .replace(/\[pause\]/gi, '')
+    .replace(/\[long pause\]/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+};
+
 export default function GeneratePage() {
   const t = useTranslations('app');
   const { haptic, webApp } = useTelegram();
@@ -68,7 +78,7 @@ export default function GeneratePage() {
     const savedItems = JSON.parse(localStorage.getItem('mindframe_library') || '[]');
     const newItem = {
       id: Date.now().toString(),
-      text: result.text,
+      text: stripPauseTags(result.text),
       audioBase64: result.audioBase64,
       scenario: selectedScenario,
       tags: selectedTags,
@@ -87,7 +97,8 @@ export default function GeneratePage() {
 
     // In Telegram Web App, use native share
     if (webApp?.openTelegramLink) {
-      const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${result.text.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
+      const cleanText = stripPauseTags(result.text);
+      const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${cleanText.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
       const encodedText = encodeURIComponent(shareText);
       webApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/Mind_Frame_bot')}&text=${encodedText}`);
       return;
@@ -319,7 +330,7 @@ export default function GeneratePage() {
         {/* Generated text preview */}
         <Card className="border-slate-700 bg-slate-800/50">
           <CardContent className="p-4">
-            <p className="line-clamp-4 text-sm text-slate-300">{result.text}</p>
+            <p className="line-clamp-4 text-sm text-slate-300">{stripPauseTags(result.text)}</p>
           </CardContent>
         </Card>
 
@@ -345,7 +356,7 @@ export default function GeneratePage() {
         <ShareModal
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}
-          text={result.text}
+          text={stripPauseTags(result.text)}
           audioBase64={result.audioBase64}
         />
       </div>

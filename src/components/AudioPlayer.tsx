@@ -120,8 +120,20 @@ export function AudioPlayer({
     if (!audio) return;
 
     const handleLoadStart = () => setIsLoading(true);
-    const handleCanPlay = () => setIsLoading(false);
-    const handleLoadedMetadata = () => setDuration(audio.duration);
+    const handleCanPlay = () => {
+      setIsLoading(false);
+      if (audio.duration) setDuration(audio.duration);
+    };
+    const handleLoadedData = () => {
+      setIsLoading(false);
+      if (audio.duration) setDuration(audio.duration);
+    };
+    const handleLoadedMetadata = () => {
+      setIsLoading(false);
+      if (audio.duration && !isNaN(audio.duration)) {
+        setDuration(audio.duration);
+      }
+    };
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
@@ -129,25 +141,40 @@ export function AudioPlayer({
       setIsPlaying(false);
       setCurrentTime(0);
     };
+    const handleError = () => setIsLoading(false);
 
     audio.addEventListener('loadstart', handleLoadStart);
     audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('canplaythrough', handleCanPlay);
+    audio.addEventListener('loadeddata', handleLoadedData);
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+
+    // Check if already ready (for base64 data URLs)
+    if (audio.readyState >= 2) {
+      setIsLoading(false);
+      if (audio.duration && !isNaN(audio.duration)) {
+        setDuration(audio.duration);
+      }
+    }
 
     return () => {
       audio.removeEventListener('loadstart', handleLoadStart);
       audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('canplaythrough', handleCanPlay);
+      audio.removeEventListener('loadeddata', handleLoadedData);
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
     };
-  }, []);
+  }, [audioUrl]);
 
   // Progress percentage
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;

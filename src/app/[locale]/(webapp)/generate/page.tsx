@@ -47,7 +47,7 @@ interface GenerationResult {
 
 export default function GeneratePage() {
   const t = useTranslations('app');
-  const { haptic } = useTelegram();
+  const { haptic, webApp } = useTelegram();
 
   const [step, setStep] = useState<GenerationStep>('tags');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -55,6 +55,59 @@ export default function GeneratePage() {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<GenerationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Save to localStorage
+  const handleSave = () => {
+    if (!result) return;
+
+    haptic('success');
+
+    const savedItems = JSON.parse(localStorage.getItem('mindframe_library') || '[]');
+    const newItem = {
+      id: Date.now().toString(),
+      text: result.text,
+      audioBase64: result.audioBase64,
+      scenario: selectedScenario,
+      tags: selectedTags,
+      createdAt: new Date().toISOString(),
+    };
+    savedItems.unshift(newItem);
+    localStorage.setItem('mindframe_library', JSON.stringify(savedItems.slice(0, 50))); // Keep last 50
+    setIsSaved(true);
+  };
+
+  // Share functionality
+  const handleShare = async () => {
+    if (!result) return;
+
+    haptic('medium');
+
+    const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${result.text.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
+
+    // Try Telegram share first
+    if (webApp?.openTelegramLink) {
+      const encodedText = encodeURIComponent(shareText);
+      webApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/Mind_Frame_bot')}&text=${encodedText}`);
+      return;
+    }
+
+    // Fallback to Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'MindFrame - Моя аффирмация',
+          text: shareText,
+        });
+      } catch {
+        // User cancelled or error
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(shareText);
+      alert('Текст скопирован!');
+    }
+  };
 
   const handleTagToggle = (tagId: string) => {
     haptic('selection');
@@ -130,6 +183,7 @@ export default function GeneratePage() {
     setResult(null);
     setProgress(0);
     setError(null);
+    setIsSaved(false);
   };
 
   // Step: Select Tags
@@ -285,14 +339,9 @@ export default function GeneratePage() {
           base64Audio={result.audioBase64}
           title={selectedScenario ? t(`tags.${selectedScenario === 'focus' ? 'concentration' : selectedScenario === 'sport' ? 'motivation' : selectedScenario === 'evening' ? 'sleep' : 'energy'}`) : 'Affirmation'}
           subtitle={selectedTags.map(tag => t(`tags.${tag}`)).join(', ')}
-          onSave={() => {
-            haptic('success');
-            // TODO: Save to library
-          }}
-          onShare={() => {
-            haptic('medium');
-            // TODO: Share functionality
-          }}
+          onSave={handleSave}
+          onShare={handleShare}
+          isSaved={isSaved}
         />
 
         <Button

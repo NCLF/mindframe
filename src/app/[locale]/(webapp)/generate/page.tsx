@@ -15,6 +15,7 @@ import {
   Sparkles,
   Play,
   Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
 
@@ -37,17 +38,23 @@ const SCENARIOS = [
   { id: 'sport', icon: Dumbbell, gradient: 'from-red-500 to-pink-500' },
 ] as const;
 
-type GenerationStep = 'tags' | 'scenario' | 'generating' | 'result';
+type GenerationStep = 'tags' | 'scenario' | 'generating' | 'result' | 'error';
+
+interface GenerationResult {
+  text: string;
+  audioBase64: string;
+}
 
 export default function GeneratePage() {
   const t = useTranslations('app');
-  const { haptic, isTelegram } = useTelegram();
+  const { haptic } = useTelegram();
 
   const [step, setStep] = useState<GenerationStep>('tags');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-  const [generatedText, setGeneratedText] = useState<string | null>(null);
+  const [result, setResult] = useState<GenerationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleTagToggle = (tagId: string) => {
     haptic('selection');
@@ -69,47 +76,50 @@ export default function GeneratePage() {
     haptic('medium');
     setStep('generating');
     setProgress(0);
+    setError(null);
 
-    // Simulate generation progress
+    // Progress animation
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 90) {
-          clearInterval(progressInterval);
           return prev;
         }
-        return prev + 10;
+        return prev + 5;
       });
     }, 500);
 
     try {
-      // TODO: Call actual API
-      // const response = await fetch('/api/generate', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     tags: selectedTags,
-      //     scenario: selectedScenario,
-      //   }),
-      // });
-      // const data = await response.json();
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tags: selectedTags,
+          scenario: selectedScenario,
+          language: 'ru',
+        }),
+      });
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const data = await response.json();
 
       clearInterval(progressInterval);
-      setProgress(100);
 
-      // Mock response
-      setGeneratedText(
-        'Я просыпаюсь с благодарностью за новый день. Моё тело наполнено энергией. Мой разум ясен и сфокусирован. Сегодня я создаю свою лучшую версию...'
-      );
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Generation failed');
+      }
+
+      setProgress(100);
+      setResult({
+        text: data.data.text,
+        audioBase64: data.data.audio.data,
+      });
 
       haptic('success');
       setStep('result');
-    } catch {
-      haptic('error');
+    } catch (err) {
       clearInterval(progressInterval);
-      setStep('tags');
+      haptic('error');
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      setStep('error');
     }
   };
 
@@ -117,8 +127,9 @@ export default function GeneratePage() {
     setStep('tags');
     setSelectedTags([]);
     setSelectedScenario(null);
-    setGeneratedText(null);
+    setResult(null);
     setProgress(0);
+    setError(null);
   };
 
   // Step: Select Tags
@@ -229,12 +240,35 @@ export default function GeneratePage() {
         <Loader2 className="h-12 w-12 animate-spin text-purple-500" />
         <p className="text-lg text-slate-400">{t('generate.generating')}</p>
         <Progress value={progress} className="w-full max-w-xs" />
+        <p className="text-sm text-slate-500">
+          {progress < 30 && 'Creating text...'}
+          {progress >= 30 && progress < 70 && 'Generating voice...'}
+          {progress >= 70 && 'Finalizing...'}
+        </p>
+      </div>
+    );
+  }
+
+  // Step: Error
+  if (step === 'error') {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6">
+        <AlertCircle className="h-12 w-12 text-red-500" />
+        <p className="text-lg text-slate-300">Generation failed</p>
+        <p className="text-sm text-slate-500">{error}</p>
+        <Button
+          variant="outline"
+          className="border-slate-700"
+          onClick={handleNewGeneration}
+        >
+          Try again
+        </Button>
       </div>
     );
   }
 
   // Step: Result
-  if (step === 'result' && generatedText) {
+  if (step === 'result' && result) {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold">{t('player.play')}</h1>
@@ -242,12 +276,13 @@ export default function GeneratePage() {
         {/* Generated text preview */}
         <Card className="border-slate-700 bg-slate-800/50">
           <CardContent className="p-4">
-            <p className="line-clamp-4 text-sm text-slate-300">{generatedText}</p>
+            <p className="line-clamp-4 text-sm text-slate-300">{result.text}</p>
           </CardContent>
         </Card>
 
         {/* Audio Player */}
         <AudioPlayer
+          base64Audio={result.audioBase64}
           title={selectedScenario ? t(`tags.${selectedScenario === 'focus' ? 'concentration' : selectedScenario === 'sport' ? 'motivation' : selectedScenario === 'evening' ? 'sleep' : 'energy'}`) : 'Affirmation'}
           subtitle={selectedTags.map(tag => t(`tags.${tag}`)).join(', ')}
           onSave={() => {

@@ -18,6 +18,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
+import { ShareModal } from '@/components/ShareModal';
 
 // Available tags
 const TAGS = [
@@ -56,6 +57,7 @@ export default function GeneratePage() {
   const [result, setResult] = useState<GenerationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Save to localStorage
   const handleSave = () => {
@@ -78,35 +80,21 @@ export default function GeneratePage() {
   };
 
   // Share functionality
-  const handleShare = async () => {
+  const handleShare = () => {
     if (!result) return;
 
     haptic('medium');
 
-    const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${result.text.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
-
-    // Try Telegram share first
+    // In Telegram Web App, use native share
     if (webApp?.openTelegramLink) {
+      const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${result.text.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
       const encodedText = encodeURIComponent(shareText);
       webApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/Mind_Frame_bot')}&text=${encodedText}`);
       return;
     }
 
-    // Fallback to Web Share API
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'MindFrame - Моя аффирмация',
-          text: shareText,
-        });
-      } catch {
-        // User cancelled or error
-      }
-    } else {
-      // Fallback: copy to clipboard
-      await navigator.clipboard.writeText(shareText);
-      alert('Текст скопирован!');
-    }
+    // On desktop/web, show custom share modal
+    setIsShareModalOpen(true);
   };
 
   const handleTagToggle = (tagId: string) => {
@@ -184,6 +172,7 @@ export default function GeneratePage() {
     setProgress(0);
     setError(null);
     setIsSaved(false);
+    setIsShareModalOpen(false);
   };
 
   // Step: Select Tags
@@ -351,6 +340,13 @@ export default function GeneratePage() {
         >
           {t('player.newGeneration')}
         </Button>
+
+        {/* Share Modal for desktop */}
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          text={result.text}
+        />
       </div>
     );
   }

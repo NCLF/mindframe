@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useTelegram } from '@/hooks/useTelegram';
 import {
@@ -13,30 +12,38 @@ import {
   Target,
   Dumbbell,
   Sparkles,
+  Brain,
+  Zap,
+  Heart,
+  Palette,
+  BedDouble,
+  Flame,
   Play,
   Loader2,
   AlertCircle,
+  ChevronLeft,
+  Check,
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { ShareModal } from '@/components/ShareModal';
 
-// Available tags
+// Available tags with icons
 const TAGS = [
-  { id: 'concentration', icon: Target },
-  { id: 'calm', icon: Moon },
-  { id: 'energy', icon: Sparkles },
-  { id: 'confidence', icon: Sparkles },
-  { id: 'creativity', icon: Sparkles },
-  { id: 'sleep', icon: Moon },
-  { id: 'motivation', icon: Sparkles },
+  { id: 'concentration', icon: Target, color: 'text-blue-400' },
+  { id: 'calm', icon: Heart, color: 'text-pink-400' },
+  { id: 'energy', icon: Zap, color: 'text-yellow-400' },
+  { id: 'confidence', icon: Flame, color: 'text-orange-400' },
+  { id: 'creativity', icon: Palette, color: 'text-purple-400' },
+  { id: 'sleep', icon: BedDouble, color: 'text-indigo-400' },
+  { id: 'motivation', icon: Sparkles, color: 'text-emerald-400' },
 ] as const;
 
 // Available scenarios
 const SCENARIOS = [
-  { id: 'morning', icon: Sun, gradient: 'from-amber-500 to-orange-500' },
-  { id: 'evening', icon: Moon, gradient: 'from-indigo-500 to-purple-500' },
-  { id: 'focus', icon: Target, gradient: 'from-blue-500 to-cyan-500' },
-  { id: 'sport', icon: Dumbbell, gradient: 'from-red-500 to-pink-500' },
+  { id: 'morning', icon: Sun, gradient: 'from-amber-500 to-orange-500', bg: 'bg-amber-500/10' },
+  { id: 'evening', icon: Moon, gradient: 'from-indigo-500 to-purple-500', bg: 'bg-indigo-500/10' },
+  { id: 'focus', icon: Brain, gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-500/10' },
+  { id: 'sport', icon: Dumbbell, gradient: 'from-red-500 to-pink-500', bg: 'bg-red-500/10' },
 ] as const;
 
 type GenerationStep = 'tags' | 'scenario' | 'generating' | 'result' | 'error';
@@ -58,6 +65,7 @@ const stripPauseTags = (text: string): string => {
 
 export default function GeneratePage() {
   const t = useTranslations('app');
+  const tCommon = useTranslations('common');
   const { haptic, webApp } = useTelegram();
 
   const [step, setStep] = useState<GenerationStep>('tags');
@@ -72,7 +80,6 @@ export default function GeneratePage() {
   // Save to localStorage
   const handleSave = () => {
     if (!result) return;
-
     haptic('success');
 
     const savedItems = JSON.parse(localStorage.getItem('mindframe_library') || '[]');
@@ -85,17 +92,15 @@ export default function GeneratePage() {
       createdAt: new Date().toISOString(),
     };
     savedItems.unshift(newItem);
-    localStorage.setItem('mindframe_library', JSON.stringify(savedItems.slice(0, 50))); // Keep last 50
+    localStorage.setItem('mindframe_library', JSON.stringify(savedItems.slice(0, 50)));
     setIsSaved(true);
   };
 
   // Share functionality
   const handleShare = () => {
     if (!result) return;
-
     haptic('medium');
 
-    // In Telegram Web App, use native share
     if (webApp?.openTelegramLink) {
       const cleanText = stripPauseTags(result.text);
       const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${cleanText.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
@@ -103,8 +108,6 @@ export default function GeneratePage() {
       webApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/Mind_Frame_bot')}&text=${encodedText}`);
       return;
     }
-
-    // On desktop/web, show custom share modal
     setIsShareModalOpen(true);
   };
 
@@ -130,14 +133,8 @@ export default function GeneratePage() {
     setProgress(0);
     setError(null);
 
-    // Progress animation
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 90) {
-          return prev;
-        }
-        return prev + 5;
-      });
+      setProgress((prev) => (prev >= 90 ? prev : prev + 5));
     }, 500);
 
     try {
@@ -152,7 +149,6 @@ export default function GeneratePage() {
       });
 
       const data = await response.json();
-
       clearInterval(progressInterval);
 
       if (!response.ok || !data.success) {
@@ -186,173 +182,264 @@ export default function GeneratePage() {
     setIsShareModalOpen(false);
   };
 
-  // Step: Select Tags
+  // ============ STEP 1: Select Tags ============
   if (step === 'tags') {
     return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold">{t('generate.title')}</h1>
+      <div className="flex min-h-[calc(100vh-180px)] flex-col">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">{t('generate.title')}</h1>
+          <p className="mt-2 text-slate-400">{t('generate.selectTags')}</p>
+        </div>
 
-        <div>
-          <h2 className="mb-4 text-lg font-medium text-slate-400">
-            {t('generate.selectTags')}
-          </h2>
+        {/* Tags Grid */}
+        <div className="flex-1">
+          <div className="grid grid-cols-2 gap-3">
+            {TAGS.map((tag) => {
+              const Icon = tag.icon;
+              const isSelected = selectedTags.includes(tag.id);
 
-          <div className="flex flex-wrap gap-2">
-            {TAGS.map((tag) => (
-              <Badge
-                key={tag.id}
-                variant={selectedTags.includes(tag.id) ? 'default' : 'outline'}
-                className={`cursor-pointer px-4 py-2 text-sm transition-all ${
-                  selectedTags.includes(tag.id)
-                    ? 'bg-purple-600 hover:bg-purple-500'
-                    : 'border-slate-700 hover:border-purple-500'
-                }`}
-                onClick={() => handleTagToggle(tag.id)}
-              >
-                {t(`tags.${tag.id}`)}
-              </Badge>
-            ))}
+              return (
+                <button
+                  key={tag.id}
+                  onClick={() => handleTagToggle(tag.id)}
+                  className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.98] ${
+                    isSelected
+                      ? 'border-purple-500 bg-purple-500/10'
+                      : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600'
+                  }`}
+                >
+                  <div className={`rounded-xl p-2 ${isSelected ? 'bg-purple-500/20' : 'bg-slate-700/50'}`}>
+                    <Icon className={`h-5 w-5 ${isSelected ? 'text-purple-400' : tag.color}`} />
+                  </div>
+                  <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-slate-300'}`}>
+                    {t(`tags.${tag.id}`)}
+                  </span>
+                  {isSelected && (
+                    <div className="absolute right-3 top-3">
+                      <Check className="h-4 w-4 text-purple-400" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <Button
-          size="lg"
-          className="w-full bg-purple-600 hover:bg-purple-500"
-          onClick={() => setStep('scenario')}
-          disabled={selectedTags.length === 0}
-        >
-          {t('common.continue')}
-        </Button>
+        {/* Continue Button */}
+        <div className="mt-8 pb-4">
+          <Button
+            size="lg"
+            className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
+            onClick={() => setStep('scenario')}
+            disabled={selectedTags.length === 0}
+          >
+            {tCommon('continue')}
+          </Button>
+          {selectedTags.length === 0 && (
+            <p className="mt-3 text-center text-sm text-slate-500">
+              Выбери хотя бы один фокус
+            </p>
+          )}
+        </div>
       </div>
     );
   }
 
-  // Step: Select Scenario
+  // ============ STEP 2: Select Scenario ============
   if (step === 'scenario') {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
+      <div className="flex min-h-[calc(100vh-180px)] flex-col">
+        {/* Header with back button */}
+        <div className="mb-8">
+          <button
             onClick={() => setStep('tags')}
+            className="mb-4 flex items-center gap-1 text-slate-400 transition-colors hover:text-white"
           >
-            {t('common.back')}
-          </Button>
-          <h1 className="text-2xl font-bold">{t('generate.selectScenario')}</h1>
+            <ChevronLeft className="h-5 w-5" />
+            <span className="text-sm">{tCommon('back')}</span>
+          </button>
+          <h1 className="text-2xl font-bold text-white">{t('generate.selectScenario')}</h1>
+          <p className="mt-2 text-slate-400">Когда ты будешь это слушать?</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          {SCENARIOS.map((scenario) => {
-            const Icon = scenario.icon;
-            const isSelected = selectedScenario === scenario.id;
+        {/* Scenarios Grid */}
+        <div className="flex-1">
+          <div className="grid grid-cols-2 gap-4">
+            {SCENARIOS.map((scenario) => {
+              const Icon = scenario.icon;
+              const isSelected = selectedScenario === scenario.id;
+              const labels: Record<string, string> = {
+                morning: 'Утро',
+                evening: 'Вечер',
+                focus: 'Работа',
+                sport: 'Спорт',
+              };
+              const descriptions: Record<string, string> = {
+                morning: 'Заряд на день',
+                evening: 'Расслабление',
+                focus: 'Концентрация',
+                sport: 'Мотивация',
+              };
 
-            return (
-              <Card
-                key={scenario.id}
-                className={`cursor-pointer transition-all ${
-                  isSelected
-                    ? 'border-purple-500 ring-2 ring-purple-500'
-                    : 'border-slate-700 hover:border-slate-600'
-                }`}
-                onClick={() => handleScenarioSelect(scenario.id)}
-              >
-                <CardHeader className="pb-2">
+              return (
+                <button
+                  key={scenario.id}
+                  onClick={() => handleScenarioSelect(scenario.id)}
+                  className={`relative flex flex-col items-center rounded-3xl border-2 p-6 text-center transition-all active:scale-[0.98] ${
+                    isSelected
+                      ? 'border-purple-500 bg-purple-500/10'
+                      : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600'
+                  }`}
+                >
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${scenario.gradient}`}
+                    className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${scenario.gradient}`}
                   >
-                    <Icon className="h-6 w-6 text-white" />
+                    <Icon className="h-8 w-8 text-white" />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <CardTitle className="text-base">
-                    {t(`tags.${scenario.id === 'focus' ? 'concentration' : scenario.id === 'sport' ? 'motivation' : scenario.id === 'evening' ? 'sleep' : 'energy'}`)}
-                  </CardTitle>
-                </CardContent>
-              </Card>
-            );
-          })}
+                  <span className="text-base font-semibold text-white">
+                    {labels[scenario.id]}
+                  </span>
+                  <span className="mt-1 text-xs text-slate-400">
+                    {descriptions[scenario.id]}
+                  </span>
+                  {isSelected && (
+                    <div className="absolute right-3 top-3">
+                      <div className="rounded-full bg-purple-500 p-1">
+                        <Check className="h-3 w-3 text-white" />
+                      </div>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {/* Generate Button */}
+        <div className="mt-8 pb-4">
+          <Button
+            size="lg"
+            className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
+            onClick={handleGenerate}
+            disabled={!selectedScenario}
+          >
+            <Play className="mr-2 h-5 w-5" />
+            {t('generate.generateButton')}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // ============ STEP 3: Generating ============
+  if (step === 'generating') {
+    return (
+      <div className="flex min-h-[calc(100vh-180px)] flex-col items-center justify-center px-4">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 animate-ping rounded-full bg-purple-500/20" />
+          <div className="relative rounded-full bg-gradient-to-br from-purple-500 to-blue-500 p-6">
+            <Loader2 className="h-10 w-10 animate-spin text-white" />
+          </div>
+        </div>
+
+        <h2 className="mb-2 text-xl font-semibold text-white">
+          {t('generate.generating')}
+        </h2>
+
+        <p className="mb-8 text-center text-slate-400">
+          {progress < 30 && 'Создаём текст аффирмации...'}
+          {progress >= 30 && progress < 70 && 'Генерируем голос...'}
+          {progress >= 70 && 'Финальная обработка...'}
+        </p>
+
+        <div className="w-full max-w-xs">
+          <Progress value={progress} className="h-2" />
+          <p className="mt-2 text-center text-sm text-slate-500">{progress}%</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ============ STEP 4: Error ============
+  if (step === 'error') {
+    return (
+      <div className="flex min-h-[calc(100vh-180px)] flex-col items-center justify-center px-4">
+        <div className="mb-6 rounded-full bg-red-500/10 p-6">
+          <AlertCircle className="h-12 w-12 text-red-500" />
+        </div>
+
+        <h2 className="mb-2 text-xl font-semibold text-white">
+          Что-то пошло не так
+        </h2>
+
+        <p className="mb-8 max-w-xs text-center text-slate-400">
+          {error || 'Попробуй ещё раз'}
+        </p>
 
         <Button
           size="lg"
-          className="w-full bg-purple-600 hover:bg-purple-500"
-          onClick={handleGenerate}
-          disabled={!selectedScenario}
-        >
-          <Play className="mr-2 h-4 w-4" />
-          {t('generate.generateButton')}
-        </Button>
-      </div>
-    );
-  }
-
-  // Step: Generating
-  if (step === 'generating') {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6">
-        <Loader2 className="h-12 w-12 animate-spin text-purple-500" />
-        <p className="text-lg text-slate-400">{t('generate.generating')}</p>
-        <Progress value={progress} className="w-full max-w-xs" />
-        <p className="text-sm text-slate-500">
-          {progress < 30 && 'Creating text...'}
-          {progress >= 30 && progress < 70 && 'Generating voice...'}
-          {progress >= 70 && 'Finalizing...'}
-        </p>
-      </div>
-    );
-  }
-
-  // Step: Error
-  if (step === 'error') {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6">
-        <AlertCircle className="h-12 w-12 text-red-500" />
-        <p className="text-lg text-slate-300">Generation failed</p>
-        <p className="text-sm text-slate-500">{error}</p>
-        <Button
           variant="outline"
-          className="border-slate-700"
+          className="h-12 rounded-2xl border-slate-700 px-8"
           onClick={handleNewGeneration}
         >
-          Try again
+          {tCommon('retry')}
         </Button>
       </div>
     );
   }
 
-  // Step: Result
+  // ============ STEP 5: Result ============
   if (step === 'result' && result) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold">{t('player.play')}</h1>
+    const scenarioLabels: Record<string, string> = {
+      morning: 'Утренняя',
+      evening: 'Вечерняя',
+      focus: 'Для работы',
+      sport: 'Спортивная',
+    };
 
-        {/* Generated text preview */}
-        <Card className="border-slate-700 bg-slate-800/50">
+    return (
+      <div className="flex min-h-[calc(100vh-180px)] flex-col">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-white">{t('player.play')}</h1>
+          <p className="mt-1 text-slate-400">
+            {selectedScenario ? scenarioLabels[selectedScenario] : ''} аффирмация
+          </p>
+        </div>
+
+        {/* Text Preview */}
+        <Card className="mb-6 border-slate-700/50 bg-slate-800/30">
           <CardContent className="p-4">
-            <p className="line-clamp-4 text-sm text-slate-300">{stripPauseTags(result.text)}</p>
+            <p className="line-clamp-4 text-sm leading-relaxed text-slate-300">
+              {stripPauseTags(result.text)}
+            </p>
           </CardContent>
         </Card>
 
         {/* Audio Player */}
-        <AudioPlayer
-          base64Audio={result.audioBase64}
-          title={selectedScenario ? t(`tags.${selectedScenario === 'focus' ? 'concentration' : selectedScenario === 'sport' ? 'motivation' : selectedScenario === 'evening' ? 'sleep' : 'energy'}`) : 'Affirmation'}
-          subtitle={selectedTags.map(tag => t(`tags.${tag}`)).join(', ')}
-          onSave={handleSave}
-          onShare={handleShare}
-          isSaved={isSaved}
-        />
+        <div className="flex-1">
+          <AudioPlayer
+            base64Audio={result.audioBase64}
+            title={selectedScenario ? scenarioLabels[selectedScenario] : 'Аффирмация'}
+            subtitle={selectedTags.map(tag => t(`tags.${tag}`)).join(', ')}
+            onSave={handleSave}
+            onShare={handleShare}
+            isSaved={isSaved}
+          />
+        </div>
 
-        <Button
-          variant="outline"
-          className="w-full border-slate-700"
-          onClick={handleNewGeneration}
-        >
-          {t('player.newGeneration')}
-        </Button>
+        {/* New Generation Button */}
+        <div className="mt-6 pb-4">
+          <Button
+            variant="outline"
+            size="lg"
+            className="h-12 w-full rounded-2xl border-slate-700"
+            onClick={handleNewGeneration}
+          >
+            {t('player.newGeneration')}
+          </Button>
+        </div>
 
-        {/* Share Modal for desktop */}
         <ShareModal
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}

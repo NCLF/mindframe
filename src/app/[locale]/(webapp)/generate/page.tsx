@@ -185,15 +185,15 @@ export default function GeneratePage() {
   // ============ STEP 1: Select Tags ============
   if (step === 'tags') {
     return (
-      <div className="flex min-h-[calc(100vh-180px)] flex-col">
+      <div className="pb-6">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-2xl font-bold text-white">{t('generate.title')}</h1>
           <p className="mt-2 text-slate-400">{t('generate.selectTags')}</p>
         </div>
 
         {/* Tags Grid */}
-        <div className="flex-1">
+        <div className="mb-6">
           <div className="grid grid-cols-2 gap-3">
             {TAGS.map((tag) => {
               const Icon = tag.icon;
@@ -227,7 +227,7 @@ export default function GeneratePage() {
         </div>
 
         {/* Continue Button */}
-        <div className="mt-8 pb-4">
+        <div>
           <Button
             size="lg"
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
@@ -249,9 +249,9 @@ export default function GeneratePage() {
   // ============ STEP 2: Select Scenario ============
   if (step === 'scenario') {
     return (
-      <div className="flex min-h-[calc(100vh-180px)] flex-col">
+      <div className="pb-6">
         {/* Header with back button */}
-        <div className="mb-8">
+        <div className="mb-6">
           <button
             onClick={() => setStep('tags')}
             className="mb-4 flex items-center gap-1 text-slate-400 transition-colors hover:text-white"
@@ -264,7 +264,7 @@ export default function GeneratePage() {
         </div>
 
         {/* Scenarios Grid */}
-        <div className="flex-1">
+        <div className="mb-6">
           <div className="grid grid-cols-2 gap-4">
             {SCENARIOS.map((scenario) => {
               const Icon = scenario.icon;
@@ -317,7 +317,7 @@ export default function GeneratePage() {
         </div>
 
         {/* Generate Button */}
-        <div className="mt-8 pb-4">
+        <div>
           <Button
             size="lg"
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
@@ -335,7 +335,7 @@ export default function GeneratePage() {
   // ============ STEP 3: Generating ============
   if (step === 'generating') {
     return (
-      <div className="flex min-h-[calc(100vh-180px)] flex-col items-center justify-center px-4">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center">
         <div className="relative mb-8">
           <div className="absolute inset-0 animate-ping rounded-full bg-purple-500/20" />
           <div className="relative rounded-full bg-gradient-to-br from-purple-500 to-blue-500 p-6">
@@ -364,7 +364,7 @@ export default function GeneratePage() {
   // ============ STEP 4: Error ============
   if (step === 'error') {
     return (
-      <div className="flex min-h-[calc(100vh-180px)] flex-col items-center justify-center px-4">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center">
         <div className="mb-6 rounded-full bg-red-500/10 p-6">
           <AlertCircle className="h-12 w-12 text-red-500" />
         </div>
@@ -399,8 +399,8 @@ export default function GeneratePage() {
     };
 
     return (
-      <div className="flex min-h-[calc(100vh-180px)] flex-col">
-        <div className="mb-6">
+      <div className="pb-6">
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-white">{t('player.play')}</h1>
           <p className="mt-1 text-slate-400">
             {selectedScenario ? scenarioLabels[selectedScenario] : ''} аффирмация
@@ -417,7 +417,7 @@ export default function GeneratePage() {
         </Card>
 
         {/* Audio Player */}
-        <div className="flex-1">
+        <div className="mb-4">
           <AudioPlayer
             base64Audio={result.audioBase64}
             title={selectedScenario ? scenarioLabels[selectedScenario] : 'Аффирмация'}
@@ -429,7 +429,7 @@ export default function GeneratePage() {
         </div>
 
         {/* New Generation Button */}
-        <div className="mt-6 pb-4">
+        <div>
           <Button
             variant="outline"
             size="lg"

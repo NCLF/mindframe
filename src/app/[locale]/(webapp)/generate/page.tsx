@@ -226,8 +226,8 @@ export default function GeneratePage() {
           </div>
         </div>
 
-        {/* Continue Button */}
-        <div>
+        {/* Continue Button - sticky */}
+        <div className="sticky bottom-0 bg-gradient-to-t from-slate-900 pb-4 pt-2">
           <Button
             size="lg"
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
@@ -236,11 +236,6 @@ export default function GeneratePage() {
           >
             {tCommon('continue')}
           </Button>
-          {selectedTags.length === 0 && (
-            <p className="mt-3 text-center text-sm text-slate-500">
-              Выбери хотя бы один фокус
-            </p>
-          )}
         </div>
       </div>
     );
@@ -248,76 +243,67 @@ export default function GeneratePage() {
 
   // ============ STEP 2: Select Scenario ============
   if (step === 'scenario') {
+    const scenarioData = [
+      { id: 'morning', icon: Sun, label: 'Утром', desc: 'После пробуждения', time: '5-10 мин', gradient: 'from-amber-500 to-orange-500' },
+      { id: 'evening', icon: Moon, label: 'Вечером', desc: 'Перед сном', time: '10-15 мин', gradient: 'from-indigo-500 to-purple-500' },
+      { id: 'focus', icon: Brain, label: 'Перед работой', desc: 'Вход в поток', time: '5-7 мин', gradient: 'from-cyan-500 to-blue-500' },
+      { id: 'sport', icon: Dumbbell, label: 'Тренировка', desc: 'Перед нагрузкой', time: '3-5 мин', gradient: 'from-rose-500 to-red-500' },
+    ];
+
     return (
-      <div className="pb-6">
+      <div className="flex flex-col">
         {/* Header with back button */}
-        <div className="mb-6">
+        <div className="mb-4">
           <button
             onClick={() => setStep('tags')}
-            className="mb-4 flex items-center gap-1 text-slate-400 transition-colors hover:text-white"
+            className="mb-3 flex items-center gap-1 text-slate-400 transition-colors hover:text-white"
           >
             <ChevronLeft className="h-5 w-5" />
             <span className="text-sm">{tCommon('back')}</span>
           </button>
-          <h1 className="text-2xl font-bold text-white">{t('generate.selectScenario')}</h1>
-          <p className="mt-2 text-slate-400">Когда ты будешь это слушать?</p>
+          <h1 className="text-xl font-bold text-white">Когда слушать?</h1>
         </div>
 
-        {/* Scenarios Grid */}
-        <div className="mb-6">
-          <div className="grid grid-cols-2 gap-4">
-            {SCENARIOS.map((scenario) => {
-              const Icon = scenario.icon;
-              const isSelected = selectedScenario === scenario.id;
-              const labels: Record<string, string> = {
-                morning: 'Утро',
-                evening: 'Вечер',
-                focus: 'Работа',
-                sport: 'Спорт',
-              };
-              const descriptions: Record<string, string> = {
-                morning: 'Заряд на день',
-                evening: 'Расслабление',
-                focus: 'Концентрация',
-                sport: 'Мотивация',
-              };
+        {/* Scenarios List - compact */}
+        <div className="mb-4 space-y-2">
+          {scenarioData.map((scenario) => {
+            const Icon = scenario.icon;
+            const isSelected = selectedScenario === scenario.id;
 
-              return (
-                <button
-                  key={scenario.id}
-                  onClick={() => handleScenarioSelect(scenario.id)}
-                  className={`relative flex flex-col items-center rounded-3xl border-2 p-6 text-center transition-all active:scale-[0.98] ${
-                    isSelected
-                      ? 'border-purple-500 bg-purple-500/10'
-                      : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600'
-                  }`}
+            return (
+              <button
+                key={scenario.id}
+                onClick={() => handleScenarioSelect(scenario.id)}
+                className={`relative flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.99] ${
+                  isSelected
+                    ? 'border-purple-500 bg-purple-500/10'
+                    : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600'
+                }`}
+              >
+                <div
+                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${scenario.gradient}`}
                 >
-                  <div
-                    className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${scenario.gradient}`}
-                  >
-                    <Icon className="h-8 w-8 text-white" />
-                  </div>
-                  <span className="text-base font-semibold text-white">
-                    {labels[scenario.id]}
-                  </span>
-                  <span className="mt-1 text-xs text-slate-400">
-                    {descriptions[scenario.id]}
-                  </span>
-                  {isSelected && (
-                    <div className="absolute right-3 top-3">
-                      <div className="rounded-full bg-purple-500 p-1">
-                        <Check className="h-3 w-3 text-white" />
-                      </div>
+                  <Icon className="h-6 w-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <span className="block font-semibold text-white">{scenario.label}</span>
+                  <span className="text-sm text-slate-400">{scenario.desc}</span>
+                </div>
+                <span className="text-xs text-slate-500">{scenario.time}</span>
+                {isSelected && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="rounded-full bg-purple-500 p-1">
+                      <Check className="h-3 w-3 text-white" />
                     </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Generate Button */}
-        <div>
+        {/* Generate Button - always visible */}
+        <div className="sticky bottom-0 bg-gradient-to-t from-slate-900 pb-4 pt-2">
           <Button
             size="lg"
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"

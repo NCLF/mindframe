@@ -70,6 +70,19 @@ export async function textToSpeech({
     throw new Error('ELEVENLABS_API_KEY is not set');
   }
 
+  // Build voice settings - eleven_v3 doesn't support use_speaker_boost
+  const isV3 = modelId === 'eleven_v3';
+  const voiceSettingsPayload: Record<string, number | boolean> = {
+    stability: voiceSettings.stability,
+    similarity_boost: voiceSettings.similarity_boost,
+  };
+
+  // Only add style and speaker_boost for non-v3 models
+  if (!isV3) {
+    voiceSettingsPayload.style = voiceSettings.style ?? 0.5;
+    voiceSettingsPayload.use_speaker_boost = voiceSettings.use_speaker_boost ?? true;
+  }
+
   const response = await fetch(
     `${ELEVENLABS_API_URL}/text-to-speech/${voiceId}`,
     {
@@ -81,12 +94,7 @@ export async function textToSpeech({
       body: JSON.stringify({
         text,
         model_id: modelId,
-        voice_settings: {
-          stability: voiceSettings.stability,
-          similarity_boost: voiceSettings.similarity_boost,
-          style: voiceSettings.style ?? 0.5,
-          use_speaker_boost: voiceSettings.use_speaker_boost ?? true,
-        },
+        voice_settings: voiceSettingsPayload,
       }),
     }
   );

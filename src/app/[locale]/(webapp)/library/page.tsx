@@ -1,81 +1,133 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useTelegram } from '@/hooks/useTelegram';
 import {
   Play,
   Heart,
   Clock,
   Sparkles,
   Music2,
+  Trash2,
 } from 'lucide-react';
 
-// Mock data - will be replaced with Supabase query
-const mockLibrary = [
-  {
-    id: '1',
-    title: 'Утренний заряд',
-    scenario: 'morning',
-    duration: 180,
-    createdAt: new Date('2025-01-19'),
-    isFavorite: true,
-    playCount: 5,
-  },
-  {
-    id: '2',
-    title: 'Вечернее расслабление',
-    scenario: 'evening',
-    duration: 240,
-    createdAt: new Date('2025-01-18'),
-    isFavorite: false,
-    playCount: 3,
-  },
-  {
-    id: '3',
-    title: 'Концентрация перед презентацией',
-    scenario: 'focus',
-    duration: 150,
-    createdAt: new Date('2025-01-17'),
-    isFavorite: true,
-    playCount: 8,
-  },
-];
+interface LibraryItem {
+  id: string;
+  text: string;
+  audioBase64: string;
+  scenario: string | null;
+  tags: string[];
+  createdAt: string;
+  isFavorite?: boolean;
+}
 
 type FilterType = 'all' | 'favorites';
 
 export default function LibraryPage() {
   const t = useTranslations('app');
+  const router = useRouter();
+  const { haptic } = useTelegram();
   const [filter, setFilter] = useState<FilterType>('all');
+  const [library, setLibrary] = useState<LibraryItem[]>([]);
+  const [selectedItem, setSelectedItem] = useState<LibraryItem | null>(null);
 
-  const filteredItems = mockLibrary.filter((item) =>
+  // Load library from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('mindframe_library');
+    if (saved) {
+      try {
+        setLibrary(JSON.parse(saved));
+      } catch {
+        setLibrary([]);
+      }
+    }
+  }, []);
+
+  // Save library to localStorage
+  const saveLibrary = (items: LibraryItem[]) => {
+    localStorage.setItem('mindframe_library', JSON.stringify(items));
+    setLibrary(items);
+  };
+
+  const filteredItems = library.filter((item) =>
     filter === 'favorites' ? item.isFavorite : true
   );
 
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  const toggleFavorite = (id: string) => {
+    haptic('selection');
+    const updated = library.map((item) =>
+      item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
+    );
+    saveLibrary(updated);
   };
 
-  const formatDate = (date: Date) => {
+  const deleteItem = (id: string) => {
+    haptic('medium');
+    const updated = library.filter((item) => item.id !== id);
+    saveLibrary(updated);
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
     return new Intl.DateTimeFormat('ru-RU', {
       day: 'numeric',
       month: 'short',
     }).format(date);
   };
 
-  const getScenarioColor = (scenario: string) => {
+  const getScenarioColor = (scenario: string | null) => {
     const colors: Record<string, string> = {
       morning: 'from-amber-500 to-orange-500',
       evening: 'from-indigo-500 to-purple-500',
       focus: 'from-blue-500 to-cyan-500',
       sport: 'from-red-500 to-pink-500',
     };
-    return colors[scenario] || 'from-slate-500 to-slate-600';
+    return colors[scenario || ''] || 'from-purple-500 to-blue-500';
   };
+
+  const getScenarioName = (scenario: string | null) => {
+    const names: Record<string, string> = {
+      morning: 'Утро',
+      evening: 'Вечер',
+      focus: 'Фокус',
+      sport: 'Спорт',
+    };
+    return names[scenario || ''] || 'Аффирмация';
+  };
+
+  // If item is selected, show player
+  if (selectedItem) {
+    const { AudioPlayer } = require('@/components/AudioPlayer');
+    return (
+      <div className="space-y-6 pb-20">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setSelectedItem(null)}
+        >
+          ← Назад
+        </Button>
+
+        <Card className="border-slate-700 bg-slate-800/50">
+          <CardContent className="p-4">
+            <p className="line-clamp-4 text-sm text-slate-300">{selectedItem.text}</p>
+          </CardContent>
+        </Card>
+
+        <AudioPlayer
+          base64Audio={selectedItem.audioBase64}
+          title={getScenarioName(selectedItem.scenario)}
+          subtitle={selectedItem.tags.join(', ')}
+          isSaved={true}
+          onSave={() => toggleFavorite(selectedItem.id)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-20">
@@ -111,12 +163,10 @@ export default function LibraryPage() {
             <p className="text-slate-400">{t('library.empty')}</p>
             <Button
               className="mt-4 bg-purple-600 hover:bg-purple-500"
-              asChild
+              onClick={() => router.push('/ru/generate')}
             >
-              <a href="/generate">
-                <Sparkles className="mr-2 h-4 w-4" />
-                {t('nav.generate')}
-              </a>
+              <Sparkles className="mr-2 h-4 w-4" />
+              {t('nav.generate')}
             </Button>
           </CardContent>
         </Card>
@@ -125,12 +175,16 @@ export default function LibraryPage() {
           {filteredItems.map((item) => (
             <Card
               key={item.id}
-              className="cursor-pointer border-slate-700 bg-slate-800/50 transition-all hover:border-slate-600"
+              className="border-slate-700 bg-slate-800/50 transition-all hover:border-slate-600"
             >
               <CardContent className="flex items-center gap-4 p-4">
                 {/* Play button with gradient */}
                 <div
-                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${getScenarioColor(
+                  onClick={() => {
+                    haptic('medium');
+                    setSelectedItem(item);
+                  }}
+                  className={`flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-gradient-to-br ${getScenarioColor(
                     item.scenario
                   )}`}
                 >
@@ -138,26 +192,52 @@ export default function LibraryPage() {
                 </div>
 
                 {/* Info */}
-                <div className="min-w-0 flex-1">
+                <div
+                  className="min-w-0 flex-1 cursor-pointer"
+                  onClick={() => {
+                    haptic('medium');
+                    setSelectedItem(item);
+                  }}
+                >
                   <h3 className="truncate font-medium text-white">
-                    {item.title}
+                    {getScenarioName(item.scenario)}
                   </h3>
                   <div className="mt-1 flex items-center gap-3 text-sm text-slate-400">
-                    <span>{formatDuration(item.duration)}</span>
+                    <span>{item.tags.slice(0, 2).join(', ')}</span>
                     <span>•</span>
                     <span>{formatDate(item.createdAt)}</span>
                   </div>
                 </div>
 
-                {/* Favorite indicator */}
-                {item.isFavorite && (
-                  <Heart className="h-5 w-5 shrink-0 fill-red-400 text-red-400" />
-                )}
+                {/* Favorite toggle */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(item.id);
+                  }}
+                  className="shrink-0 p-2"
+                >
+                  <Heart
+                    className={`h-5 w-5 transition-colors ${
+                      item.isFavorite
+                        ? 'fill-red-400 text-red-400'
+                        : 'text-slate-500 hover:text-red-400'
+                    }`}
+                  />
+                </button>
 
-                {/* Play count badge */}
-                <Badge variant="secondary" className="shrink-0 bg-slate-700">
-                  {item.playCount}×
-                </Badge>
+                {/* Delete button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (confirm('Удалить?')) {
+                      deleteItem(item.id);
+                    }
+                  }}
+                  className="shrink-0 p-2"
+                >
+                  <Trash2 className="h-4 w-4 text-slate-500 hover:text-red-400" />
+                </button>
               </CardContent>
             </Card>
           ))}

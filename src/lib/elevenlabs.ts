@@ -1,12 +1,16 @@
 // ElevenLabs API Integration
 // Docs: https://elevenlabs.io/docs/api-reference
+// Using eleven_v3 model with [pause], [short pause], [long pause] tags
 
 const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
+
+// Default model - eleven_v3 is the latest expressive model
+export const DEFAULT_MODEL = 'eleven_v3';
 
 export interface VoiceSettings {
   stability: number; // 0-1, higher = more stable, lower = more emotional
   similarity_boost: number; // 0-1, how closely to match the original voice
-  style?: number; // 0-1, style exaggeration (only for multilingual v2)
+  style?: number; // 0-1, style exaggeration
   use_speaker_boost?: boolean;
 }
 
@@ -53,11 +57,12 @@ export interface TextToSpeechOptions {
 
 /**
  * Generate speech from text using ElevenLabs API
+ * Uses eleven_v3 model which supports [pause], [short pause], [long pause] tags
  */
 export async function textToSpeech({
   text,
   voiceId,
-  modelId = 'eleven_multilingual_v2',
+  modelId = DEFAULT_MODEL,
   voiceSettings = VOICE_PRESETS.morning,
 }: TextToSpeechOptions): Promise<ArrayBuffer> {
   const apiKey = process.env.ELEVENLABS_API_KEY;

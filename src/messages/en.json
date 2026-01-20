@@ -1,0 +1,133 @@
+{
+  "metadata": {
+    "title": "MindFrame - AI Affirmations with Binaural Beats",
+    "description": "Personalized affirmations with professional voiceover and binaural beats for focus, calm, and energy"
+  },
+  "landing": {
+    "hero": {
+      "title": "Reprogram Your Mind",
+      "subtitle": "AI creates personalized affirmations, professionally voices them, and adds binaural beats for maximum impact",
+      "cta": "Try for Free",
+      "ctaSecondary": "Learn More"
+    },
+    "features": {
+      "title": "How It Works",
+      "ai": {
+        "title": "AI Generation",
+        "description": "Neural network creates affirmations for your goals: focus, calm, energy, or any other objective"
+      },
+      "voice": {
+        "title": "Professional Voiceover",
+        "description": "Text is voiced with proper intonation and pauses. Or use your voice clone for maximum effect"
+      },
+      "binaural": {
+        "title": "Binaural Beats",
+        "description": "Science-backed frequencies (alpha, beta, theta) activate specific brain regions and amplify the impact"
+      }
+    },
+    "scenarios": {
+      "title": "Ready Scenarios",
+      "morning": {
+        "title": "Morning Boost",
+        "description": "Set yourself up for a productive day"
+      },
+      "evening": {
+        "title": "Evening Relaxation",
+        "description": "Release tension and prepare for sleep"
+      },
+      "focus": {
+        "title": "Focus",
+        "description": "Enter the flow state"
+      },
+      "sport": {
+        "title": "Sport",
+        "description": "Break through physical barriers"
+      }
+    },
+    "pricing": {
+      "title": "Pricing",
+      "free": {
+        "name": "Free",
+        "price": "0",
+        "features": ["3 generations", "Standard voice", "Basic scenarios"]
+      },
+      "basic": {
+        "name": "Basic",
+        "price": "9.99",
+        "features": ["30 generations per month", "All scenarios", "All voices", "Track library"]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "19.99",
+        "features": ["Unlimited generations", "Your voice clone", "Priority processing", "Advanced settings"]
+      }
+    },
+    "cta": {
+      "title": "Start Your Transformation Today",
+      "subtitle": "3 free generations — no card or registration required",
+      "button": "Open in Telegram"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back"
+  },
+  "app": {
+    "nav": {
+      "generate": "Create",
+      "library": "Library",
+      "settings": "Settings"
+    },
+    "generate": {
+      "title": "Create Affirmation",
+      "selectTags": "Select focus",
+      "selectScenario": "Select scenario",
+      "customInput": "Or describe your goal",
+      "voiceInput": "Voice input",
+      "generateButton": "Create",
+      "generating": "Creating your affirmation..."
+    },
+    "tags": {
+      "concentration": "Focus",
+      "calm": "Calm",
+      "energy": "Energy",
+      "confidence": "Confidence",
+      "creativity": "Creativity",
+      "sleep": "Sleep",
+      "motivation": "Motivation"
+    },
+    "player": {
+      "play": "Play",
+      "pause": "Pause",
+      "saveToLibrary": "Save to library",
+      "share": "Share",
+      "newGeneration": "Create new"
+    },
+    "library": {
+      "title": "My Library",
+      "empty": "Empty yet. Create your first affirmation!",
+      "favorites": "Favorites",
+      "recent": "Recent"
+    },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "voiceClone": "Voice Clone",
+      "voiceCloneDescription": "Record 30 seconds of your voice to create a personal clone",
+      "recordVoice": "Record Voice",
+      "subscription": "Subscription",
+      "currentPlan": "Current plan",
+      "upgrade": "Upgrade"
+    },
+    "limits": {
+      "reached": "Limit Reached",
+      "description": "You've used all free generations. Subscribe to continue.",
+      "upgradeButton": "Choose Plan"
+    }
+  }
+}

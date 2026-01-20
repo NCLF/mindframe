@@ -12,10 +12,12 @@ import {
   Sun,
   Moon,
   Target,
-  Dumbbell,
+  Briefcase,
   Check,
   ArrowRight,
-  Sparkles,
+  Users,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -32,9 +34,9 @@ export default function LandingPage() {
         </div>
 
         <div className="relative mx-auto max-w-4xl text-center">
-          <Badge variant="secondary" className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20">
-            <Sparkles className="mr-1 h-3 w-3" />
-            AI-Powered Affirmations
+          <Badge variant="secondary" className="mb-6 bg-green-500/10 text-green-300 hover:bg-green-500/20">
+            <Users className="mr-1 h-3 w-3" />
+            {t('hero.badge')}
           </Badge>
 
           <h1 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
@@ -51,7 +53,7 @@ export default function LandingPage() {
               className="group bg-gradient-to-r from-purple-600 to-blue-600 text-lg hover:from-purple-500 hover:to-blue-500"
               asChild
             >
-              <a href="https://t.me/MindFrameBot" target="_blank" rel="noopener noreferrer">
+              <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
                 {t('hero.cta')}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
@@ -70,6 +72,29 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <div className="grid grid-cols-3 gap-8 rounded-2xl border border-slate-800 bg-slate-900/50 p-8 backdrop-blur">
+            <StatCard
+              icon={<Users className="h-6 w-6 text-purple-400" />}
+              value={t('stats.users')}
+              label={t('stats.usersLabel')}
+            />
+            <StatCard
+              icon={<Moon className="h-6 w-6 text-blue-400" />}
+              value={t('stats.sleepImprovement')}
+              label={t('stats.sleepLabel')}
+            />
+            <StatCard
+              icon={<Zap className="h-6 w-6 text-yellow-400" />}
+              value={t('stats.stressReduction')}
+              label={t('stats.stressLabel')}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
@@ -79,20 +104,36 @@ export default function LandingPage() {
 
           <div className="grid gap-8 md:grid-cols-3">
             <FeatureCard
-              icon={<Brain className="h-8 w-8 text-purple-400" />}
-              title={t('features.ai.title')}
-              description={t('features.ai.description')}
+              icon={<Mic2 className="h-8 w-8 text-purple-400" />}
+              title={t('features.voiceClone.title')}
+              description={t('features.voiceClone.description')}
+              highlighted
             />
             <FeatureCard
-              icon={<Mic2 className="h-8 w-8 text-blue-400" />}
-              title={t('features.voice.title')}
-              description={t('features.voice.description')}
+              icon={<Brain className="h-8 w-8 text-blue-400" />}
+              title={t('features.ai.title')}
+              description={t('features.ai.description')}
             />
             <FeatureCard
               icon={<Waves className="h-8 w-8 text-cyan-400" />}
               title={t('features.binaural.title')}
               description={t('features.binaural.description')}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Science Section */}
+      <section className="px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-12 text-center text-3xl font-bold text-white sm:text-4xl">
+            {t('science.title')}
+          </h2>
+
+          <div className="space-y-6">
+            <SciencePoint text={t('science.point1')} />
+            <SciencePoint text={t('science.point2')} />
+            <SciencePoint text={t('science.point3')} />
           </div>
         </div>
       </section>
@@ -112,10 +153,10 @@ export default function LandingPage() {
               gradient="from-amber-500 to-orange-500"
             />
             <ScenarioCard
-              icon={<Moon className="h-6 w-6" />}
-              title={t('scenarios.evening.title')}
-              description={t('scenarios.evening.description')}
-              gradient="from-indigo-500 to-purple-500"
+              icon={<Briefcase className="h-6 w-6" />}
+              title={t('scenarios.anxiety.title')}
+              description={t('scenarios.anxiety.description')}
+              gradient="from-green-500 to-emerald-500"
             />
             <ScenarioCard
               icon={<Target className="h-6 w-6" />}
@@ -124,10 +165,10 @@ export default function LandingPage() {
               gradient="from-blue-500 to-cyan-500"
             />
             <ScenarioCard
-              icon={<Dumbbell className="h-6 w-6" />}
-              title={t('scenarios.sport.title')}
-              description={t('scenarios.sport.description')}
-              gradient="from-red-500 to-pink-500"
+              icon={<Moon className="h-6 w-6" />}
+              title={t('scenarios.sleep.title')}
+              description={t('scenarios.sleep.description')}
+              gradient="from-indigo-500 to-purple-500"
             />
           </div>
         </div>
@@ -175,7 +216,7 @@ export default function LandingPage() {
             className="group bg-gradient-to-r from-purple-600 to-blue-600 text-lg hover:from-purple-500 hover:to-blue-500"
             asChild
           >
-            <a href="https://t.me/MindFrameBot" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
               {t('cta.button')}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
@@ -197,19 +238,39 @@ export default function LandingPage() {
   );
 }
 
+function StatCard({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+}) {
+  return (
+    <div className="text-center">
+      <div className="mb-2 flex justify-center">{icon}</div>
+      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className="text-sm text-slate-400">{label}</div>
+    </div>
+  );
+}
+
 function FeatureCard({
   icon,
   title,
   description,
+  highlighted = false,
 }: {
   icon: React.ReactNode;
   title: string;
   description: string;
+  highlighted?: boolean;
 }) {
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur">
+    <Card className={`border-slate-800 bg-slate-900/50 backdrop-blur ${highlighted ? 'ring-2 ring-purple-500/50' : ''}`}>
       <CardHeader>
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-slate-800">
+        <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl ${highlighted ? 'bg-purple-500/20' : 'bg-slate-800'}`}>
           {icon}
         </div>
         <CardTitle className="text-xl text-white">{title}</CardTitle>
@@ -218,6 +279,17 @@ function FeatureCard({
         <CardDescription className="text-base text-slate-400">{description}</CardDescription>
       </CardContent>
     </Card>
+  );
+}
+
+function SciencePoint({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-4 rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-purple-500/20">
+        <TrendingUp className="h-4 w-4 text-purple-400" />
+      </div>
+      <p className="text-lg text-slate-300">{text}</p>
+    </div>
   );
 }
 
@@ -297,7 +369,7 @@ function PricingCard({
           }`}
           asChild
         >
-          <a href="https://t.me/MindFrameBot" target="_blank" rel="noopener noreferrer">
+          <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
             Get Started
           </a>
         </Button>

@@ -19,23 +19,61 @@ export async function POST(request: NextRequest) {
 
     const { tags, scenario, customText, language, voiceId } = validatedData;
 
+    console.log('[Generate] Starting generation:', { scenario, tags, language });
+
     // Step 1: Generate affirmation text using LLM
-    const generatedText = await generateAffirmation({
-      scenario,
-      tags,
-      customText,
-      language,
-    });
+    let generatedText: string;
+    try {
+      generatedText = await generateAffirmation({
+        scenario,
+        tags,
+        customText,
+        language,
+      });
+      console.log('[Generate] Text generated, length:', generatedText.length);
+    } catch (llmError) {
+      console.error('[Generate] LLM error:', llmError);
+      throw new Error(`LLM failed: ${llmError instanceof Error ? llmError.message : 'Unknown'}`);
+    }
 
     // Step 2: Convert text to speech using ElevenLabs
     const defaultVoiceId = process.env.ELEVENLABS_DEFAULT_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
     const voiceSettings = VOICE_PRESETS[scenario] || VOICE_PRESETS.morning;
 
-    const audioBuffer = await textToSpeech({
-      text: generatedText,
-      voiceId: voiceId || defaultVoiceId,
-      voiceSettings,
-    });
+    let audioBuffer: ArrayBuffer;
+
+    // Try eleven_v3 first, fallback to eleven_multilingual_v2
+    try {
+      console.log('[Generate] Trying eleven_v3...');
+      audioBuffer = await textToSpeech({
+        text: generatedText,
+        voiceId: voiceId || defaultVoiceId,
+        voiceSettings,
+        modelId: 'eleven_v3',
+      });
+      console.log('[Generate] eleven_v3 success');
+    } catch (v3Error) {
+      console.warn('[Generate] eleven_v3 failed, trying fallback:', v3Error);
+
+      // Strip pause tags for v2 model (it doesn't support them)
+      const textForV2 = generatedText
+        .replace(/\[short pause\]/gi, '...')
+        .replace(/\[pause\]/gi, '... ')
+        .replace(/\[long pause\]/gi, '... ... ');
+
+      try {
+        audioBuffer = await textToSpeech({
+          text: textForV2,
+          voiceId: voiceId || defaultVoiceId,
+          voiceSettings,
+          modelId: 'eleven_multilingual_v2',
+        });
+        console.log('[Generate] eleven_multilingual_v2 fallback success');
+      } catch (v2Error) {
+        console.error('[Generate] Both models failed:', v2Error);
+        throw new Error(`TTS failed: ${v2Error instanceof Error ? v2Error.message : 'Unknown'}`);
+      }
+    }
 
     // Convert to base64 for response
     const audioBase64 = Buffer.from(audioBuffer).toString('base64');
@@ -61,7 +99,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Generation error:', error);
+    console.error('[Generate] Error:', error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -74,11 +112,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
     return NextResponse.json(
       {
         success: false,
-        error: 'Generation failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
+        message: errorMessage,
       },
       { status: 500 }
     );

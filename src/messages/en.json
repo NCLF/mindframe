@@ -5,11 +5,18 @@
   },
   "landing": {
     "hero": {
-      "badge": "Neuro-Biohacking",
+      "badge": "AI Voice Cloning Technology",
+      "titlePart1": "Your Voice Is the Most Powerful",
+      "titlePart2": "Tool for Tuning Your Brain",
       "title": "Tune Your Brain Like a Pro",
-      "subtitle": "Mental Utility for state management. AI creates personalized neuro-protocols and voices them with an idealized version of your voice.",
-      "cta": "Start Calibration",
-      "ctaSecondary": "How It Works"
+      "subtitle": "External affirmations don't work because your brain perceives a stranger's voice as noise. MindFrame clones your voice to create personal neuro-settings that your subconscious trusts 100%.",
+      "cta": "Create Your Session",
+      "ctaSecondary": "How It Works",
+      "benefit1": "Stress Relief",
+      "benefit2": "Energy & Focus",
+      "benefit3": "Deep Sleep",
+      "socialProofNumber": "50,000+",
+      "socialProofText": "users already harnessing the power of their voice"
     },
     "stats": {
       "users": "50,000+",
@@ -17,23 +24,55 @@
       "sleepImprovement": "92%",
       "sleepLabel": "sleep improvement",
       "stressReduction": "3x",
-      "stressLabel": "faster stress relief"
+      "stressLabel": "faster stress relief",
+      "personalizationLabel": "personalization"
+    },
+    "problem": {
+      "title": "Why External Affirmations",
+      "titleHighlight": "Don't Work?",
+      "badTitle": "External Affirmations",
+      "bad1": "A stranger's voice triggers subconscious distrust.",
+      "bad2": "Generic phrases don't address your specific pain points.",
+      "badWaveText": "Brain blocks it out",
+      "goodTitle": "Your Neuro-Imprint",
+      "good1Title": "Trust Phenomenon",
+      "good1": "Your brain can't critique its own voice.",
+      "good2Title": "Binaural Beats",
+      "good2": "Instantly shift brain wave frequencies.",
+      "goodWaveText": "Subconscious accepts the command"
     },
     "demo": {
-      "badge": "Listen to demo",
-      "title": "How a neuro-session sounds",
+      "badge": "Interactive Demo",
+      "title": "Feel the",
+      "titleHighlight": "Resonance",
       "subtitle": "Press play and feel the difference",
       "morning": {
         "title": "Morning Activation",
-        "description": "15 sec - energy boost for the whole day"
+        "description": "Your voice clone + binaural beats. Energy and clarity boost for the whole day.",
+        "tag1": "Your Voice"
       },
       "evening": {
         "title": "Evening Deactivation",
-        "description": "15 sec - transition to rest mode"
+        "description": "Deep relaxation and transition to recovery mode. Perfect sleep.",
+        "tag1": "Deep Sleep"
       }
     },
     "features": {
-      "title": "Why It Works",
+      "title": "How It",
+      "titleHighlight": "Works",
+      "subtitle": "Simple technology for complex results",
+      "step1": {
+        "title": "Record Your Voice",
+        "description": "Read a short text (30 seconds). This creates your unique voice profile."
+      },
+      "step2": {
+        "title": "Choose Your Goal",
+        "description": "What do you need right now? Fall asleep, calm down before a meeting, or enter flow state."
+      },
+      "step3": {
+        "title": "Listen",
+        "description": "AI instantly generates a personalized session. Your voice + music + binaural beats."
+      },
       "voiceClone": {
         "title": "Idealized Voice",
         "description": "Not just a clone — an enhanced version. More confident, deeper, calmer. Bypasses psychological barriers and triggers maximum trust."
@@ -48,28 +87,40 @@
       }
     },
     "science": {
-      "title": "Neuroscience Behind It",
+      "badge": "Scientific Foundation",
+      "title": "It's Not Magic, It's",
+      "titleHighlight": "Neuroscience",
+      "description": "The methodology is based on neuroplasticity and cognitive behavioral therapy principles. We use the \"familiar voice effect\" to bypass the psyche's defense mechanisms.",
+      "badge1": "CBT",
+      "badge1Sub": "Cognitive Behavioral Therapy",
+      "badge2": "Neurobiology",
+      "badge2Sub": "Science-based approach",
+      "badge3": "Security",
+      "badge3Sub": "Voice and data encryption",
+      "badge4": "Privacy",
+      "badge4Sub": "Your voice belongs only to you",
       "point1": "Your brain can't critique its own voice — evolutionary trust mechanism",
       "point2": "Idealized voice activates trust zones 3x stronger",
       "point3": "Binaural beats synchronize hemispheres for the desired state"
     },
     "scenarios": {
-      "title": "Brain Modes",
+      "title": "Life Scenarios",
+      "subtitle": "One technology for diverse challenges",
       "morning": {
-        "title": "Activation Mode",
-        "description": "Dopamine start to your day. Gamma 40Hz + energetic protocol. Clarity and drive."
+        "title": "Clarity & Drive",
+        "description": "Morning protocol. Get a dopamine boost and set yourself up for achieving goals in 5 minutes."
       },
       "anxiety": {
-        "title": "Focus Mode",
-        "description": "Enter flow state. Alpha 10Hz + mentor voice. Effortless concentration."
+        "title": "Point of Calm",
+        "description": "Relieves anxiety before important meetings. Your voice restores a sense of control and safety."
       },
       "focus": {
-        "title": "Recovery Mode",
-        "description": "Reset stress in 5 minutes. Grounding techniques + calm voice."
+        "title": "Deep Flow",
+        "description": "Maximum concentration mode. Work without distractions at peak performance."
       },
       "sleep": {
-        "title": "Deactivation Mode",
-        "description": "Transition to deep sleep. Theta 6Hz + whisper. 92% report better sleep."
+        "title": "Perfect Sleep",
+        "description": "Shuts off mental noise. Quick transition to delta sleep and full overnight recovery."
       }
     },
     "pricing": {
@@ -91,9 +142,10 @@
       }
     },
     "cta": {
-      "title": "Start Brain Calibration",
+      "title": "Ready to Change Your Life",
+      "titleHighlight": "With Your Own Voice?",
       "subtitle": "No card. No registration. First 3 sessions free.",
-      "button": "Open in Telegram"
+      "button": "Start Free"
     }
   },
   "common": {

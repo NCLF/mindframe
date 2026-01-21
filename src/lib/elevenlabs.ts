@@ -182,6 +182,39 @@ export function getVoicesByGender(gender: VoiceGender): VoiceOption[] {
   return VOICE_OPTIONS.filter(v => v.gender === gender);
 }
 
+// ============ Environment-based Voice IDs ============
+// Premium voices configured in .env for optimal quality per language
+export type LanguageCode = 'ru' | 'en';
+
+/**
+ * Get voice ID from environment variables
+ * Falls back to default library voices if env vars not set
+ */
+export function getVoiceIdFromEnv(gender: VoiceGender, language: LanguageCode): string {
+  const envKey = `ELEVENLABS_VOICE_${gender.toUpperCase()}_${language.toUpperCase()}`;
+  const envVoiceId = process.env[envKey];
+
+  if (envVoiceId) {
+    return envVoiceId;
+  }
+
+  // Fallback to default library voices
+  const fallbacks: Record<VoiceGender, string> = {
+    female: '21m00Tcm4TlvDq8ikWAM', // Rachel
+    male: 'pNInz6obpgDQGcFmaJgB',   // Adam
+  };
+
+  return fallbacks[gender];
+}
+
+/**
+ * Get premium voice ID for gender and language
+ * Uses env-configured voices optimized for each language
+ */
+export function getPremiumVoiceId(gender: VoiceGender, language: LanguageCode): string {
+  return getVoiceIdFromEnv(gender, language);
+}
+
 // Get recommended voice for scenario and gender
 export function getRecommendedVoice(scenario: ScenarioType, gender: VoiceGender): VoiceOption {
   const voicesByGender = getVoicesByGender(gender);

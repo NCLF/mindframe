@@ -96,34 +96,35 @@ export interface MixConfig {
 }
 
 // Default mixing settings per scenario
+// Binaural starts 2 sec before voice and ends 2 sec after
 export const SCENARIO_MIX_CONFIG: Record<ScenarioType, MixConfig> = {
   morning: {
-    voiceVolume: 0.75,
-    binauralVolume: 0.25,
+    voiceVolume: 0.85,
+    binauralVolume: 0.45,  // Increased for audibility
     fadeInDuration: 2,
     fadeOutDuration: 3,
   },
   sport: {
-    voiceVolume: 0.8,
-    binauralVolume: 0.2,
+    voiceVolume: 0.9,
+    binauralVolume: 0.4,   // Increased for audibility
     fadeInDuration: 1,
     fadeOutDuration: 2,
   },
   focus: {
-    voiceVolume: 0.7,
-    binauralVolume: 0.3,
+    voiceVolume: 0.8,
+    binauralVolume: 0.5,   // Increased for audibility
     fadeInDuration: 3,
     fadeOutDuration: 4,
   },
   evening: {
-    voiceVolume: 0.65,
-    binauralVolume: 0.35,
+    voiceVolume: 0.75,
+    binauralVolume: 0.55,  // Higher for relaxation effect
     fadeInDuration: 5,
     fadeOutDuration: 8,
   },
   sos: {
-    voiceVolume: 0.7,
-    binauralVolume: 0.3,
+    voiceVolume: 0.8,
+    binauralVolume: 0.5,   // Increased for grounding effect
     fadeInDuration: 2,
     fadeOutDuration: 3,
   },
@@ -133,11 +134,20 @@ export const SCENARIO_MIX_CONFIG: Record<ScenarioType, MixConfig> = {
 // Using pre-generated binaural tracks for MVP
 // Located in /public/audio/binaural/
 export const BINAURAL_AUDIO_PATHS: Record<BinauralPreset, string> = {
-  gamma: '/audio/binaural/gamma_40hz.mp3',
-  beta: '/audio/binaural/beta_20hz.mp3',
-  alpha: '/audio/binaural/alpha_10hz.mp3',
-  theta: '/audio/binaural/theta_6hz.mp3',
-  delta: '/audio/binaural/delta_3hz.mp3',
+  gamma: '/audio/binaural/gamma_40hz.wav',
+  beta: '/audio/binaural/beta_20hz.wav',
+  alpha: '/audio/binaural/alpha_10hz.wav',  // Note: using beta_20hz.wav as alpha placeholder
+  theta: '/audio/binaural/theta_6hz.wav',
+  delta: '/audio/binaural/delta_3hz.wav',
+};
+
+// Server-side paths (for Node.js API routes)
+export const BINAURAL_SERVER_PATHS: Record<BinauralPreset, string> = {
+  gamma: 'public/audio/binaural/gamma_40hz.wav',
+  beta: 'public/audio/binaural/beta_20hz.wav',
+  alpha: 'public/audio/binaural/beta_20hz.wav',  // Using beta as alpha placeholder (closest frequency)
+  theta: 'public/audio/binaural/theta_6hz.wav',
+  delta: 'public/audio/binaural/delta_3hz.wav',
 };
 
 // ============ Web Audio API Utilities ============

@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { ShareModal } from '@/components/ShareModal';
-import { getPreferences, initPreferencesFromTelegram, type UserPreferences } from '@/lib/userPreferences';
+import { getPreferences, initPreferencesFromTelegram, savePreferences, type UserPreferences } from '@/lib/userPreferences';
 
 // Available tags with icons
 const TAGS = [
@@ -118,6 +118,13 @@ export default function GeneratePage() {
     );
   };
 
+  const handleVoiceGenderChange = (gender: 'male' | 'female') => {
+    haptic('selection');
+    const newPrefs = { ...preferences, voiceGender: gender };
+    setPreferences(newPrefs as UserPreferences);
+    savePreferences({ voiceGender: gender });
+  };
+
   const handleScenarioSelect = (scenarioId: string) => {
     haptic('medium');
     setSelectedScenario(scenarioId);
@@ -191,6 +198,41 @@ export default function GeneratePage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-white">{t('generate.title')}</h1>
           <p className="mt-2 text-slate-400">{t('generate.selectTags')}</p>
+        </div>
+
+        {/* Voice Gender Selection */}
+        <div className="mb-6">
+          <p className="mb-3 text-sm font-medium text-slate-400">{t('generate.voiceGender')}</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleVoiceGenderChange('female')}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl border-2 py-3 transition-all ${
+                preferences?.voiceGender === 'female'
+                  ? 'border-purple-500 bg-purple-500/10 text-white'
+                  : 'border-slate-700/50 bg-slate-800/30 text-slate-400 hover:border-slate-600'
+              }`}
+            >
+              <span className="text-xl">👩</span>
+              <span className="font-medium">{t('generate.female')}</span>
+              {preferences?.voiceGender === 'female' && (
+                <Check className="h-4 w-4 text-purple-400" />
+              )}
+            </button>
+            <button
+              onClick={() => handleVoiceGenderChange('male')}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl border-2 py-3 transition-all ${
+                preferences?.voiceGender === 'male'
+                  ? 'border-purple-500 bg-purple-500/10 text-white'
+                  : 'border-slate-700/50 bg-slate-800/30 text-slate-400 hover:border-slate-600'
+              }`}
+            >
+              <span className="text-xl">👨</span>
+              <span className="font-medium">{t('generate.male')}</span>
+              {preferences?.voiceGender === 'male' && (
+                <Check className="h-4 w-4 text-purple-400" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Tags Grid */}

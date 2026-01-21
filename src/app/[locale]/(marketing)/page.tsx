@@ -1,6 +1,7 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useState, useRef } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,10 +22,47 @@ import {
   Sparkles,
   Activity,
   HeartPulse,
+  Play,
+  Pause,
+  Volume2,
 } from 'lucide-react';
 
 export default function LandingPage() {
   const t = useTranslations('landing');
+  const locale = useLocale();
+  const [playingDemo, setPlayingDemo] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Audio paths based on locale
+  // Morning = male voice, Evening = female voice
+  const morningAudioUrl = `/audio/samples/morning_${locale}.mp3`;
+  const eveningAudioUrl = `/audio/samples/evening_${locale}.mp3`;
+
+  const handlePlayDemo = (demoId: string, audioUrl: string) => {
+    if (playingDemo === demoId) {
+      // Stop playing
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setPlayingDemo(null);
+    } else {
+      // Start playing
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => setPlayingDemo(null);
+      audioRef.current.onerror = () => {
+        console.warn('Demo audio not available');
+        setPlayingDemo(null);
+      };
+      audioRef.current.play().catch(() => {
+        console.warn('Could not play demo audio');
+        setPlayingDemo(null);
+      });
+      setPlayingDemo(demoId);
+    }
+  };
 
   return (
     <main className="relative">
@@ -71,6 +109,62 @@ export default function LandingPage() {
                 {t('hero.ctaSecondary')}
               </a>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Section */}
+      <section id="demo" className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-8 text-center">
+            <Badge variant="secondary" className="mb-4 bg-blue-500/10 text-blue-300">
+              <Volume2 className="mr-1 h-3 w-3" />
+              {t('demo.badge')}
+            </Badge>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+              {t('demo.title')}
+            </h2>
+            <p className="mt-2 text-slate-400">
+              {t('demo.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {/* Morning Demo - Male voice */}
+            <button
+              onClick={() => handlePlayDemo('morning', morningAudioUrl)}
+              className="group flex items-center gap-4 rounded-2xl border border-slate-700 bg-gradient-to-r from-amber-500/10 to-orange-500/10 p-6 transition-all hover:border-amber-500/50 hover:from-amber-500/20 hover:to-orange-500/20"
+            >
+              <div className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors ${playingDemo === 'morning' ? 'bg-amber-500' : 'bg-amber-500/20 group-hover:bg-amber-500/30'}`}>
+                {playingDemo === 'morning' ? (
+                  <Pause className="h-7 w-7 text-white" />
+                ) : (
+                  <Play className="ml-1 h-7 w-7 text-amber-400 group-hover:text-amber-300" />
+                )}
+              </div>
+              <div className="text-left">
+                <p className="text-lg font-semibold text-white">{t('demo.morning.title')}</p>
+                <p className="text-sm text-slate-400">{t('demo.morning.description')}</p>
+              </div>
+            </button>
+
+            {/* Evening Demo - Female voice */}
+            <button
+              onClick={() => handlePlayDemo('evening', eveningAudioUrl)}
+              className="group flex items-center gap-4 rounded-2xl border border-slate-700 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-6 transition-all hover:border-indigo-500/50 hover:from-indigo-500/20 hover:to-purple-500/20"
+            >
+              <div className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors ${playingDemo === 'evening' ? 'bg-indigo-500' : 'bg-indigo-500/20 group-hover:bg-indigo-500/30'}`}>
+                {playingDemo === 'evening' ? (
+                  <Pause className="h-7 w-7 text-white" />
+                ) : (
+                  <Play className="ml-1 h-7 w-7 text-indigo-400 group-hover:text-indigo-300" />
+                )}
+              </div>
+              <div className="text-left">
+                <p className="text-lg font-semibold text-white">{t('demo.evening.title')}</p>
+                <p className="text-sm text-slate-400">{t('demo.evening.description')}</p>
+              </div>
+            </button>
           </div>
         </div>
       </section>

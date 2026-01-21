@@ -19,6 +19,19 @@
       "stressReduction": "3x",
       "stressLabel": "faster stress relief"
     },
+    "demo": {
+      "badge": "Listen to demo",
+      "title": "How a neuro-session sounds",
+      "subtitle": "Press play and feel the difference",
+      "morning": {
+        "title": "Morning Activation",
+        "description": "15 sec - energy boost for the whole day"
+      },
+      "evening": {
+        "title": "Evening Deactivation",
+        "description": "15 sec - transition to rest mode"
+      }
+    },
     "features": {
       "title": "Why It Works",
       "voiceClone": {
@@ -106,7 +119,10 @@
       "customInput": "Or describe your goal",
       "voiceInput": "Voice input",
       "generateButton": "Launch Session",
-      "generating": "Building your neuro-session..."
+      "generating": "Building your neuro-session...",
+      "voiceGender": "Voice",
+      "female": "Female",
+      "male": "Male"
     },
     "tags": {
       "concentration": "Focus",

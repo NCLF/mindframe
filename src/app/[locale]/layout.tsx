@@ -97,9 +97,8 @@ export default async function LocaleLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
         style={{
-          // Ensure full height on iOS
-          minHeight: '100vh',
-          minHeight: '100dvh', // Dynamic viewport height for iOS
+          // Dynamic viewport height for iOS (100dvh), fallback to 100vh
+          minHeight: '100dvh',
         }}
       >
         <NextIntlClientProvider messages={messages}>

@@ -102,18 +102,10 @@ export default function GeneratePage() {
     setIsSaved(true);
   };
 
-  // Share functionality
+  // Share functionality - always show custom modal
   const handleShare = () => {
     if (!result) return;
     haptic('medium');
-
-    if (webApp?.openTelegramLink) {
-      const cleanText = stripPauseTags(result.text);
-      const shareText = `🧠 MindFrame - Моя аффирмация\n\n"${cleanText.slice(0, 200)}..."\n\nПопробуй: https://t.me/Mind_Frame_bot`;
-      const encodedText = encodeURIComponent(shareText);
-      webApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/Mind_Frame_bot')}&text=${encodedText}`);
-      return;
-    }
     setIsShareModalOpen(true);
   };
 

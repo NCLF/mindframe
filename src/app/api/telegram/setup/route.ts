@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { setWebhook, setCommands, setMenuButton } from '@/lib/telegram';
+import { setWebhook, setCommands, setMenuButton, setBotDescription, setBotShortDescription } from '@/lib/telegram';
 
 // Setup endpoint for configuring the Telegram bot
 // Call this once after deployment: GET /api/telegram/setup?secret=YOUR_SECRET
@@ -48,8 +48,38 @@ export async function GET(request: NextRequest) {
       { command: 'settings', description: 'Settings' },
     ]);
 
-    // 5. Set menu button
-    await setMenuButton(`${appUrl}/ru/generate`, '✨ MindFrame');
+    // 5. Set menu button (opens web app directly)
+    await setMenuButton(`${appUrl}/ru/generate`, '🧠 Открыть');
+
+    // 6. Set bot descriptions (shown before START)
+    await setBotDescription(
+      '🧠 Mental Utility для управления состоянием мозга\n\n' +
+      '✨ AI создаёт персональные нейро-сессии\n' +
+      '🎙 Озвучка идеализированной версией твоего голоса\n' +
+      '🎧 Бинауральные ритмы для синхронизации полушарий\n\n' +
+      '🎁 3 сессии бесплатно. Без регистрации.',
+      'ru'
+    );
+
+    await setBotDescription(
+      '🧠 Mental Utility for brain state management\n\n' +
+      '✨ AI creates personalized neuro-sessions\n' +
+      '🎙 Voiced by idealized version of your voice\n' +
+      '🎧 Binaural beats for hemisphere synchronization\n\n' +
+      '🎁 3 sessions free. No registration.',
+      'en'
+    );
+
+    // 7. Set short descriptions (shown in share/search)
+    await setBotShortDescription(
+      '🧠 Нейро-сессии с твоим голосом. Настрой мозг как профессионал.',
+      'ru'
+    );
+
+    await setBotShortDescription(
+      '🧠 Neuro-sessions with your voice. Tune your brain like a pro.',
+      'en'
+    );
 
     return NextResponse.json({
       success: true,

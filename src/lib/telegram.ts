@@ -138,7 +138,7 @@ export async function setCommands(
 }
 
 /**
- * Set Web App menu button
+ * Set Web App menu button (global default for all users)
  */
 export async function setMenuButton(webAppUrl: string, text: string = 'Open App') {
   return telegramRequest('setChatMenuButton', {
@@ -147,6 +147,26 @@ export async function setMenuButton(webAppUrl: string, text: string = 'Open App'
       text,
       web_app: { url: webAppUrl },
     },
+  });
+}
+
+/**
+ * Set bot description (shown on bot profile)
+ */
+export async function setBotDescription(description: string, languageCode?: string) {
+  return telegramRequest('setMyDescription', {
+    description,
+    language_code: languageCode,
+  });
+}
+
+/**
+ * Set bot short description (shown in chat list and share)
+ */
+export async function setBotShortDescription(shortDescription: string, languageCode?: string) {
+  return telegramRequest('setMyShortDescription', {
+    short_description: shortDescription,
+    language_code: languageCode,
   });
 }
 

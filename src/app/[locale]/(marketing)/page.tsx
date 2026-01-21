@@ -145,7 +145,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
           >
             <Badge variant="secondary" className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 px-4 py-2 rounded-full border border-purple-500/20">
-              <Zap className="mr-2 h-4 w-4 text-purple-400" />
+              <Brain className="mr-2 h-4 w-4 text-purple-400" />
               {t('hero.badge')}
             </Badge>
           </motion.div>

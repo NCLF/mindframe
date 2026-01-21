@@ -138,10 +138,7 @@ export async function POST(request: NextRequest) {
           scenario,
         });
         // Convert Buffer to ArrayBuffer
-        audioBuffer = openAIBuffer.buffer.slice(
-          openAIBuffer.byteOffset,
-          openAIBuffer.byteOffset + openAIBuffer.byteLength
-        );
+        audioBuffer = new Uint8Array(openAIBuffer).buffer;
         console.log('[Generate] OpenAI TTS success');
       } catch (openAIError) {
         console.error('[Generate] OpenAI TTS failed:', openAIError);

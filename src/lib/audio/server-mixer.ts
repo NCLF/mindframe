@@ -16,10 +16,10 @@ const execAsync = promisify(exec);
  * Falls back to voice-only if ffmpeg is not available
  */
 export async function mixAudioWithBinaural(
-  voiceBuffer: Buffer,
+  voiceBuffer: Buffer<ArrayBuffer>,
   scenario: ScenarioType,
   binauralEnabled: boolean = true
-): Promise<{ buffer: Buffer; format: 'mp3' | 'wav'; hasBinaural: boolean }> {
+): Promise<{ buffer: Buffer<ArrayBuffer>; format: 'mp3' | 'wav'; hasBinaural: boolean }> {
   // If binaural is disabled, return voice only
   if (!binauralEnabled) {
     return { buffer: voiceBuffer, format: 'mp3', hasBinaural: false };

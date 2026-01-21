@@ -109,10 +109,27 @@ export function useTelegram() {
     if (tg) {
       // Initialize the app
       tg.ready();
+
+      // Expand to full screen immediately
       tg.expand();
+
+      // Set dark theme colors for seamless experience
+      try {
+        tg.setHeaderColor('#0f172a'); // slate-900
+        tg.setBackgroundColor('#0f172a');
+      } catch {
+        // Some versions don't support this
+      }
 
       // Enable closing confirmation for important actions
       tg.enableClosingConfirmation();
+
+      // Re-expand after a short delay (iOS fix)
+      setTimeout(() => {
+        if (!tg.isExpanded) {
+          tg.expand();
+        }
+      }, 100);
 
       setWebApp(tg);
       setUser(tg.initDataUnsafe.user || null);

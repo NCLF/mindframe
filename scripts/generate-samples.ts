@@ -1,8 +1,8 @@
-// Script to generate sample audio files for demos WITH binaural beats
+// Script to generate PREMIUM sample audio files for demos
+// Uses ElevenLabs eleven_v3 + binaural beats mixing
 // Run with: npx tsx scripts/generate-samples.ts
 
 import 'dotenv/config';
-import OpenAI from 'openai';
 import { writeFile, mkdir, unlink, access } from 'fs/promises';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -10,15 +10,23 @@ import path from 'path';
 
 const execAsync = promisify(exec);
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // FFmpeg paths (Windows via winget)
 const FFMPEG_BIN = process.env.FFMPEG_PATH ||
   'C:\\Users\\alexe\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.0.1-full_build\\bin';
 const FFMPEG = `"${FFMPEG_BIN}\\ffmpeg.exe"`;
 const FFPROBE = `"${FFMPEG_BIN}\\ffprobe.exe"`;
+
+// ElevenLabs API
+const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
+const ELEVENLABS_MODEL = 'eleven_v3'; // Latest expressive model
+
+// Voice IDs from .env
+const VOICE_IDS = {
+  male_ru: process.env.ELEVENLABS_VOICE_MALE_RU || 'V5m6vjx8ZZJ2FshBoFmQ',
+  female_ru: process.env.ELEVENLABS_VOICE_FEMALE_RU || 'fDCZsAcdsyHzhAOdNVXb',
+  male_en: process.env.ELEVENLABS_VOICE_MALE_EN || 'RMSJCUQZ5aP84TBCul7v',
+  female_en: process.env.ELEVENLABS_VOICE_FEMALE_EN || 'VWgyT3VwwgjcSDAT2wEa',
+};
 
 // Binaural file paths (relative to project root)
 const BINAURAL_FILES = {
@@ -44,64 +52,85 @@ const MIX_CONFIG = {
   },
 };
 
+// Voice settings for scenarios (eleven_v3 compatible)
+// eleven_v3 stability must be: 0.0 (Creative), 0.5 (Natural), 1.0 (Robust)
+const VOICE_SETTINGS = {
+  morning: {
+    stability: 0.5,        // Natural - balanced
+    similarity_boost: 0.75,
+  },
+  evening: {
+    stability: 1.0,        // Robust - stable, calm
+    similarity_boost: 0.8,
+  },
+};
+
 // Sample configuration:
-// - Morning = male voice (onyx) - energetic, confident
-// - Evening = female voice (shimmer) - calm, soothing
-// - RU = Russian text
-// - EN = English text
+// - Morning = male voice - energetic, confident
+// - Evening = female voice - calm, soothing
+// - RU = Russian text, EN = English text
 const SAMPLES = {
   // Russian samples
   morning_ru: {
     scenario: 'morning' as const,
-    voice: 'onyx' as const, // Male voice for morning
-    speed: 1.05, // Slightly faster for energy
-    hd: true,    // HD quality
-    text: `Доброе утро! Новый день! Новые возможности!
+    voiceId: VOICE_IDS.male_ru,
+    locale: 'ru',
+    text: `Доброе утро! [short pause] Новый день! Новые возможности!
+[pause]
 Ты чувствуешь мощную энергию внутри себя!
+[short pause]
 Сила! Решимость! Уверенность!
+[pause]
 Сегодня ты сделаешь мощный шаг к своим целям!
+[short pause]
 Действуй! Ты способен на великое!`,
   },
   evening_ru: {
     scenario: 'evening' as const,
-    voice: 'shimmer' as const, // Female voice for evening
-    speed: 0.92, // Slower for relaxation
-    hd: true,
-    text: `Вечер. Время отпустить всё напряжение дня.
+    voiceId: VOICE_IDS.female_ru,
+    locale: 'ru',
+    text: `Вечер. [pause] Время отпустить всё напряжение дня.
+[long pause]
 Твоё дыхание становится глубже и спокойнее.
-Каждый выдох уносит усталость. Ты заслужил этот отдых.
+[pause]
+Каждый выдох уносит усталость. [short pause] Ты заслужил этот отдых.
+[pause]
 Позволь себе расслабиться полностью.`,
   },
   // English samples
   morning_en: {
     scenario: 'morning' as const,
-    voice: 'onyx' as const, // Male voice for morning
-    speed: 1.05,
-    hd: true,
-    text: `Good morning! A new day! New opportunities!
+    voiceId: VOICE_IDS.male_en,
+    locale: 'en',
+    text: `Good morning! [short pause] A new day! New opportunities!
+[pause]
 You feel powerful energy rising within you!
+[short pause]
 Strength! Determination! Confidence!
+[pause]
 Today you will take a powerful step towards your goals!
+[short pause]
 Act now! You are capable of greatness!`,
   },
   evening_en: {
     scenario: 'evening' as const,
-    voice: 'shimmer' as const, // Female voice for evening
-    speed: 0.92,
-    hd: true,
-    text: `Evening has come. Time to release all the tension of the day.
+    voiceId: VOICE_IDS.female_en,
+    locale: 'en',
+    text: `Evening has come. [pause] Time to release all the tension of the day.
+[long pause]
 Your breathing becomes deeper and calmer.
-Each exhale carries away fatigue. You deserve this rest.
+[pause]
+Each exhale carries away fatigue. [short pause] You deserve this rest.
+[pause]
 Allow yourself to relax completely.`,
   },
 };
 
 interface SampleConfig {
   scenario: 'morning' | 'evening';
-  voice: 'nova' | 'shimmer' | 'onyx' | 'echo';
+  voiceId: string;
+  locale: string;
   text: string;
-  speed?: number;
-  hd?: boolean;
 }
 
 async function checkFfmpeg(): Promise<boolean> {
@@ -111,6 +140,46 @@ async function checkFfmpeg(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+async function textToSpeechElevenLabs(
+  text: string,
+  voiceId: string,
+  scenario: 'morning' | 'evening'
+): Promise<Buffer> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey || apiKey === 'your-elevenlabs-api-key') {
+    throw new Error('ELEVENLABS_API_KEY is not set properly in .env');
+  }
+
+  const settings = VOICE_SETTINGS[scenario];
+
+  const response = await fetch(
+    `${ELEVENLABS_API_URL}/text-to-speech/${voiceId}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        text,
+        model_id: ELEVENLABS_MODEL,
+        voice_settings: {
+          stability: settings.stability,
+          similarity_boost: settings.similarity_boost,
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`ElevenLabs API error: ${response.status} - ${error}`);
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  return Buffer.from(arrayBuffer);
 }
 
 async function mixWithBinaural(
@@ -137,7 +206,7 @@ async function mixWithBinaural(
     const { stdout: durationStr } = await execAsync(probeCmd);
     voiceDuration = parseFloat(durationStr.trim()) || 15;
   } catch (e) {
-    console.warn('  ⚠ ffprobe not available, using default duration:', e instanceof Error ? e.message : e);
+    console.warn('  ⚠ ffprobe failed:', e instanceof Error ? e.message : e);
     return false;
   }
 
@@ -147,7 +216,7 @@ async function mixWithBinaural(
   const totalDuration = voiceDuration + padBefore + padAfter;
   const fadeOutStart = totalDuration - config.fadeOut;
 
-  // ffmpeg command - same logic as server-mixer.ts
+  // ffmpeg command
   const ffmpegCmd = `${FFMPEG} -y -i "${voicePath}" -stream_loop -1 -i "${binauralPath}" -filter_complex "[0:a]adelay=${padBefore * 1000}|${padBefore * 1000},volume=${config.voiceVolume}[voice];[1:a]atrim=0:${totalDuration},volume=${config.binauralVolume},afade=t=in:st=0:d=${config.fadeIn},afade=t=out:st=${fadeOutStart}:d=${config.fadeOut}[binaural];[binaural][voice]amix=inputs=2:duration=first:dropout_transition=0,volume=1.5[out]" -map "[out]" -t ${totalDuration} -acodec libmp3lame -q:a 2 "${outputPath}"`;
 
   try {
@@ -163,28 +232,26 @@ async function generateSample(
   name: string,
   config: SampleConfig
 ): Promise<void> {
-  console.log(`\nGenerating ${name}...`);
+  console.log(`\n🎙️ Generating ${name}...`);
+  console.log(`   Voice: ${config.voiceId}`);
+  console.log(`   Model: ${ELEVENLABS_MODEL}`);
 
   const samplesDir = path.join(process.cwd(), 'public', 'audio', 'samples');
   const voiceOnlyPath = path.join(samplesDir, `${name}_voice.mp3`);
   const finalPath = path.join(samplesDir, `${name}.mp3`);
 
   try {
-    // Step 1: Generate voice with OpenAI TTS
-    console.log('  → Generating voice with OpenAI TTS...');
-    const response = await openai.audio.speech.create({
-      model: config.hd ? 'tts-1-hd' : 'tts-1',
-      voice: config.voice,
-      input: config.text,
-      speed: config.speed || 1.0,
-      response_format: 'mp3',
-    });
-
-    const voiceBuffer = Buffer.from(await response.arrayBuffer());
+    // Step 1: Generate voice with ElevenLabs eleven_v3
+    console.log('  → Generating voice with ElevenLabs eleven_v3...');
+    const voiceBuffer = await textToSpeechElevenLabs(
+      config.text,
+      config.voiceId,
+      config.scenario
+    );
     await writeFile(voiceOnlyPath, voiceBuffer);
-    console.log('  ✓ Voice generated');
+    console.log(`  ✓ Voice generated (${(voiceBuffer.length / 1024).toFixed(1)} KB)`);
 
-    // Step 2: Mix with binaural beats (if ffmpeg available)
+    // Step 2: Mix with binaural beats
     console.log(`  → Mixing with binaural (${config.scenario})...`);
     let mixed = false;
     try {
@@ -202,7 +269,6 @@ async function generateSample(
       console.log('  ⚠ Using voice-only (no binaural - ffmpeg required)');
       const { rename } = await import('fs/promises');
       await rename(voiceOnlyPath, finalPath).catch(async () => {
-        // If rename fails, copy and delete
         await writeFile(finalPath, voiceBuffer);
         await unlink(voiceOnlyPath).catch(() => {});
       });
@@ -215,16 +281,34 @@ async function generateSample(
 }
 
 async function main() {
-  console.log('🎙️ Generating sample audio files with binaural beats...\n');
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log('  MindFrame Premium Sample Generator');
+  console.log('  ElevenLabs eleven_v3 + Binaural Beats');
+  console.log('═══════════════════════════════════════════════════════════\n');
+
+  // Check API key
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey || apiKey === 'your-elevenlabs-api-key') {
+    console.error('❌ ELEVENLABS_API_KEY not set in .env!');
+    console.error('   Please add your API key to mindframe/.env');
+    process.exit(1);
+  }
+  console.log('✓ ElevenLabs API key found');
 
   // Check ffmpeg
   const hasFfmpeg = await checkFfmpeg();
   if (!hasFfmpeg) {
     console.warn('⚠ FFmpeg not found! Samples will be voice-only.');
-    console.warn('  Install ffmpeg for binaural beats mixing.\n');
   } else {
-    console.log('✓ FFmpeg found\n');
+    console.log('✓ FFmpeg found');
   }
+
+  // Show voice IDs being used
+  console.log('\nVoice IDs:');
+  console.log(`  Male RU:   ${VOICE_IDS.male_ru}`);
+  console.log(`  Female RU: ${VOICE_IDS.female_ru}`);
+  console.log(`  Male EN:   ${VOICE_IDS.male_en}`);
+  console.log(`  Female EN: ${VOICE_IDS.female_en}`);
 
   // Ensure directory exists
   const samplesDir = path.join(process.cwd(), 'public', 'audio', 'samples');
@@ -235,12 +319,14 @@ async function main() {
     await generateSample(name, config as SampleConfig);
   }
 
-  console.log('\n✅ All samples generated!');
+  console.log('\n═══════════════════════════════════════════════════════════');
+  console.log('✅ All premium samples generated!');
+  console.log('═══════════════════════════════════════════════════════════');
   console.log('\nFiles created in: public/audio/samples/');
-  console.log('- morning_ru.mp3 (male voice + gamma 40Hz binaural)');
-  console.log('- evening_ru.mp3 (female voice + theta 6Hz binaural)');
-  console.log('- morning_en.mp3 (male voice + gamma 40Hz binaural)');
-  console.log('- evening_en.mp3 (female voice + theta 6Hz binaural)');
+  console.log('- morning_ru.mp3 (male voice + gamma 40Hz)');
+  console.log('- evening_ru.mp3 (female voice + theta 6Hz)');
+  console.log('- morning_en.mp3 (male voice + gamma 40Hz)');
+  console.log('- evening_en.mp3 (female voice + theta 6Hz)');
 }
 
 main().catch(console.error);

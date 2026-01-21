@@ -31,6 +31,8 @@ import {
   Lock,
   X,
   Headphones,
+  Gift,
+  Heart,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -820,7 +822,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-3 gap-8"
+            className="grid grid-cols-3 gap-8 mb-16"
           >
             {[
               { value: t('stats.sleepImprovement'), label: t('stats.sleepLabel') },
@@ -845,6 +847,29 @@ export default function LandingPage() {
                 <p className="text-sm text-white/40">{stat.label}</p>
               </div>
             ))}
+          </motion.div>
+
+          {/* Huberman Video */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="max-w-3xl mx-auto"
+          >
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-white mb-2">{t('science.videoTitle')}</h3>
+              <p className="text-white/50">{t('science.videoSubtitle')}</p>
+            </div>
+            <div className="aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/20">
+              <iframe
+                src="https://www.youtube.com/embed/BCV8PCU8YGM"
+                title={t('science.videoTitle')}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -918,6 +943,51 @@ export default function LandingPage() {
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
                 </a>
               </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Gift Section */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20 mb-6">
+              <Gift className="w-4 h-4 text-pink-400" />
+              <span className="text-sm text-pink-300">{t('gift.badge')}</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+              {t('gift.title')}{' '}
+              <span className="bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent">
+                {t('gift.titleHighlight')}
+              </span>
+            </h2>
+
+            <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8 leading-relaxed">
+              {t('gift.description')}
+            </p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-500/10 to-rose-500/10 border border-pink-500/30 text-pink-300"
+            >
+              <Heart className="w-5 h-5 text-pink-400" />
+              <span className="font-medium">{t('gift.cta')}</span>
             </motion.div>
           </motion.div>
         </div>

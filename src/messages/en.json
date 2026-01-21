@@ -5,18 +5,18 @@
   },
   "landing": {
     "hero": {
-      "badge": "Mental Utility",
-      "titlePart1": "Take Control of",
-      "titlePart2": "Your Brain State",
+      "badge": "Neuro-Protocol Engine",
+      "titlePart1": "Engineering Control of",
+      "titlePart2": "Your Mental State",
       "title": "Mental Utility for Peak Performance",
-      "subtitle": "MindFrame is your personal neuro-tuning tool. AI generates sessions for your specific needs: morning activation, pre-work focus, evening recovery. Binaural beats synchronize brain hemispheres in 8-10 minutes.",
-      "cta": "Start Free",
+      "subtitle": "Personal neuro-protocol. AI synthesizes your 'ideal voice' and overlays it on binaural beats for instant brain state modulation.",
+      "cta": "Launch Neuro-Protocol",
       "ctaSecondary": "How It Works",
       "benefit1": "Stress Relief",
       "benefit2": "Energy & Focus",
       "benefit3": "Deep Sleep",
-      "socialProofNumber": "50,000+",
-      "socialProofText": "users already harnessing the power of their voice"
+      "socialProofNumber": "Beta Access",
+      "socialProofText": "Available for the first 1000 users"
     },
     "stats": {
       "users": "50,000+",
@@ -28,18 +28,18 @@
       "personalizationLabel": "personalization"
     },
     "problem": {
-      "title": "Why External Affirmations",
-      "titleHighlight": "Don't Work?",
-      "badTitle": "External Affirmations",
-      "bad1": "A stranger's voice triggers subconscious distrust.",
-      "bad2": "Generic phrases don't address your specific pain points.",
-      "badWaveText": "Brain blocks it out",
-      "goodTitle": "Your Neuro-Imprint",
-      "good1Title": "Trust Phenomenon",
-      "good1": "Your brain can't critique its own voice.",
-      "good2Title": "Binaural Beats",
-      "good2": "Instantly shift brain wave frequencies.",
-      "goodWaveText": "Subconscious accepts the command"
+      "title": "Hacking Perception",
+      "titleHighlight": "Filters",
+      "badTitle": "Rejection Effect",
+      "bad1": "External voice (coach, narrator) is perceived as outside advisor.",
+      "bad2": "Critical thinking filters out 80% of suggestions.",
+      "badWaveText": "Perception Block",
+      "goodTitle": "Resonance Effect (Voice 2.0)",
+      "good1Title": "Enhanced Profile",
+      "good1": "AI removes notes of uncertainty, adds depth. Subconscious recognizes voice as inner monologue.",
+      "good2Title": "Binaural Modulation",
+      "good2": "Gamma, Theta, Alpha rhythms synchronize hemispheres in 8-10 minutes.",
+      "goodWaveText": "Command Accepted"
     },
     "demo": {
       "badge": "Interactive Demo",
@@ -67,7 +67,7 @@
       },
       "step2": {
         "title": "Choose Your Goal",
-        "description": "What do you need right now? Fall asleep, calm down before a meeting, or enter flow state."
+        "description": "What do you need right now? Or let AI read context: time of day and your calendar to suggest the ideal protocol automatically."
       },
       "step3": {
         "title": "Listen",
@@ -90,7 +90,7 @@
       "badge": "Scientific Foundation",
       "title": "It's Not Magic, It's",
       "titleHighlight": "Neuroscience",
-      "description": "The methodology is based on neuroplasticity and cognitive behavioral therapy principles. We use the \"familiar voice effect\" to bypass the psyche's defense mechanisms.",
+      "description": "The methodology is based on neuroplasticity and cognitive behavioral therapy principles. We use Voice 2.0 — your enhanced voice profile to bypass the psyche's defense mechanisms.",
       "badge1": "CBT",
       "badge1Sub": "Cognitive Behavioral Therapy",
       "badge2": "Neurobiology",
@@ -99,9 +99,11 @@
       "badge3Sub": "Voice and data encryption",
       "badge4": "Privacy",
       "badge4Sub": "Your voice belongs only to you",
-      "point1": "Your brain can't critique its own voice — evolutionary trust mechanism",
-      "point2": "Idealized voice activates trust zones 3x stronger",
-      "point3": "Binaural beats synchronize hemispheres for the desired state"
+      "point1": "AI cleans voice from micro-stress — you hear your best version",
+      "point2": "Enhanced voice activates trust zones 3x stronger",
+      "point3": "Binaural beats synchronize hemispheres for the desired state",
+      "videoTitle": "Why does it work? Neuroscientist explains",
+      "videoSubtitle": "Andrew Huberman on neuroplasticity"
     },
     "scenarios": {
       "title": "Life Scenarios",
@@ -128,24 +130,31 @@
       "free": {
         "name": "Calibration",
         "price": "0",
-        "features": ["3 neuro-sessions", "Standard voices", "Basic modes"]
+        "features": ["3 test sessions", "AI-Mentor voice (Generic)", "Rhythm effectiveness test"]
       },
       "basic": {
         "name": "Basic",
         "price": "9.99",
-        "features": ["30 sessions/month", "All Brain Modes", "Library", "Voice selection"]
+        "features": ["30 sessions/month", "5 premium AI voices", "Scenario library", "No cloning"]
       },
       "pro": {
-        "name": "Pro",
+        "name": "Architect",
         "price": "19.99",
-        "features": ["Unlimited", "Your enhanced voice", "Hero's Path", "Gift-to-Friend"]
+        "features": ["Voice Clone 2.0", "Daily Sync (daily generation)", "Deep Focus (Gamma 40Hz)", "Gift-to-Friend"]
       }
     },
     "cta": {
       "title": "Ready to Change Your Life",
       "titleHighlight": "With Your Own Voice?",
       "subtitle": "No card. No registration. First 3 sessions free.",
-      "button": "Start Free"
+      "button": "Launch Neuro-Protocol"
+    },
+    "gift": {
+      "badge": "Mental Gift",
+      "title": "Gift a",
+      "titleHighlight": "State",
+      "description": "See your partner burning out? Don't say 'calm down'. Generate support with your voice in 30 seconds. We'll package it into a personal link.",
+      "cta": "This works stronger than any words"
     }
   },
   "common": {

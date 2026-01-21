@@ -46,3 +46,4 @@ const nextConfig: NextConfig = {
 };
 
 export default withNextIntl(nextConfig);
+// Force redeploy 1769000995

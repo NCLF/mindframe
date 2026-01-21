@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { generateAffirmation } from '@/lib/llm';
-import { textToSpeech, VOICE_PRESETS } from '@/lib/elevenlabs';
+import {
+  textToSpeech,
+  VOICE_PRESETS,
+  getRecommendedVoice,
+  getVoiceSettingsForSession,
+  type ScenarioType,
+  type VoiceGender,
+  type VoiceProfile,
+} from '@/lib/elevenlabs';
 
 // Request validation schema
 const generateRequestSchema = z.object({
@@ -10,6 +18,8 @@ const generateRequestSchema = z.object({
   customText: z.string().optional(),
   language: z.enum(['ru', 'en']).default('ru'),
   voiceId: z.string().optional(),
+  voiceGender: z.enum(['male', 'female']).optional(),
+  voiceProfile: z.enum(['confidence', 'calmness', 'mentor', 'coach', 'whisper']).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -17,9 +27,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = generateRequestSchema.parse(body);
 
-    const { tags, scenario, customText, language, voiceId } = validatedData;
+    const { tags, scenario, customText, language, voiceId, voiceGender, voiceProfile } = validatedData;
 
-    console.log('[Generate] Starting generation:', { scenario, tags, language });
+    console.log('[Generate] Starting generation:', { scenario, tags, language, voiceGender, voiceProfile });
 
     // Step 1: Generate affirmation text using LLM
     let generatedText: string;
@@ -36,18 +46,42 @@ export async function POST(request: NextRequest) {
       throw new Error(`LLM failed: ${llmError instanceof Error ? llmError.message : 'Unknown'}`);
     }
 
-    // Step 2: Convert text to speech using ElevenLabs
-    const defaultVoiceId = process.env.ELEVENLABS_DEFAULT_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
-    const voiceSettings = VOICE_PRESETS[scenario] || VOICE_PRESETS.morning;
+    // Step 2: Determine voice to use
+    // Priority: explicit voiceId > recommended voice for scenario+gender > default
+    let selectedVoiceId: string;
+
+    if (voiceId) {
+      // Use explicitly provided voice ID
+      selectedVoiceId = voiceId;
+      console.log('[Generate] Using explicit voiceId:', selectedVoiceId);
+    } else if (voiceGender) {
+      // Get recommended voice for this scenario and gender
+      const recommendedVoice = getRecommendedVoice(scenario as ScenarioType, voiceGender as VoiceGender);
+      selectedVoiceId = recommendedVoice.id;
+      console.log('[Generate] Using recommended voice:', recommendedVoice.name, 'for', scenario, voiceGender);
+    } else {
+      // Fallback to default
+      selectedVoiceId = process.env.ELEVENLABS_DEFAULT_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
+      console.log('[Generate] Using default voiceId:', selectedVoiceId);
+    }
+
+    // Step 3: Get voice settings for scenario with voice beautification profile
+    // Uses getVoiceSettingsForSession which applies profile modifiers on top of scenario presets
+    const voiceSettings = getVoiceSettingsForSession(
+      scenario as ScenarioType,
+      voiceProfile as VoiceProfile | undefined
+    );
+    console.log('[Generate] Voice settings with profile:', { voiceProfile, voiceSettings });
 
     let audioBuffer: ArrayBuffer;
 
+    // Step 4: Convert text to speech using ElevenLabs
     // Try eleven_v3 first, fallback to eleven_multilingual_v2
     try {
-      console.log('[Generate] Trying eleven_v3...');
+      console.log('[Generate] Trying eleven_v3 with voice:', selectedVoiceId);
       audioBuffer = await textToSpeech({
         text: generatedText,
-        voiceId: voiceId || defaultVoiceId,
+        voiceId: selectedVoiceId,
         voiceSettings,
         modelId: 'eleven_v3',
       });
@@ -64,7 +98,7 @@ export async function POST(request: NextRequest) {
       try {
         audioBuffer = await textToSpeech({
           text: textForV2,
-          voiceId: voiceId || defaultVoiceId,
+          voiceId: selectedVoiceId,
           voiceSettings,
           modelId: 'eleven_multilingual_v2',
         });

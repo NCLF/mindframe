@@ -18,6 +18,9 @@ import {
   Users,
   TrendingUp,
   Zap,
+  Sparkles,
+  Activity,
+  HeartPulse,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -34,8 +37,8 @@ export default function LandingPage() {
         </div>
 
         <div className="relative mx-auto max-w-4xl text-center">
-          <Badge variant="secondary" className="mb-6 bg-green-500/10 text-green-300 hover:bg-green-500/20">
-            <Users className="mr-1 h-3 w-3" />
+          <Badge variant="secondary" className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20">
+            <Activity className="mr-1 h-3 w-3" />
             {t('hero.badge')}
           </Badge>
 
@@ -104,7 +107,7 @@ export default function LandingPage() {
 
           <div className="grid gap-8 md:grid-cols-3">
             <FeatureCard
-              icon={<Mic2 className="h-8 w-8 text-purple-400" />}
+              icon={<Sparkles className="h-8 w-8 text-purple-400" />}
               title={t('features.voiceClone.title')}
               description={t('features.voiceClone.description')}
               highlighted
@@ -115,7 +118,7 @@ export default function LandingPage() {
               description={t('features.ai.description')}
             />
             <FeatureCard
-              icon={<Waves className="h-8 w-8 text-cyan-400" />}
+              icon={<Activity className="h-8 w-8 text-cyan-400" />}
               title={t('features.binaural.title')}
               description={t('features.binaural.description')}
             />
@@ -147,22 +150,22 @@ export default function LandingPage() {
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <ScenarioCard
-              icon={<Sun className="h-6 w-6" />}
+              icon={<Zap className="h-6 w-6" />}
               title={t('scenarios.morning.title')}
               description={t('scenarios.morning.description')}
               gradient="from-amber-500 to-orange-500"
             />
             <ScenarioCard
-              icon={<Briefcase className="h-6 w-6" />}
+              icon={<Target className="h-6 w-6" />}
               title={t('scenarios.anxiety.title')}
               description={t('scenarios.anxiety.description')}
-              gradient="from-green-500 to-emerald-500"
+              gradient="from-cyan-500 to-blue-500"
             />
             <ScenarioCard
-              icon={<Target className="h-6 w-6" />}
+              icon={<HeartPulse className="h-6 w-6" />}
               title={t('scenarios.focus.title')}
               description={t('scenarios.focus.description')}
-              gradient="from-blue-500 to-cyan-500"
+              gradient="from-green-500 to-emerald-500"
             />
             <ScenarioCard
               icon={<Moon className="h-6 w-6" />}

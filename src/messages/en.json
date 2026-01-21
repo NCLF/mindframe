@@ -1,14 +1,14 @@
 {
   "metadata": {
-    "title": "MindFrame - Affirmations in Your Voice",
-    "description": "AI creates personalized affirmations and voices them with your voice clone. Your brain can't critique its own voice."
+    "title": "MindFrame - Mental Utility for Peak Performance",
+    "description": "AI brain tuning tool. Neuro-sessions with an idealized version of your voice and binaural beats."
   },
   "landing": {
     "hero": {
-      "badge": "50,000+ users",
-      "title": "Your Voice Is the Most Powerful Tool",
-      "subtitle": "Your brain can't critique its own voice. AI creates personalized affirmations and voices them with your voice clone plus 40Hz binaural beats.",
-      "cta": "Try for Free",
+      "badge": "Neuro-Biohacking",
+      "title": "Tune Your Brain Like a Pro",
+      "subtitle": "Mental Utility for state management. AI creates personalized neuro-protocols and voices them with an idealized version of your voice.",
+      "cta": "Start Calibration",
       "ctaSecondary": "How It Works"
     },
     "stats": {
@@ -20,66 +20,66 @@
       "stressLabel": "faster stress relief"
     },
     "features": {
-      "title": "Why Your Own Voice Works Better",
+      "title": "Why It Works",
       "voiceClone": {
-        "title": "Your Voice Clone",
-        "description": "Record 30 seconds — AI creates a perfect copy. Your own voice bypasses psychological barriers and triggers maximum subconscious trust."
+        "title": "Idealized Voice",
+        "description": "Not just a clone — an enhanced version. More confident, deeper, calmer. Bypasses psychological barriers and triggers maximum trust."
       },
       "ai": {
-        "title": "Personalized Affirmations",
-        "description": "Neural network creates texts for your specific task: remove pre-meeting anxiety, boost productivity, or prepare for sleep."
+        "title": "Personal Neuro-Protocols",
+        "description": "AI creates programs for specific tasks: morning activation, evening deactivation, pre-work focus, stress recovery."
       },
       "binaural": {
-        "title": "40Hz Binaural Beats",
-        "description": "Gamma frequency activates your brain into the right state: focus, relaxation, or deep sleep. Scientifically proven effect."
+        "title": "Binaural Synchronization",
+        "description": "Gamma 40Hz for activation, Alpha 10Hz for focus, Theta 6Hz for relaxation. Hemisphere sync in 8-10 minutes."
       }
     },
     "science": {
-      "title": "The Science Behind It",
-      "point1": "Your brain can't critique its own voice — it's an evolutionary mechanism",
-      "point2": "Your own voice activates trust zones 3x stronger than others",
-      "point3": "Binaural beats synchronize brain hemispheres in 8-10 minutes"
+      "title": "Neuroscience Behind It",
+      "point1": "Your brain can't critique its own voice — evolutionary trust mechanism",
+      "point2": "Idealized voice activates trust zones 3x stronger",
+      "point3": "Binaural beats synchronize hemispheres for the desired state"
     },
     "scenarios": {
-      "title": "When to Use",
+      "title": "Brain Modes",
       "morning": {
-        "title": "Morning Protocol",
-        "description": "Dopamine activation for the entire day. Wake up with clarity and motivation."
+        "title": "Activation Mode",
+        "description": "Dopamine start to your day. Gamma 40Hz + energetic protocol. Clarity and drive."
       },
       "anxiety": {
-        "title": "Before Important Meeting",
-        "description": "Remove anxiety in 5 minutes. Enter negotiations with confidence."
+        "title": "Focus Mode",
+        "description": "Enter flow state. Alpha 10Hz + mentor voice. Effortless concentration."
       },
       "focus": {
-        "title": "Deep Work",
-        "description": "Flow state without distractions. Concentration for 2-3 hours."
+        "title": "Recovery Mode",
+        "description": "Reset stress in 5 minutes. Grounding techniques + calm voice."
       },
       "sleep": {
-        "title": "Sleep Preparation",
-        "description": "Transition to delta waves in 10 minutes. 92% report better sleep."
+        "title": "Deactivation Mode",
+        "description": "Transition to deep sleep. Theta 6Hz + whisper. 92% report better sleep."
       }
     },
     "pricing": {
       "title": "Pricing",
       "free": {
-        "name": "Free",
+        "name": "Calibration",
         "price": "0",
-        "features": ["3 generations", "Standard voice", "Basic scenarios"]
+        "features": ["3 neuro-sessions", "Standard voices", "Basic modes"]
       },
       "basic": {
         "name": "Basic",
         "price": "9.99",
-        "features": ["30 generations per month", "All scenarios", "Track library", "Voice selection"]
+        "features": ["30 sessions/month", "All Brain Modes", "Library", "Voice selection"]
       },
       "pro": {
         "name": "Pro",
         "price": "19.99",
-        "features": ["Unlimited generations", "Your voice clone", "Priority processing", "Personal settings"]
+        "features": ["Unlimited", "Your enhanced voice", "Hero's Path", "Gift-to-Friend"]
       }
     },
     "cta": {
-      "title": "Start with Free Generations",
-      "subtitle": "No card. No registration. Open in Telegram and try it now.",
+      "title": "Start Brain Calibration",
+      "subtitle": "No card. No registration. First 3 sessions free.",
       "button": "Open in Telegram"
     }
   },
@@ -90,22 +90,23 @@
     "save": "Save",
     "cancel": "Cancel",
     "continue": "Continue",
-    "back": "Back"
+    "back": "Back",
+    "generate": "Launch"
   },
   "app": {
     "nav": {
-      "generate": "Create",
+      "generate": "Session",
       "library": "Library",
       "settings": "Settings"
     },
     "generate": {
-      "title": "Create Affirmation",
-      "selectTags": "What to focus on?",
-      "selectScenario": "Select scenario",
+      "title": "Neuro-Session",
+      "selectTags": "Session Goal",
+      "selectScenario": "Select Brain Mode",
       "customInput": "Or describe your goal",
       "voiceInput": "Voice input",
-      "generateButton": "Create Affirmation",
-      "generating": "Creating your affirmation..."
+      "generateButton": "Launch Session",
+      "generating": "Building your neuro-session..."
     },
     "tags": {
       "concentration": "Focus",
@@ -120,36 +121,117 @@
       "focus": "Focus",
       "sport": "Sport"
     },
+    "scenarios": {
+      "morning": {
+        "title": "Activation",
+        "description": "Gamma 40Hz",
+        "time": "5-10 min"
+      },
+      "evening": {
+        "title": "Deactivation",
+        "description": "Theta 6Hz",
+        "time": "10-15 min"
+      },
+      "focus": {
+        "title": "Focus",
+        "description": "Alpha 10Hz",
+        "time": "5-7 min"
+      },
+      "sport": {
+        "title": "Energy",
+        "description": "Gamma 40Hz",
+        "time": "3-5 min"
+      },
+      "sos": {
+        "title": "SOS",
+        "description": "Grounding",
+        "time": "3-5 min"
+      }
+    },
+    "voiceProfiles": {
+      "title": "Voice Profile",
+      "confidence": {
+        "title": "Confidence",
+        "description": "Dynamic, authoritative"
+      },
+      "calmness": {
+        "title": "Calmness",
+        "description": "Smooth, soothing"
+      },
+      "mentor": {
+        "title": "Mentor",
+        "description": "Warm, wise"
+      },
+      "coach": {
+        "title": "Coach",
+        "description": "Energetic, motivating"
+      },
+      "whisper": {
+        "title": "Whisper",
+        "description": "ASMR, intimate"
+      }
+    },
     "player": {
-      "play": "Your Affirmation",
+      "play": "Your Neuro-Session",
       "pause": "Pause",
       "saveToLibrary": "Save",
       "share": "Share",
-      "newGeneration": "Create New"
+      "newGeneration": "New Session",
+      "binauralToggle": "Binaural Beats"
     },
     "library": {
-      "title": "My Library",
-      "empty": "Empty yet. Create your first affirmation!",
+      "title": "My Sessions",
+      "empty": "Empty yet. Launch your first neuro-session!",
       "favorites": "Favorites",
       "recent": "Recent"
     },
     "settings": {
       "title": "Settings",
       "language": "Language",
-      "voiceClone": "Voice Clone",
-      "voiceCloneDescription": "Record 30 seconds of your voice. Your voice triggers maximum subconscious trust.",
+      "voiceClone": "Your Voice",
+      "voiceCloneDescription": "Record 30-60 sec. AI will create an enhanced version — more confident and deeper.",
       "voiceCloneStatus": "Voice not recorded",
-      "voiceCloneReady": "Voice ready to use",
+      "voiceCloneReady": "Voice calibrated",
       "recordVoice": "Record Voice",
       "rerecordVoice": "Re-record",
+      "voiceProfile": "Voice Profile",
+      "voiceProfileDescription": "How should your enhanced voice sound?",
       "subscription": "Subscription",
       "currentPlan": "Current plan",
-      "upgrade": "Upgrade"
+      "upgrade": "Upgrade",
+      "binaural": "Binaural Beats",
+      "binauralDescription": "Brain hemisphere synchronization"
     },
     "limits": {
-      "reached": "Limit Reached",
-      "description": "You've used all free generations. Subscribe to continue.",
+      "reached": "Calibration Complete",
+      "description": "You've used all free sessions. Subscribe for full Mental Utility access.",
       "upgradeButton": "Choose Plan"
+    },
+    "onboarding": {
+      "welcome": {
+        "title": "Calibrate Your Mental Utility",
+        "subtitle": "3 steps to brain state control",
+        "cta": "Start Calibration"
+      },
+      "psychotype": {
+        "title": "Let's determine your profile",
+        "subtitle": "5 questions for personalization"
+      },
+      "voiceSetup": {
+        "title": "Create Your Voice",
+        "subtitle": "Record 30-60 seconds — AI will create an enhanced version",
+        "instruction": "Read this text aloud",
+        "sampleText": "I choose clarity of thought and calm. Every day I become stronger and more confident. My decisions lead me to my goals."
+      },
+      "profileSelect": {
+        "title": "Choose Voice Profile",
+        "subtitle": "How should the enhanced version sound?"
+      },
+      "complete": {
+        "title": "Calibration Complete",
+        "subtitle": "Your Mental Utility is ready",
+        "cta": "Launch First Session"
+      }
     }
   }
 }

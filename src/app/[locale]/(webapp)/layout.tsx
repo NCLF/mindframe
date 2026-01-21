@@ -1,8 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { useTelegram } from '@/hooks/useTelegram';
 import { BottomNav } from '@/components/BottomNav';
+import { getPreferences } from '@/lib/userPreferences';
 
 export default function WebAppLayout({
   children,
@@ -10,6 +13,25 @@ export default function WebAppLayout({
   children: React.ReactNode;
 }) {
   const { isTelegram, colorScheme, themeParams } = useTelegram();
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
+  const [isChecking, setIsChecking] = useState(true);
+
+  // Check onboarding status and redirect if needed
+  useEffect(() => {
+    const isOnboardingPage = pathname.includes('/onboarding');
+
+    if (!isOnboardingPage) {
+      const prefs = getPreferences();
+      if (!prefs.hasCompletedOnboarding) {
+        router.replace(`/${locale}/onboarding`);
+        return;
+      }
+    }
+
+    setIsChecking(false);
+  }, [pathname, locale, router]);
 
   // Apply Telegram theme colors as CSS variables
   useEffect(() => {
@@ -40,6 +62,25 @@ export default function WebAppLayout({
     }
   }, [isTelegram, themeParams]);
 
+  const isOnboardingPage = pathname.includes('/onboarding');
+
+  // Show loading while checking onboarding status
+  if (isChecking && !isOnboardingPage) {
+    return (
+      <div
+        className={`min-h-screen ${colorScheme === 'dark' ? 'dark' : ''}`}
+        style={{
+          backgroundColor: themeParams?.bg_color || (colorScheme === 'dark' ? '#1a1a1a' : '#ffffff'),
+          color: themeParams?.text_color || (colorScheme === 'dark' ? '#ffffff' : '#000000'),
+        }}
+      >
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`min-h-screen ${colorScheme === 'dark' ? 'dark' : ''}`}
@@ -51,7 +92,7 @@ export default function WebAppLayout({
       <main className="container mx-auto max-w-lg px-4 pb-24 pt-6">
         {children}
       </main>
-      <BottomNav />
+      {!isOnboardingPage && <BottomNav />}
     </div>
   );
 }

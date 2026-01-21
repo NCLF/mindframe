@@ -7,6 +7,198 @@ const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
 // Default model - eleven_v3 is the latest expressive model
 export const DEFAULT_MODEL = 'eleven_v3';
 
+// ============ Voice Types ============
+export type VoiceGender = 'male' | 'female';
+export type VoiceAge = 'young' | 'middle' | 'mature';
+export type ScenarioType = 'morning' | 'evening' | 'focus' | 'sport' | 'sos';
+
+// ============ Voice Beautification (Neuro-Biohacking Core Feature) ============
+// "Idealized Voice" - not just cloning, but enhancing the voice
+// User hears a more confident, calm, or mentor-like version of their voice
+export type VoiceProfile = 'confidence' | 'calmness' | 'mentor' | 'coach' | 'whisper';
+
+export interface VoiceProfileModifiers {
+  stability: number;    // -0.3 to +0.3 adjustment
+  similarity: number;   // -0.3 to +0.3 adjustment
+  style: number;        // -0.3 to +0.3 adjustment
+}
+
+export interface VoiceProfileOption {
+  id: VoiceProfile;
+  name: string;
+  nameRu: string;
+  description: string;
+  descriptionRu: string;
+  icon: string; // Lucide icon name
+  modifiers: VoiceProfileModifiers;
+}
+
+// Voice Beautification Profiles
+// These modify the base voice settings to create an "idealized" version
+export const BEAUTIFICATION_PROFILES: VoiceProfileOption[] = [
+  {
+    id: 'confidence',
+    name: 'Confidence',
+    nameRu: 'Уверенность',
+    description: 'Dynamic, authoritative voice. Ideal for morning activation.',
+    descriptionRu: 'Динамичный, авторитетный голос. Идеален для утренней активации.',
+    icon: 'Zap',
+    modifiers: { stability: -0.15, similarity: 0, style: 0.2 },
+  },
+  {
+    id: 'calmness',
+    name: 'Calmness',
+    nameRu: 'Спокойствие',
+    description: 'Smooth, soothing voice. Perfect for evening deactivation.',
+    descriptionRu: 'Плавный, успокаивающий голос. Идеален для вечерней деактивации.',
+    icon: 'Moon',
+    modifiers: { stability: 0.2, similarity: 0.1, style: -0.2 },
+  },
+  {
+    id: 'mentor',
+    name: 'Mentor',
+    nameRu: 'Ментор',
+    description: 'Warm, wise voice. Like guidance from an experienced coach.',
+    descriptionRu: 'Тёплый, мудрый голос. Как наставление опытного коуча.',
+    icon: 'GraduationCap',
+    modifiers: { stability: 0.1, similarity: -0.1, style: 0.1 },
+  },
+  {
+    id: 'coach',
+    name: 'Coach',
+    nameRu: 'Тренер',
+    description: 'Energetic, pushing voice. For sport and action.',
+    descriptionRu: 'Энергичный, подталкивающий голос. Для спорта и действий.',
+    icon: 'Dumbbell',
+    modifiers: { stability: -0.1, similarity: 0, style: 0.3 },
+  },
+  {
+    id: 'whisper',
+    name: 'Whisper',
+    nameRu: 'Шёпот',
+    description: 'ASMR-like intimate voice. Deep relaxation and sleep.',
+    descriptionRu: 'Интимный голос в стиле ASMR. Глубокое расслабление и сон.',
+    icon: 'Wind',
+    modifiers: { stability: 0.3, similarity: 0.1, style: -0.3 },
+  },
+];
+
+// Get profile by ID
+export function getVoiceProfile(profileId: VoiceProfile): VoiceProfileOption {
+  return BEAUTIFICATION_PROFILES.find(p => p.id === profileId) || BEAUTIFICATION_PROFILES[0];
+}
+
+// Recommended profile for each scenario
+export const SCENARIO_PROFILE_MAP: Record<ScenarioType, VoiceProfile> = {
+  morning: 'confidence',
+  evening: 'calmness',
+  focus: 'mentor',
+  sport: 'coach',
+  sos: 'calmness',
+};
+
+export interface VoiceOption {
+  id: string;
+  name: string;
+  nameRu: string;
+  gender: VoiceGender;
+  age: VoiceAge;
+  description: string;
+  descriptionRu: string;
+}
+
+// ============ Predefined Voices by Gender/Age ============
+// Using ElevenLabs standard library voices optimized for Russian
+export const VOICE_OPTIONS: VoiceOption[] = [
+  // Female voices
+  {
+    id: '21m00Tcm4TlvDq8ikWAM',
+    name: 'Rachel',
+    nameRu: 'Рейчел',
+    gender: 'female',
+    age: 'young',
+    description: 'Calm, warm voice. Perfect for meditation and evening sessions.',
+    descriptionRu: 'Спокойный, тёплый голос. Идеален для медитации и вечерних сессий.',
+  },
+  {
+    id: 'EXAVITQu4vr4xnSDxMaL',
+    name: 'Bella',
+    nameRu: 'Белла',
+    gender: 'female',
+    age: 'young',
+    description: 'Energetic, inspiring voice. Great for morning motivation.',
+    descriptionRu: 'Энергичный, вдохновляющий голос. Отлично для утренней мотивации.',
+  },
+  {
+    id: 'MF3mGyEYCl7XYWbV9V6O',
+    name: 'Elli',
+    nameRu: 'Элли',
+    gender: 'female',
+    age: 'middle',
+    description: 'Confident, clear voice. Ideal for focus and work sessions.',
+    descriptionRu: 'Уверенный, чёткий голос. Идеален для концентрации и работы.',
+  },
+  // Male voices
+  {
+    id: 'pNInz6obpgDQGcFmaJgB',
+    name: 'Adam',
+    nameRu: 'Адам',
+    gender: 'male',
+    age: 'middle',
+    description: 'Deep, authoritative voice. Strong for affirmations.',
+    descriptionRu: 'Глубокий, авторитетный голос. Сильный для аффирмаций.',
+  },
+  {
+    id: 'ErXwobaYiN019PkySvjV',
+    name: 'Antoni',
+    nameRu: 'Антони',
+    gender: 'male',
+    age: 'young',
+    description: 'Friendly, warm voice. Great for daily practice.',
+    descriptionRu: 'Дружелюбный, тёплый голос. Отлично для ежедневной практики.',
+  },
+  {
+    id: 'VR6AewLTigWG4xSOukaG',
+    name: 'Arnold',
+    nameRu: 'Арнольд',
+    gender: 'male',
+    age: 'mature',
+    description: 'Powerful, motivating voice. Perfect for sport and action.',
+    descriptionRu: 'Мощный, мотивирующий голос. Идеален для спорта и действий.',
+  },
+  {
+    id: 'TxGEqnHWrfWFTfGW9XjX',
+    name: 'Josh',
+    nameRu: 'Джош',
+    gender: 'male',
+    age: 'young',
+    description: 'Calm, soothing voice. Good for relaxation.',
+    descriptionRu: 'Спокойный, успокаивающий голос. Хорош для расслабления.',
+  },
+];
+
+// Get voices filtered by gender
+export function getVoicesByGender(gender: VoiceGender): VoiceOption[] {
+  return VOICE_OPTIONS.filter(v => v.gender === gender);
+}
+
+// Get recommended voice for scenario and gender
+export function getRecommendedVoice(scenario: ScenarioType, gender: VoiceGender): VoiceOption {
+  const voicesByGender = getVoicesByGender(gender);
+
+  // Recommendations based on scenario
+  const recommendations: Record<ScenarioType, { female: string; male: string }> = {
+    morning: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'ErXwobaYiN019PkySvjV' }, // Bella/Antoni - energetic
+    evening: { female: '21m00Tcm4TlvDq8ikWAM', male: 'TxGEqnHWrfWFTfGW9XjX' }, // Rachel/Josh - calm
+    focus: { female: 'MF3mGyEYCl7XYWbV9V6O', male: 'pNInz6obpgDQGcFmaJgB' }, // Elli/Adam - confident
+    sport: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'VR6AewLTigWG4xSOukaG' }, // Bella/Arnold - powerful
+    sos: { female: '21m00Tcm4TlvDq8ikWAM', male: 'pNInz6obpgDQGcFmaJgB' }, // Rachel/Adam - grounding
+  };
+
+  const recommendedId = recommendations[scenario][gender];
+  return voicesByGender.find(v => v.id === recommendedId) || voicesByGender[0];
+}
+
 export interface VoiceSettings {
   stability: number; // 0-1, higher = more stable, lower = more emotional
   similarity_boost: number; // 0-1, how closely to match the original voice
@@ -14,45 +206,87 @@ export interface VoiceSettings {
   use_speaker_boost?: boolean;
 }
 
-// Voice settings presets for different scenarios
-export const VOICE_PRESETS: Record<string, VoiceSettings> = {
+// ============ Scenario-based Voice Settings ============
+// Detailed settings for tempo, intonation, emotion per scenario
+export const VOICE_PRESETS: Record<ScenarioType, VoiceSettings> = {
+  // Morning: Energetic, uplifting, moderate pace
+  // Lower stability = more expression, higher style = more energy
   morning: {
-    stability: 0.5,
-    similarity_boost: 0.8,
-    style: 0.7,
+    stability: 0.45,        // More expressive
+    similarity_boost: 0.75,
+    style: 0.65,            // Energetic style
     use_speaker_boost: true,
   },
+  // Evening: Calm, soothing, slow pace
+  // Higher stability = calmer, lower style = subdued
   evening: {
-    stability: 0.8,
-    similarity_boost: 0.85,
-    style: 0.2,
+    stability: 0.85,        // Very stable, calming
+    similarity_boost: 0.80,
+    style: 0.15,            // Minimal style, peaceful
     use_speaker_boost: false,
   },
+  // Focus: Clear, confident, steady pace
+  // Balanced settings for clarity
   focus: {
-    stability: 0.7,
-    similarity_boost: 0.8,
-    style: 0.5,
+    stability: 0.65,        // Clear but not monotone
+    similarity_boost: 0.80,
+    style: 0.40,            // Moderate emphasis
     use_speaker_boost: true,
   },
+  // Sport: Aggressive, powerful, fast pace
+  // Low stability = max expression, high style = intensity
   sport: {
-    stability: 0.3,
-    similarity_boost: 0.75,
-    style: 0.9,
+    stability: 0.30,        // Maximum expression
+    similarity_boost: 0.70,
+    style: 0.85,            // High intensity
     use_speaker_boost: true,
   },
+  // SOS: Grounding, reassuring, steady
+  // Balanced for calmness with slight warmth
   sos: {
-    stability: 0.7,
-    similarity_boost: 0.8,
-    style: 0.4,
+    stability: 0.70,        // Grounding stability
+    similarity_boost: 0.80,
+    style: 0.35,            // Warm but not overly expressive
     use_speaker_boost: true,
   },
 };
+
+// Apply voice beautification profile to base settings
+// Returns modified settings with profile modifiers applied
+export function applyVoiceBeautification(
+  baseSettings: VoiceSettings,
+  profile: VoiceProfile
+): VoiceSettings {
+  const profileData = getVoiceProfile(profile);
+  const { modifiers } = profileData;
+
+  // Clamp values between 0 and 1
+  const clamp = (val: number) => Math.max(0, Math.min(1, val));
+
+  return {
+    stability: clamp(baseSettings.stability + modifiers.stability),
+    similarity_boost: clamp(baseSettings.similarity_boost + modifiers.similarity),
+    style: clamp((baseSettings.style ?? 0.5) + modifiers.style),
+    use_speaker_boost: baseSettings.use_speaker_boost,
+  };
+}
+
+// Get combined voice settings for scenario + profile
+export function getVoiceSettingsForSession(
+  scenario: ScenarioType,
+  profile?: VoiceProfile
+): VoiceSettings {
+  const baseSettings = VOICE_PRESETS[scenario];
+  const effectiveProfile = profile ?? SCENARIO_PROFILE_MAP[scenario];
+  return applyVoiceBeautification(baseSettings, effectiveProfile);
+}
 
 export interface TextToSpeechOptions {
   text: string;
   voiceId: string;
   modelId?: string;
   voiceSettings?: VoiceSettings;
+  voiceProfile?: VoiceProfile; // Optional: apply beautification profile
 }
 
 /**

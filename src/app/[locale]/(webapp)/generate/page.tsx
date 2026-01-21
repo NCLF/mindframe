@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { ShareModal } from '@/components/ShareModal';
+import { getPreferences, initPreferencesFromTelegram, type UserPreferences } from '@/lib/userPreferences';
 
 // Available tags with icons
 const TAGS = [
@@ -36,14 +37,6 @@ const TAGS = [
   { id: 'creativity', icon: Palette, color: 'text-purple-400' },
   { id: 'sleep', icon: BedDouble, color: 'text-indigo-400' },
   { id: 'motivation', icon: Sparkles, color: 'text-emerald-400' },
-] as const;
-
-// Available scenarios
-const SCENARIOS = [
-  { id: 'morning', icon: Sun, gradient: 'from-amber-500 to-orange-500', bg: 'bg-amber-500/10' },
-  { id: 'evening', icon: Moon, gradient: 'from-indigo-500 to-purple-500', bg: 'bg-indigo-500/10' },
-  { id: 'focus', icon: Brain, gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-500/10' },
-  { id: 'sport', icon: Dumbbell, gradient: 'from-red-500 to-pink-500', bg: 'bg-red-500/10' },
 ] as const;
 
 type GenerationStep = 'tags' | 'scenario' | 'generating' | 'result' | 'error';
@@ -66,7 +59,7 @@ const stripPauseTags = (text: string): string => {
 export default function GeneratePage() {
   const t = useTranslations('app');
   const tCommon = useTranslations('common');
-  const { haptic, webApp } = useTelegram();
+  const { haptic, webApp, user } = useTelegram();
 
   const [step, setStep] = useState<GenerationStep>('tags');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -76,6 +69,19 @@ export default function GeneratePage() {
   const [error, setError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
+
+  // Load user preferences on mount
+  useEffect(() => {
+    let prefs = getPreferences();
+
+    // Try to detect gender from Telegram user
+    if (user && !prefs.userGender) {
+      prefs = initPreferencesFromTelegram(user);
+    }
+
+    setPreferences(prefs);
+  }, [user]);
 
   // Save to localStorage
   const handleSave = () => {
@@ -145,6 +151,9 @@ export default function GeneratePage() {
           tags: selectedTags,
           scenario: selectedScenario,
           language: 'ru',
+          voiceId: preferences?.clonedVoiceId || preferences?.selectedVoiceId,
+          voiceGender: preferences?.voiceGender,
+          voiceProfile: preferences?.voiceProfile,
         }),
       });
 

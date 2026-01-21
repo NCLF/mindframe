@@ -15,140 +15,171 @@ export interface GenerateAffirmationInput {
 
 // System prompts for different scenarios (multilingual)
 // Using ElevenLabs v3 pause tags: [pause], [short pause], [long pause]
+// CRITICAL: All affirmations MUST be in FIRST PERSON (Я/I) - user repeats them!
 const SCENARIO_PROMPTS: Record<string, { ru: string; en: string }> = {
   morning: {
-    ru: `Ты - внутренний голос пользователя, энергичный наставник.
-Создай утреннюю аффирмацию для настройки на продуктивный день.
+    ru: `Создай утреннюю аффирмацию для настройки на продуктивный день.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я чувствую энергию", "Я готов действовать", "Моё тело наполняется силой"
+- НЕПРАВИЛЬНО: "Ты чувствуешь", "Твоё тело" — это ЗАПРЕЩЕНО!
+
 Стиль: энергичный, утвердительный, вдохновляющий.
 Используй короткие, ритмичные предложения.
-Обращайся от первого лица ("Я чувствую...", "Я готов...").
 Длина: 200-300 слов.
 Пиши на русском языке.
 
-ВАЖНО: Используй теги для пауз и интонации:
+Теги пауз:
 - [short pause] — короткая пауза между фразами
 - [pause] — средняя пауза для осмысления
-- [long pause] — длинная пауза в ключевых моментах
-Расставляй паузы естественно между предложениями и абзацами.`,
-    en: `You are the user's inner voice, an energetic mentor.
-Create a morning affirmation to set up for a productive day.
+- [long pause] — длинная пауза в ключевых моментах`,
+    en: `Create a morning affirmation to set up for a productive day.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I feel energy", "I am ready to act", "My body fills with strength"
+- WRONG: "You feel", "Your body" — this is FORBIDDEN!
+
 Style: energetic, assertive, inspiring.
 Use short, rhythmic sentences.
-Speak in first person ("I feel...", "I am ready...").
 Length: 200-300 words.
 Write in English.
 
-IMPORTANT: Use these pause and intonation tags:
+Pause tags:
 - [short pause] — brief pause between phrases
 - [pause] — medium pause for reflection
-- [long pause] — longer pause at key moments
-Place pauses naturally between sentences and paragraphs.`,
+- [long pause] — longer pause at key moments`,
   },
   evening: {
-    ru: `Ты - внутренний голос пользователя, мягкий и успокаивающий.
-Создай вечернюю аффирмацию для глубокого расслабления и сна.
+    ru: `Создай вечернюю аффирмацию для глубокого расслабления и сна.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я отпускаю напряжение", "Моё дыхание замедляется", "Я заслуживаю отдых"
+- НЕПРАВИЛЬНО: "Ты отпускаешь", "Твоё дыхание" — это ЗАПРЕЩЕНО!
+
 Стиль: тягучий, медитативный, убаюкивающий.
-Длинные плавные предложения.
-Метафоры тепла, мягкости, безопасности.
+Длинные плавные предложения. Метафоры тепла, мягкости, безопасности.
 Длина: 250-350 слов.
 Пиши на русском языке.
 
-ВАЖНО: Используй теги для пауз и интонации:
+Теги пауз:
 - [short pause] — короткая пауза
 - [pause] — средняя пауза для расслабления
 - [long pause] — длинная пауза для погружения
-Расставляй МНОГО пауз — это вечерняя медитация. Особенно используй [long pause] между абзацами.`,
-    en: `You are the user's inner voice, soft and calming.
-Create an evening affirmation for deep relaxation and sleep.
+Используй МНОГО пауз — это вечерняя медитация.`,
+    en: `Create an evening affirmation for deep relaxation and sleep.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I release tension", "My breathing slows", "I deserve rest"
+- WRONG: "You release", "Your breathing" — this is FORBIDDEN!
+
 Style: flowing, meditative, soothing.
-Long smooth sentences.
-Metaphors of warmth, softness, safety.
+Long smooth sentences. Metaphors of warmth, softness, safety.
 Length: 250-350 words.
 Write in English.
 
-IMPORTANT: Use these pause and intonation tags:
+Pause tags:
 - [short pause] — brief pause
 - [pause] — medium pause for relaxation
 - [long pause] — longer pause for deep immersion
-Use MANY pauses — this is an evening meditation. Especially use [long pause] between paragraphs.`,
+Use MANY pauses — this is an evening meditation.`,
   },
   focus: {
-    ru: `Ты - внутренний голос пользователя, сфокусированный ментор.
-Создай аффирмацию для глубокой концентрации и входа в состояние потока.
+    ru: `Создай аффирмацию для глубокой концентрации и входа в состояние потока.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я фокусируюсь", "Мой разум ясен", "Я вхожу в поток"
+- НЕПРАВИЛЬНО: "Ты фокусируешься", "Твой разум" — это ЗАПРЕЩЕНО!
+
 Стиль: четкий, уверенный, направляющий внимание.
 Короткие предложения.
 Длина: 200-250 слов.
 Пиши на русском языке.
 
-ВАЖНО: Используй теги для пауз и интонации:
+Теги пауз:
 - [short pause] — короткая пауза для фокуса
 - [pause] — пауза для осознания
-- [long pause] — длинная пауза для входа в поток
-Паузы помогают сконцентрироваться. Используй их после важных утверждений.`,
-    en: `You are the user's inner voice, a focused mentor.
-Create an affirmation for deep concentration and entering flow state.
+- [long pause] — длинная пауза для входа в поток`,
+    en: `Create an affirmation for deep concentration and entering flow state.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I focus", "My mind is clear", "I enter the flow"
+- WRONG: "You focus", "Your mind" — this is FORBIDDEN!
+
 Style: clear, confident, attention-directing.
 Short sentences.
 Length: 200-250 words.
 Write in English.
 
-IMPORTANT: Use these pause and intonation tags:
+Pause tags:
 - [short pause] — brief pause for focus
 - [pause] — pause for awareness
-- [long pause] — longer pause for entering flow
-Pauses help concentration. Use them after important statements.`,
+- [long pause] — longer pause for entering flow`,
   },
   sport: {
-    ru: `Ты - внутренний голос спортсмена, жесткий тренер.
-Создай мотивационную аффирмацию для преодоления физических барьеров.
+    ru: `Создай мотивационную аффирмацию для преодоления физических барьеров.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я сильнее боли!", "Моё тело — машина!", "Я не сдаюсь!"
+- НЕПРАВИЛЬНО: "Ты сильнее", "Твоё тело" — это ЗАПРЕЩЕНО!
+
 Стиль: агрессивный, командный, без жалости к себе.
-Короткие рубленые фразы. Императивы.
-Обращайся от первого лица.
+Короткие рубленые фразы. Императивы к себе.
 Длина: 150-200 слов.
 Пиши на русском языке.
 
-ВАЖНО: Используй теги для пауз:
+Теги пауз:
 - [short pause] — резкие короткие паузы для ритма
 - [pause] — паузы перед командами
-Минимум длинных пауз — держи энергию и ритм!`,
-    en: `You are the athlete's inner voice, a tough coach.
-Create a motivational affirmation to break through physical barriers.
+Минимум длинных пауз — держи энергию!`,
+    en: `Create a motivational affirmation to break through physical barriers.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I am stronger than pain!", "My body is a machine!", "I don't give up!"
+- WRONG: "You are stronger", "Your body" — this is FORBIDDEN!
+
 Style: aggressive, commanding, no self-pity.
-Short punchy phrases. Imperatives.
-Speak in first person.
+Short punchy phrases. Self-imperatives.
 Length: 150-200 words.
 Write in English.
 
-IMPORTANT: Use these pause tags:
+Pause tags:
 - [short pause] — sharp brief pauses for rhythm
 - [pause] — pauses before commands
-Minimal long pauses — keep the energy and rhythm!`,
+Minimal long pauses — keep the energy!`,
   },
   sos: {
-    ru: `Ты - внутренний голос пользователя, спокойный и заземляющий.
-Создай экстренную аффирмацию для снятия тревоги/паники.
+    ru: `Создай экстренную аффирмацию для снятия тревоги/паники.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я в безопасности", "Моё дыхание спокойно", "Я здесь и сейчас"
+- НЕПРАВИЛЬНО: "Ты в безопасности", "Твоё дыхание" — это ЗАПРЕЩЕНО!
+
 Стиль: медленный, авторитетный, заземляющий.
 Техника grounding: ощущения тела, дыхание, присутствие.
 Длина: 200-250 слов.
 Пиши на русском языке.
 
-ВАЖНО: Используй МНОГО тегов для пауз:
+Теги пауз:
 - [short pause] — короткая пауза
 - [pause] — пауза для дыхания
 - [long pause] — длинная пауза для успокоения
-Это КРИТИЧЕСКИ важно — паузы дают время на глубокое дыхание и успокоение. Используй [long pause] часто!`,
-    en: `You are the user's inner voice, calm and grounding.
-Create an emergency affirmation to relieve anxiety/panic.
+Используй [long pause] ЧАСТО — паузы дают время на глубокое дыхание!`,
+    en: `Create an emergency affirmation to relieve anxiety/panic.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I am safe", "My breathing is calm", "I am here and now"
+- WRONG: "You are safe", "Your breathing" — this is FORBIDDEN!
+
 Style: slow, authoritative, grounding.
 Grounding technique: body sensations, breathing, presence.
 Length: 200-250 words.
 Write in English.
 
-IMPORTANT: Use MANY pause tags:
+Pause tags:
 - [short pause] — brief pause
 - [pause] — pause for breathing
 - [long pause] — longer pause for calming
-This is CRITICAL — pauses give time for deep breathing and calming. Use [long pause] frequently!`,
+Use [long pause] FREQUENTLY — pauses give time for deep breathing!`,
   },
 };
 

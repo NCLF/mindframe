@@ -69,60 +69,61 @@ const VOICE_SETTINGS = {
 // - Morning = male voice - energetic, confident
 // - Evening = female voice - calm, soothing
 // - RU = Russian text, EN = English text
+// IMPORTANT: All affirmations in FIRST PERSON (Я/I) - user repeats them!
 const SAMPLES = {
-  // Russian samples
+  // Russian samples (FIRST PERSON)
   morning_ru: {
     scenario: 'morning' as const,
     voiceId: VOICE_IDS.male_ru,
     locale: 'ru',
     text: `Доброе утро! [short pause] Новый день! Новые возможности!
 [pause]
-Ты чувствуешь мощную энергию внутри себя!
+Я чувствую мощную энергию внутри себя!
 [short pause]
-Сила! Решимость! Уверенность!
+Я полон силы! Решимости! Уверенности!
 [pause]
-Сегодня ты сделаешь мощный шаг к своим целям!
+Сегодня я сделаю мощный шаг к своим целям!
 [short pause]
-Действуй! Ты способен на великое!`,
+Я действую! Я способен на великое!`,
   },
   evening_ru: {
     scenario: 'evening' as const,
     voiceId: VOICE_IDS.female_ru,
     locale: 'ru',
-    text: `Вечер. [pause] Время отпустить всё напряжение дня.
+    text: `Вечер. [pause] Я отпускаю всё напряжение дня.
 [long pause]
-Твоё дыхание становится глубже и спокойнее.
+Моё дыхание становится глубже и спокойнее.
 [pause]
-Каждый выдох уносит усталость. [short pause] Ты заслужил этот отдых.
+Каждый выдох уносит усталость. [short pause] Я заслужила этот отдых.
 [pause]
-Позволь себе расслабиться полностью.`,
+Я позволяю себе расслабиться полностью.`,
   },
-  // English samples
+  // English samples (FIRST PERSON)
   morning_en: {
     scenario: 'morning' as const,
     voiceId: VOICE_IDS.male_en,
     locale: 'en',
     text: `Good morning! [short pause] A new day! New opportunities!
 [pause]
-You feel powerful energy rising within you!
+I feel powerful energy rising within me!
 [short pause]
-Strength! Determination! Confidence!
+I am full of strength! Determination! Confidence!
 [pause]
-Today you will take a powerful step towards your goals!
+Today I will take a powerful step towards my goals!
 [short pause]
-Act now! You are capable of greatness!`,
+I act now! I am capable of greatness!`,
   },
   evening_en: {
     scenario: 'evening' as const,
     voiceId: VOICE_IDS.female_en,
     locale: 'en',
-    text: `Evening has come. [pause] Time to release all the tension of the day.
+    text: `Evening has come. [pause] I release all the tension of the day.
 [long pause]
-Your breathing becomes deeper and calmer.
+My breathing becomes deeper and calmer.
 [pause]
-Each exhale carries away fatigue. [short pause] You deserve this rest.
+Each exhale carries away fatigue. [short pause] I deserve this rest.
 [pause]
-Allow yourself to relax completely.`,
+I allow myself to relax completely.`,
   },
 };
 

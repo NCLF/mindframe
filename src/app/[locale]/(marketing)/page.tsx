@@ -447,7 +447,10 @@ const Hero = () => {
                 className="block"
               />
               <span className="block mt-2 text-green-500">
-                {t('hero.titlePart2')}
+                <GlitchText
+                  text={t('hero.titlePart2')}
+                  className=""
+                />
               </span>
             </h1>
 
@@ -1310,18 +1313,6 @@ const Pricing = () => {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 text-center"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 border border-zinc-800 bg-zinc-900/50 font-mono text-xs text-zinc-400">
-            <span className="w-2 h-2 bg-green-500 rounded-full" />
-            7-DAY MONEY-BACK GUARANTEE • NO QUESTIONS ASKED
-          </div>
-        </motion.div>
       </div>
     </section>
   );
@@ -1374,7 +1365,7 @@ const Footer = () => {
             </span>
             <span className="text-zinc-600">|</span>
             <span className="font-mono text-xs text-zinc-600">
-              © 2024
+              © 2026
             </span>
           </div>
 

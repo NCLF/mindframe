@@ -19,7 +19,7 @@ import { getBinauralForScenario } from '@/lib/audio/binaural';
 // Request validation schema
 const generateRequestSchema = z.object({
   tags: z.array(z.string()).min(1),
-  scenario: z.enum(['morning', 'evening', 'focus', 'sport', 'sos']),
+  scenario: z.enum(['morning', 'evening', 'focus', 'sport', 'sos', 'diamond_hands', 'fomo_killer', 'market_close']),
   customText: z.string().optional(),
   language: z.enum(['ru', 'en']).default('ru'),
   voiceId: z.string().optional(),

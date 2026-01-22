@@ -68,10 +68,10 @@ export default function WebAppLayout({
   if (isChecking && !isOnboardingPage) {
     return (
       <div
-        className={`min-h-screen ${colorScheme === 'dark' ? 'dark' : ''}`}
+        className="min-h-screen dark"
         style={{
-          backgroundColor: themeParams?.bg_color || (colorScheme === 'dark' ? '#1a1a1a' : '#ffffff'),
-          color: themeParams?.text_color || (colorScheme === 'dark' ? '#ffffff' : '#000000'),
+          backgroundColor: '#0f172a',
+          color: '#ffffff',
         }}
       >
         <div className="flex min-h-screen items-center justify-center">
@@ -83,10 +83,10 @@ export default function WebAppLayout({
 
   return (
     <div
-      className={`min-h-screen ${colorScheme === 'dark' ? 'dark' : ''}`}
+      className="min-h-screen dark"
       style={{
-        backgroundColor: themeParams?.bg_color || (colorScheme === 'dark' ? '#1a1a1a' : '#ffffff'),
-        color: themeParams?.text_color || (colorScheme === 'dark' ? '#ffffff' : '#000000'),
+        backgroundColor: '#0f172a',
+        color: '#ffffff',
       }}
     >
       <main className="container mx-auto max-w-lg px-4 pb-24 pt-6">

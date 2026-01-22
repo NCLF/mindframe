@@ -1,160 +1,232 @@
 {
   "metadata": {
-    "title": "MindFrame - Mental Utility for Peak Performance",
-    "description": "AI brain tuning tool. Neuro-sessions with an idealized version of your voice and binaural beats."
+    "title": "MindFrame Terminal - Emotional Hedging Protocol for Traders",
+    "description": "Risk Management Software. AI helps manage Tilt and FOMO through binaural modulation."
   },
   "landing": {
     "hero": {
-      "badge": "Neuro-Protocol Engine",
-      "titlePart1": "Engineering Control of",
-      "titlePart2": "Your Mental State",
-      "title": "Mental Utility for Peak Performance",
-      "subtitle": "Personal neuro-protocol. AI synthesizes your 'ideal voice' and overlays it on binaural beats for instant brain state modulation.",
-      "cta": "Launch Neuro-Protocol",
+      "badge": "Emotional Hedging Protocol",
+      "titlePart1": "YOUR BIGGEST RISK",
+      "titlePart2": "IS YOU",
+      "title": "Risk Management for Your Brain",
+      "subtitle": "The first emotional hedging protocol for traders. AI helps manage Tilt and FOMO through binaural modulation.",
+      "cta": "HEDGE YOUR DEPOSIT",
+      "ctaSubtext": "Free Demo Available",
       "ctaSecondary": "How It Works",
-      "benefit1": "Stress Relief",
-      "benefit2": "Energy & Focus",
+      "benefit1": "Anti-Tilt",
+      "benefit2": "Diamond Hands",
       "benefit3": "Deep Sleep",
-      "socialProofNumber": "Beta Access",
-      "socialProofText": "Available for the first 1000 users"
+      "socialProofNumber": "Beta",
+      "socialProofText": "For the first 500 traders"
     },
     "stats": {
-      "users": "50,000+",
-      "usersLabel": "users",
-      "sleepImprovement": "92%",
-      "sleepLabel": "sleep improvement",
+      "users": "500+",
+      "usersLabel": "traders",
+      "sleepImprovement": "73%",
+      "sleepLabel": "fewer tilt trades",
       "stressReduction": "3x",
-      "stressLabel": "faster stress relief",
+      "stressLabel": "faster recovery",
       "personalizationLabel": "personalization"
     },
     "problem": {
-      "title": "Hacking Perception",
-      "titleHighlight": "Filters",
-      "badTitle": "Rejection Effect",
-      "bad1": "External voice (coach, narrator) is perceived as outside advisor.",
-      "bad2": "Critical thinking filters out 80% of suggestions.",
-      "badWaveText": "Perception Block",
-      "goodTitle": "Resonance Effect (Voice 2.0)",
-      "good1Title": "Enhanced Profile",
-      "good1": "AI removes notes of uncertainty, adds depth. Subconscious recognizes voice as inner monologue.",
-      "good2Title": "Binaural Modulation",
-      "good2": "Gamma, Theta, Alpha rhythms synchronize hemispheres in 8-10 minutes.",
-      "goodWaveText": "Command Accepted"
+      "title": "The Market Punishes",
+      "titleHighlight": "Emotions",
+      "badTitle": "REVENGE TRADE (Tilt)",
+      "bad1": "Got stopped out at -5%? Pulse at 120, you open x20 leverage to 'get it back'. Result: Liquidation.",
+      "bad2": "Price drops 2% on correction. You panic sell the bottom before the pump. Result: Missed gains.",
+      "badWaveText": "WEAK HANDS",
+      "goodTitle": "OVERTRADING (Boredom)",
+      "good1Title": "Flat market, but you hunt for trades",
+      "good1": "Burning your deposit on fees and stupid entries. Result: Slow portfolio death.",
+      "good2Title": "Insight",
+      "good2": "95% of traders lose not because of bad strategy. They can't control brain biochemistry under stress.",
+      "goodWaveText": "Fact"
+    },
+    "solution": {
+      "badge": "Risk Management Software",
+      "title": "This Is Not Meditation.",
+      "titleHighlight": "This Is Deposit Insurance.",
+      "description": "MindFrame is a 'red button' for your brain. When you lose control — launch the protocol.",
+      "step1": {
+        "title": "Frequency Shift",
+        "description": "Binaural beats switch brain from High-Beta (panic) to Alpha/Theta. In 3 minutes you physically won't be able to stress."
+      },
+      "step2": {
+        "title": "Whale Voice",
+        "description": "AI generates an authoritative voice with lowered timbre — the voice of someone who manages billions. Subconscious obeys."
+      },
+      "step3": {
+        "title": "Contextual Scripts",
+        "description": "Not mantras. Hard commands: 'Accept the loss', 'Hands off the keyboard', 'Hold the position'."
+      }
+    },
+    "protocols": {
+      "badge": "Protocols",
+      "title": "Choose Your",
+      "titleHighlight": "Protocol",
+      "cards": {
+        "sos": {
+          "name": "SOS / STOP-LOSS",
+          "when": "Got stopped out and want revenge",
+          "effect": "Complete hysteria shutdown. Accepting loss as cost of business.",
+          "result": "Deposit saved."
+        },
+        "diamond_hands": {
+          "name": "DIAMOND HANDS",
+          "when": "Asset pumping, scared. Hand reaching to close before target.",
+          "effect": "Strengthened discipline. Focus on long-term goal.",
+          "result": "You take the full move, not just 5%."
+        },
+        "market_close": {
+          "name": "DEEP SLEEP",
+          "when": "3AM, staring at candles, red eyes.",
+          "effect": "Forced Delta-sleep entry in 8 minutes.",
+          "result": "Fresh in the morning, ready to trade."
+        }
+      }
     },
     "demo": {
-      "badge": "Interactive Demo",
-      "title": "Feel the",
-      "titleHighlight": "Resonance",
-      "subtitle": "Press play and feel the difference",
+      "badge": "Listen to Example",
+      "title": "This Is How",
+      "titleHighlight": "Protocol Sounds",
+      "subtitle": "Press play and feel the effect",
       "morning": {
-        "title": "Morning Activation",
-        "description": "Your voice clone + binaural beats. Energy and clarity boost for the whole day.",
-        "tag1": "Your Voice"
+        "title": "SOS / Anti-Tilt",
+        "description": "Emergency reset after stop. Cold voice returns control.",
+        "tag1": "Whale Voice"
       },
       "evening": {
-        "title": "Evening Deactivation",
-        "description": "Deep relaxation and transition to recovery mode. Perfect sleep.",
+        "title": "Market Close",
+        "description": "Disconnecting from market. Delta rhythms for deep recovery.",
         "tag1": "Deep Sleep"
       }
     },
     "features": {
       "title": "How It",
       "titleHighlight": "Works",
-      "subtitle": "Simple technology for complex results",
+      "subtitle": "Three steps to emotional control",
       "step1": {
-        "title": "Record Your Voice",
-        "description": "Read a short text (30 seconds). This creates your unique voice profile."
+        "title": "Recognize Trigger",
+        "description": "Tilt, FOMO, or exhaustion? Choose protocol for situation or let AI detect automatically."
       },
       "step2": {
-        "title": "Choose Your Goal",
-        "description": "What do you need right now? Or let AI read context: time of day and your calendar to suggest the ideal protocol automatically."
+        "title": "Launch Protocol",
+        "description": "3-8 minutes. Binaural beats + Whale Voice. Brain biochemistry changes physically."
       },
       "step3": {
-        "title": "Listen",
-        "description": "AI instantly generates a personalized session. Your voice + music + binaural beats."
+        "title": "Return to Market",
+        "description": "Cold head. Clear decision. No emotions."
       },
       "voiceClone": {
-        "title": "Idealized Voice",
-        "description": "Not just a clone — an enhanced version. More confident, deeper, calmer. Bypasses psychological barriers and triggers maximum trust."
+        "title": "Whale Voice 2.0",
+        "description": "Not your voice — the voice of someone who manages billions. Low timbre, no emotions, pure authority. Subconscious obeys automatically."
       },
       "ai": {
-        "title": "Personal Neuro-Protocols",
-        "description": "AI creates programs for specific tasks: morning activation, evening deactivation, pre-work focus, stress recovery."
+        "title": "Contextual Protocols",
+        "description": "AI creates programs for specific situations: stop-loss, FOMO, exhaustion. Hard commands instead of mantras."
       },
       "binaural": {
-        "title": "Binaural Synchronization",
-        "description": "Gamma 40Hz for activation, Alpha 10Hz for focus, Theta 6Hz for relaxation. Hemisphere sync in 8-10 minutes."
+        "title": "Frequency Shift",
+        "description": "Alpha 10Hz for grounding, Theta 6Hz for sleep, Gamma 40Hz for focus. Brain mode switch in 3-8 minutes."
       }
     },
     "science": {
       "badge": "Scientific Foundation",
       "title": "It's Not Magic, It's",
       "titleHighlight": "Neuroscience",
-      "description": "The methodology is based on neuroplasticity and cognitive behavioral therapy principles. We use Voice 2.0 — your enhanced voice profile to bypass the psyche's defense mechanisms.",
-      "badge1": "CBT",
-      "badge1Sub": "Cognitive Behavioral Therapy",
-      "badge2": "Neurobiology",
-      "badge2Sub": "Science-based approach",
-      "badge3": "Security",
-      "badge3Sub": "Voice and data encryption",
-      "badge4": "Privacy",
-      "badge4Sub": "Your voice belongs only to you",
-      "point1": "AI cleans voice from micro-stress — you hear your best version",
-      "point2": "Enhanced voice activates trust zones 3x stronger",
-      "point3": "Binaural beats synchronize hemispheres for the desired state",
-      "videoTitle": "Why does it work? Neuroscientist explains",
-      "videoSubtitle": "Andrew Huberman on neuroplasticity"
+      "description": "Binaural beats aren't esoteric. It's physics: two tones with frequency difference create a third tone in the brain that synchronizes hemispheres.",
+      "badge1": "Neuroscience",
+      "badge1Sub": "Scientifically proven",
+      "badge2": "Cognitive Science",
+      "badge2Sub": "State management",
+      "badge3": "Privacy",
+      "badge3Sub": "Data encrypted",
+      "badge4": "Non-addictive",
+      "badge4Sub": "Not drugs",
+      "point1": "Binaural beats synchronize brain hemispheres in 8-10 minutes",
+      "point2": "Alpha waves (10Hz) reduce cortisol and activate parasympathetic system",
+      "point3": "Authoritative voice activates trust zones in subconscious",
+      "videoTitle": "How does it work? Neuroscientist explains",
+      "videoSubtitle": "Andrew Huberman on binaural beats"
     },
     "scenarios": {
       "title": "Life Scenarios",
-      "subtitle": "One technology for diverse challenges",
+      "subtitle": "One technology for trading and life",
       "morning": {
-        "title": "Clarity & Drive",
-        "description": "Morning protocol. Get a dopamine boost and set yourself up for achieving goals in 5 minutes."
+        "title": "Pre-Market Focus",
+        "description": "Morning protocol. Gamma 40Hz for maximum concentration before trading."
       },
       "anxiety": {
-        "title": "Point of Calm",
-        "description": "Relieves anxiety before important meetings. Your voice restores a sense of control and safety."
+        "title": "SOS / Anti-Tilt",
+        "description": "Emergency reset after losing trade. Stopping revenge trade."
       },
       "focus": {
-        "title": "Deep Flow",
-        "description": "Maximum concentration mode. Work without distractions at peak performance."
+        "title": "Diamond Hands",
+        "description": "Holding position. Strengthening discipline when scared."
       },
       "sleep": {
-        "title": "Perfect Sleep",
-        "description": "Shuts off mental noise. Quick transition to delta sleep and full overnight recovery."
+        "title": "Market Close",
+        "description": "Disconnecting from market. Deep sleep for recovery."
       }
     },
     "pricing": {
-      "title": "Pricing",
+      "title": "How Much Does Your Mistake Cost?",
+      "anchor": "One tilt trade with leverage = $500-5000. MindFrame subscription = one trade commission.",
+      "roi": "If MindFrame stops you from one stupid move per year — 50x ROI.",
       "free": {
-        "name": "Calibration",
+        "name": "Paper Hands",
         "price": "0",
-        "features": ["3 test sessions", "AI-Mentor voice (Generic)", "Rhythm effectiveness test"]
+        "description": "For deposits under $1k",
+        "features": ["3 demo sessions", "Generic AI voice", "Basic scenarios"]
       },
       "basic": {
-        "name": "Basic",
-        "price": "9.99",
-        "features": ["30 sessions/month", "5 premium AI voices", "Scenario library", "No cloning"]
+        "name": "Trader",
+        "price": "49",
+        "description": "For deposits under $10k",
+        "features": ["30 sessions/month", "5 Premium AI voices", "All scenarios", "Telegram access"]
       },
       "pro": {
-        "name": "Architect",
-        "price": "19.99",
-        "features": ["Voice Clone 2.0", "Daily Sync (daily generation)", "Deep Focus (Gamma 40Hz)", "Gift-to-Friend"]
+        "name": "Whale",
+        "price": "99",
+        "description": "For deposits $10k+",
+        "features": ["Voice Clone 2.0", "Daily Sync (3/day)", "Telegram Panic Button", "Priority support"],
+        "badge": "Best Value"
+      },
+      "enterprise": {
+        "name": "Institutional",
+        "price": "2499",
+        "description": "Lifetime",
+        "features": ["Lifetime license", "Personal prompt calibration", "Private channel", "USDT/ETH payment"]
       }
     },
+    "referral": {
+      "badge": "IB Program",
+      "title": "SHARE ALPHA.",
+      "titleHighlight": "EARN USDT.",
+      "description": "Have a friend or chat where people lose money on panic? Give them the pill.",
+      "benefits": [
+        "30% RevShare (first 12 months)",
+        "Payouts in USDT (TRC-20)",
+        "Save a friend from liquidation — earn"
+      ],
+      "cta": "Become IB Partner"
+    },
     "cta": {
-      "title": "Ready to Change Your Life",
-      "titleHighlight": "With Your Own Voice?",
-      "subtitle": "No card. No registration. First 3 sessions free.",
-      "button": "Launch Neuro-Protocol"
+      "title": "STOP BEING",
+      "titleHighlight": "LIQUIDITY.",
+      "subtitle": "BECOME A MARKET OPERATOR.",
+      "button": "START FREE TRIAL",
+      "subtext": "3 demo sessions, no card required"
+    },
+    "footer": {
+      "disclaimer": "MindFrame does not provide financial advice. We provide tools for preserving sanity so you can make decisions yourself. This is not a medical device."
     },
     "gift": {
       "badge": "Mental Gift",
-      "title": "Gift a",
-      "titleHighlight": "State",
-      "description": "See your partner burning out? Don't say 'calm down'. Generate support with your voice in 30 seconds. We'll package it into a personal link.",
-      "cta": "This works stronger than any words"
+      "title": "Gift",
+      "titleHighlight": "Control",
+      "description": "See a trader friend tilting? Don't say 'calm down'. Send them the SOS protocol. Works stronger than any words.",
+      "cta": "Send Protocol"
     }
   },
   "common": {
@@ -169,18 +241,18 @@
   },
   "app": {
     "nav": {
-      "generate": "Session",
+      "generate": "Protocol",
       "library": "Library",
       "settings": "Settings"
     },
     "generate": {
-      "title": "Neuro-Session",
-      "selectTags": "Session Goal",
-      "selectScenario": "Select Brain Mode",
-      "customInput": "Or describe your goal",
+      "title": "Launch Protocol",
+      "selectTags": "What happened?",
+      "selectScenario": "Choose Protocol",
+      "customInput": "Or describe situation",
       "voiceInput": "Voice input",
-      "generateButton": "Launch Session",
-      "generating": "Building your neuro-session...",
+      "generateButton": "Launch Protocol",
+      "generating": "Building your protocol...",
       "voiceGender": "Voice",
       "female": "Female",
       "male": "Male"
@@ -193,36 +265,58 @@
       "creativity": "Creativity",
       "sleep": "Sleep",
       "motivation": "Motivation",
-      "morning": "Morning",
-      "evening": "Evening",
+      "morning": "Pre-Market",
+      "evening": "Market Close",
       "focus": "Focus",
-      "sport": "Sport"
+      "sport": "Drive",
+      "stoploss": "Stop-Loss",
+      "liquidation": "Liquidation",
+      "fomo": "FOMO",
+      "tilt": "Tilt",
+      "revenge": "Revenge Trade",
+      "hold": "Hold",
+      "takeprofit": "Take-Profit"
     },
     "scenarios": {
       "morning": {
-        "title": "Activation",
+        "title": "Pre-Market",
         "description": "Gamma 40Hz",
         "time": "5-10 min"
       },
       "evening": {
-        "title": "Deactivation",
-        "description": "Theta 6Hz",
-        "time": "10-15 min"
+        "title": "Market Close",
+        "description": "Delta 3Hz",
+        "time": "8-15 min"
       },
       "focus": {
         "title": "Focus",
-        "description": "Alpha 10Hz",
+        "description": "Beta 20Hz",
         "time": "5-7 min"
       },
       "sport": {
-        "title": "Energy",
+        "title": "Drive",
         "description": "Gamma 40Hz",
         "time": "3-5 min"
       },
       "sos": {
-        "title": "SOS",
-        "description": "Grounding",
+        "title": "SOS / Anti-Tilt",
+        "description": "Alpha 10Hz",
         "time": "3-5 min"
+      },
+      "diamond_hands": {
+        "title": "Diamond Hands",
+        "description": "Beta 20Hz",
+        "time": "5-7 min"
+      },
+      "fomo_killer": {
+        "title": "FOMO Killer",
+        "description": "Alpha 10Hz",
+        "time": "3-5 min"
+      },
+      "market_close": {
+        "title": "Deep Sleep",
+        "description": "Delta 3Hz",
+        "time": "8-10 min"
       }
     },
     "voiceProfiles": {
@@ -246,48 +340,56 @@
       "whisper": {
         "title": "Whisper",
         "description": "ASMR, intimate"
+      },
+      "whale": {
+        "title": "Whale Voice",
+        "description": "Cold, institutional"
+      },
+      "institutional": {
+        "title": "Institutional",
+        "description": "Detached, emotionless"
       }
     },
     "player": {
-      "play": "Your Neuro-Session",
+      "play": "Your Protocol",
       "pause": "Pause",
       "saveToLibrary": "Save",
       "share": "Share",
-      "newGeneration": "New Session",
+      "newGeneration": "New Protocol",
       "binauralToggle": "Binaural Beats"
     },
     "library": {
-      "title": "My Sessions",
-      "empty": "Empty yet. Launch your first neuro-session!",
+      "title": "My Protocols",
+      "empty": "Empty yet. Launch your first protocol!",
       "favorites": "Favorites",
       "recent": "Recent"
     },
     "settings": {
       "title": "Settings",
       "language": "Language",
-      "voiceClone": "Your Voice",
-      "voiceCloneDescription": "Record 30-60 sec. AI will create an enhanced version — more confident and deeper.",
+      "voiceClone": "Whale Voice",
+      "voiceCloneDescription": "Premium: AI creates your enhanced voice with authoritative timbre.",
       "voiceCloneStatus": "Voice not recorded",
-      "voiceCloneReady": "Voice calibrated",
+      "voiceCloneReady": "Voice Clone ready",
       "recordVoice": "Record Voice",
       "rerecordVoice": "Re-record",
       "voiceProfile": "Voice Profile",
-      "voiceProfileDescription": "How should your enhanced voice sound?",
+      "voiceProfileDescription": "Institutional by default. Cold, emotionless.",
       "subscription": "Subscription",
       "currentPlan": "Current plan",
       "upgrade": "Upgrade",
       "binaural": "Binaural Beats",
-      "binauralDescription": "Brain hemisphere synchronization"
+      "binauralDescription": "Frequency Shift for state change"
     },
     "limits": {
-      "reached": "Calibration Complete",
-      "description": "You've used all free sessions. Subscribe for full Mental Utility access.",
+      "reached": "Demo Complete",
+      "description": "You've used all free sessions. Subscribe for full protocol access.",
       "upgradeButton": "Choose Plan"
     },
     "onboarding": {
       "welcome": {
-        "title": "Calibrate Your Mental Utility",
-        "subtitle": "3 steps to brain state control",
+        "title": "Setup Your Risk Management",
+        "subtitle": "Emotional Hedging Protocol",
         "cta": "Start Calibration"
       },
       "psychotype": {
@@ -295,19 +397,19 @@
         "subtitle": "5 questions for personalization"
       },
       "voiceSetup": {
-        "title": "Create Your Voice",
-        "subtitle": "Record 30-60 seconds — AI will create an enhanced version",
+        "title": "Whale Voice Setup",
+        "subtitle": "Record 30-60 seconds — AI creates authoritative version",
         "instruction": "Read this text aloud",
-        "sampleText": "I choose clarity of thought and calm. Every day I become stronger and more confident. My decisions lead me to my goals."
+        "sampleText": "The market doesn't forgive emotions. Every trade is a business decision. I control risk and follow the plan."
       },
       "profileSelect": {
         "title": "Choose Voice Profile",
-        "subtitle": "How should the enhanced version sound?"
+        "subtitle": "Whale Voice — cold, authoritative"
       },
       "complete": {
         "title": "Calibration Complete",
-        "subtitle": "Your Mental Utility is ready",
-        "cta": "Launch First Session"
+        "subtitle": "Your Risk Management Protocol is ready",
+        "cta": "Launch First Protocol"
       }
     }
   }

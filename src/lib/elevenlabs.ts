@@ -10,12 +10,14 @@ export const DEFAULT_MODEL = 'eleven_v3';
 // ============ Voice Types ============
 export type VoiceGender = 'male' | 'female';
 export type VoiceAge = 'young' | 'middle' | 'mature';
-export type ScenarioType = 'morning' | 'evening' | 'focus' | 'sport' | 'sos';
+// Extended scenarios for crypto traders
+export type ScenarioType = 'morning' | 'evening' | 'focus' | 'sport' | 'sos' | 'diamond_hands' | 'fomo_killer' | 'market_close';
 
 // ============ Voice Beautification (Neuro-Biohacking Core Feature) ============
 // "Idealized Voice" - not just cloning, but enhancing the voice
 // User hears a more confident, calm, or mentor-like version of their voice
-export type VoiceProfile = 'confidence' | 'calmness' | 'mentor' | 'coach' | 'whisper';
+// NEW: Whale Voice for traders - cold, institutional, authoritative
+export type VoiceProfile = 'confidence' | 'calmness' | 'mentor' | 'coach' | 'whisper' | 'whale' | 'institutional';
 
 export interface VoiceProfileModifiers {
   stability: number;    // -0.3 to +0.3 adjustment
@@ -81,6 +83,25 @@ export const BEAUTIFICATION_PROFILES: VoiceProfileOption[] = [
     icon: 'Wind',
     modifiers: { stability: 0.3, similarity: 0.1, style: -0.3 },
   },
+  // === TRADER-SPECIFIC VOICE PROFILES ===
+  {
+    id: 'whale',
+    name: 'Whale Voice',
+    nameRu: 'Голос Кита',
+    description: 'Cold, authoritative voice. The voice of someone who manages billions.',
+    descriptionRu: 'Холодный, авторитетный голос. Голос человека, который управляет миллиардами.',
+    icon: 'TrendingUp',
+    modifiers: { stability: 0.25, similarity: -0.1, style: -0.2 },
+  },
+  {
+    id: 'institutional',
+    name: 'Institutional',
+    nameRu: 'Институционал',
+    description: 'Detached, emotionless voice. Pure discipline, no feelings.',
+    descriptionRu: 'Отстранённый голос без эмоций. Чистая дисциплина, никаких чувств.',
+    icon: 'Building2',
+    modifiers: { stability: 0.35, similarity: -0.15, style: -0.35 },
+  },
 ];
 
 // Get profile by ID
@@ -89,12 +110,17 @@ export function getVoiceProfile(profileId: VoiceProfile): VoiceProfileOption {
 }
 
 // Recommended profile for each scenario
+// Trader scenarios use whale/institutional profiles for cold, authoritative delivery
 export const SCENARIO_PROFILE_MAP: Record<ScenarioType, VoiceProfile> = {
   morning: 'confidence',
   evening: 'calmness',
   focus: 'mentor',
   sport: 'coach',
-  sos: 'calmness',
+  // Trader-specific scenarios - use cold, authoritative profiles
+  sos: 'whale',           // Anti-Tilt: cold, authoritative to stop panic
+  diamond_hands: 'whale', // Hold position: disciplined, confident
+  fomo_killer: 'institutional', // Stop FOMO: detached, emotionless
+  market_close: 'calmness', // Deep sleep: calming, peaceful
 };
 
 export interface VoiceOption {
@@ -220,12 +246,17 @@ export function getRecommendedVoice(scenario: ScenarioType, gender: VoiceGender)
   const voicesByGender = getVoicesByGender(gender);
 
   // Recommendations based on scenario
+  // Trader scenarios use deep, authoritative voices (Adam/Arnold for male)
   const recommendations: Record<ScenarioType, { female: string; male: string }> = {
     morning: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'ErXwobaYiN019PkySvjV' }, // Bella/Antoni - energetic
     evening: { female: '21m00Tcm4TlvDq8ikWAM', male: 'TxGEqnHWrfWFTfGW9XjX' }, // Rachel/Josh - calm
     focus: { female: 'MF3mGyEYCl7XYWbV9V6O', male: 'pNInz6obpgDQGcFmaJgB' }, // Elli/Adam - confident
     sport: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'VR6AewLTigWG4xSOukaG' }, // Bella/Arnold - powerful
-    sos: { female: '21m00Tcm4TlvDq8ikWAM', male: 'pNInz6obpgDQGcFmaJgB' }, // Rachel/Adam - grounding
+    // Trader-specific: use deep, authoritative voices
+    sos: { female: 'MF3mGyEYCl7XYWbV9V6O', male: 'pNInz6obpgDQGcFmaJgB' }, // Elli/Adam - cold authority
+    diamond_hands: { female: 'MF3mGyEYCl7XYWbV9V6O', male: 'pNInz6obpgDQGcFmaJgB' }, // Elli/Adam - confident
+    fomo_killer: { female: 'MF3mGyEYCl7XYWbV9V6O', male: 'pNInz6obpgDQGcFmaJgB' }, // Elli/Adam - detached
+    market_close: { female: '21m00Tcm4TlvDq8ikWAM', male: 'TxGEqnHWrfWFTfGW9XjX' }, // Rachel/Josh - calming
   };
 
   const recommendedId = recommendations[scenario][gender];
@@ -274,13 +305,35 @@ export const VOICE_PRESETS: Record<ScenarioType, VoiceSettings> = {
     style: 0.85,            // High intensity
     use_speaker_boost: true,
   },
-  // SOS: Grounding, reassuring, steady
-  // Balanced for calmness with slight warmth
+  // SOS / Anti-Tilt: Cold, authoritative, grounding
+  // High stability for calm authority, low style for emotionless delivery
   sos: {
-    stability: 0.70,        // Grounding stability
-    similarity_boost: 0.80,
-    style: 0.35,            // Warm but not overly expressive
+    stability: 0.80,        // Very stable, authoritative
+    similarity_boost: 0.70,
+    style: 0.20,            // Minimal emotion, cold
     use_speaker_boost: true,
+  },
+  // === TRADER-SPECIFIC SCENARIO PRESETS ===
+  // Diamond Hands: Confident, disciplined, steady
+  diamond_hands: {
+    stability: 0.75,        // Steady confidence
+    similarity_boost: 0.75,
+    style: 0.30,            // Confident but not emotional
+    use_speaker_boost: true,
+  },
+  // FOMO Killer: Cold, questioning, detached
+  fomo_killer: {
+    stability: 0.85,        // Very stable, detached
+    similarity_boost: 0.65,
+    style: 0.15,            // Emotionless, institutional
+    use_speaker_boost: false,
+  },
+  // Market Close: Calming, sleep-inducing, slow
+  market_close: {
+    stability: 0.90,        // Maximum stability for sleep
+    similarity_boost: 0.80,
+    style: 0.10,            // Minimal expression, peaceful
+    use_speaker_boost: false,
   },
 };
 

@@ -23,20 +23,31 @@ import {
   AlertCircle,
   ChevronLeft,
   Check,
+  User,
+  Diamond,
+  StopCircle,
+  TrendingUp,
+  TrendingDown,
+  Crosshair,
+  Shield,
+  Coins,
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { ShareModal } from '@/components/ShareModal';
 import { getPreferences, initPreferencesFromTelegram, savePreferences, type UserPreferences } from '@/lib/userPreferences';
 
-// Available tags with icons
+// Available tags with icons - trader-focused
 const TAGS = [
-  { id: 'concentration', icon: Target, color: 'text-blue-400' },
-  { id: 'calm', icon: Heart, color: 'text-pink-400' },
-  { id: 'energy', icon: Zap, color: 'text-yellow-400' },
-  { id: 'confidence', icon: Flame, color: 'text-orange-400' },
-  { id: 'creativity', icon: Palette, color: 'text-purple-400' },
-  { id: 'sleep', icon: BedDouble, color: 'text-indigo-400' },
-  { id: 'motivation', icon: Sparkles, color: 'text-emerald-400' },
+  // Trader-specific tags
+  { id: 'stoploss', icon: StopCircle, color: 'text-red-400' },
+  { id: 'liquidation', icon: TrendingDown, color: 'text-red-500' },
+  { id: 'fomo', icon: Zap, color: 'text-orange-400' },
+  { id: 'tilt', icon: AlertCircle, color: 'text-amber-400' },
+  { id: 'revenge', icon: Flame, color: 'text-rose-400' },
+  { id: 'hold', icon: Diamond, color: 'text-cyan-400' },
+  { id: 'takeprofit', icon: TrendingUp, color: 'text-emerald-400' },
+  // Legacy tags
+  { id: 'focus', icon: Crosshair, color: 'text-blue-400' },
 ] as const;
 
 type GenerationStep = 'tags' | 'scenario' | 'generating' | 'result' | 'error';
@@ -202,17 +213,23 @@ export default function GeneratePage() {
 
         {/* Voice Gender Selection */}
         <div className="mb-6">
-          <p className="mb-3 text-sm font-medium text-slate-400">{t('generate.voiceGender')}</p>
+          <p className="mb-3 text-sm font-medium text-slate-300">{t('generate.voiceGender')}</p>
           <div className="flex gap-3">
             <button
               onClick={() => handleVoiceGenderChange('female')}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-xl border-2 py-3 transition-all ${
+              className={`flex flex-1 items-center justify-center gap-3 rounded-xl border-2 py-4 transition-all ${
                 preferences?.voiceGender === 'female'
-                  ? 'border-purple-500 bg-purple-500/10 text-white'
-                  : 'border-slate-700/50 bg-slate-800/30 text-slate-400 hover:border-slate-600'
+                  ? 'border-purple-500 bg-purple-500/20 text-white shadow-lg shadow-purple-500/10'
+                  : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:border-slate-500 hover:bg-slate-800'
               }`}
             >
-              <span className="text-xl">👩</span>
+              <div className={`rounded-full p-2 ${
+                preferences?.voiceGender === 'female' ? 'bg-pink-500/30' : 'bg-slate-700'
+              }`}>
+                <User className={`h-5 w-5 ${
+                  preferences?.voiceGender === 'female' ? 'text-pink-400' : 'text-slate-400'
+                }`} />
+              </div>
               <span className="font-medium">{t('generate.female')}</span>
               {preferences?.voiceGender === 'female' && (
                 <Check className="h-4 w-4 text-purple-400" />
@@ -220,13 +237,19 @@ export default function GeneratePage() {
             </button>
             <button
               onClick={() => handleVoiceGenderChange('male')}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-xl border-2 py-3 transition-all ${
+              className={`flex flex-1 items-center justify-center gap-3 rounded-xl border-2 py-4 transition-all ${
                 preferences?.voiceGender === 'male'
-                  ? 'border-purple-500 bg-purple-500/10 text-white'
-                  : 'border-slate-700/50 bg-slate-800/30 text-slate-400 hover:border-slate-600'
+                  ? 'border-purple-500 bg-purple-500/20 text-white shadow-lg shadow-purple-500/10'
+                  : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:border-slate-500 hover:bg-slate-800'
               }`}
             >
-              <span className="text-xl">👨</span>
+              <div className={`rounded-full p-2 ${
+                preferences?.voiceGender === 'male' ? 'bg-blue-500/30' : 'bg-slate-700'
+              }`}>
+                <User className={`h-5 w-5 ${
+                  preferences?.voiceGender === 'male' ? 'text-blue-400' : 'text-slate-400'
+                }`} />
+              </div>
               <span className="font-medium">{t('generate.male')}</span>
               {preferences?.voiceGender === 'male' && (
                 <Check className="h-4 w-4 text-purple-400" />
@@ -248,14 +271,14 @@ export default function GeneratePage() {
                   onClick={() => handleTagToggle(tag.id)}
                   className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.98] ${
                     isSelected
-                      ? 'border-purple-500 bg-purple-500/10'
-                      : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600'
+                      ? 'border-purple-500 bg-purple-500/20 shadow-lg shadow-purple-500/10'
+                      : 'border-slate-600 bg-slate-800/80 hover:border-slate-500 hover:bg-slate-800'
                   }`}
                 >
-                  <div className={`rounded-xl p-2 ${isSelected ? 'bg-purple-500/20' : 'bg-slate-700/50'}`}>
+                  <div className={`rounded-xl p-2 ${isSelected ? 'bg-purple-500/30' : 'bg-slate-700'}`}>
                     <Icon className={`h-5 w-5 ${isSelected ? 'text-purple-400' : tag.color}`} />
                   </div>
-                  <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-slate-300'}`}>
+                  <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-slate-200'}`}>
                     {t(`tags.${tag.id}`)}
                   </span>
                   {isSelected && (
@@ -270,7 +293,7 @@ export default function GeneratePage() {
         </div>
 
         {/* Continue Button - sticky */}
-        <div className="sticky bottom-0 bg-gradient-to-t from-slate-900 pb-4 pt-2">
+        <div className="sticky bottom-0 bg-gradient-to-t from-[#0f172a] pb-4 pt-2">
           <Button
             size="lg"
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
@@ -287,10 +310,14 @@ export default function GeneratePage() {
   // ============ STEP 2: Select Scenario ============
   if (step === 'scenario') {
     const scenarioData = [
-      { id: 'morning', icon: Sun, label: 'Утром', desc: 'После пробуждения', time: '5-10 мин', gradient: 'from-amber-500 to-orange-500' },
-      { id: 'evening', icon: Moon, label: 'Вечером', desc: 'Перед сном', time: '10-15 мин', gradient: 'from-indigo-500 to-purple-500' },
-      { id: 'focus', icon: Brain, label: 'Перед работой', desc: 'Вход в поток', time: '5-7 мин', gradient: 'from-cyan-500 to-blue-500' },
-      { id: 'sport', icon: Dumbbell, label: 'Тренировка', desc: 'Перед нагрузкой', time: '3-5 мин', gradient: 'from-rose-500 to-red-500' },
+      // Trader-specific scenarios (primary)
+      { id: 'sos', icon: AlertCircle, label: t('scenarios.sos.title'), desc: t('scenarios.sos.description'), time: t('scenarios.sos.time'), gradient: 'from-red-500 to-orange-500' },
+      { id: 'diamond_hands', icon: Diamond, label: t('scenarios.diamond_hands.title'), desc: t('scenarios.diamond_hands.description'), time: t('scenarios.diamond_hands.time'), gradient: 'from-cyan-500 to-blue-500' },
+      { id: 'fomo_killer', icon: StopCircle, label: t('scenarios.fomo_killer.title'), desc: t('scenarios.fomo_killer.description'), time: t('scenarios.fomo_killer.time'), gradient: 'from-amber-500 to-orange-500' },
+      { id: 'market_close', icon: Moon, label: t('scenarios.market_close.title'), desc: t('scenarios.market_close.description'), time: t('scenarios.market_close.time'), gradient: 'from-indigo-500 to-purple-500' },
+      // Legacy scenarios
+      { id: 'morning', icon: Sun, label: t('scenarios.morning.title'), desc: t('scenarios.morning.description'), time: t('scenarios.morning.time'), gradient: 'from-amber-400 to-yellow-500' },
+      { id: 'focus', icon: Target, label: t('scenarios.focus.title'), desc: t('scenarios.focus.description'), time: t('scenarios.focus.time'), gradient: 'from-blue-500 to-cyan-500' },
     ];
 
     return (
@@ -304,7 +331,7 @@ export default function GeneratePage() {
             <ChevronLeft className="h-5 w-5" />
             <span className="text-sm">{tCommon('back')}</span>
           </button>
-          <h1 className="text-xl font-bold text-white">Когда слушать?</h1>
+          <h1 className="text-xl font-bold text-white">{t('generate.selectScenario')}</h1>
         </div>
 
         {/* Scenarios List - compact */}
@@ -319,8 +346,8 @@ export default function GeneratePage() {
                 onClick={() => handleScenarioSelect(scenario.id)}
                 className={`relative flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.99] ${
                   isSelected
-                    ? 'border-purple-500 bg-purple-500/10'
-                    : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600'
+                    ? 'border-purple-500 bg-purple-500/20 shadow-lg shadow-purple-500/10'
+                    : 'border-slate-600 bg-slate-800/80 hover:border-slate-500 hover:bg-slate-800'
                 }`}
               >
                 <div
@@ -346,7 +373,7 @@ export default function GeneratePage() {
         </div>
 
         {/* Generate Button - always visible */}
-        <div className="sticky bottom-0 bg-gradient-to-t from-slate-900 pb-4 pt-2">
+        <div className="sticky bottom-0 bg-gradient-to-t from-[#0f172a] pb-4 pt-2">
           <Button
             size="lg"
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-purple-500/40 disabled:opacity-50"
@@ -377,9 +404,9 @@ export default function GeneratePage() {
         </h2>
 
         <p className="mb-8 text-center text-slate-400">
-          {progress < 30 && 'Создаём текст аффирмации...'}
-          {progress >= 30 && progress < 70 && 'Генерируем голос...'}
-          {progress >= 70 && 'Финальная обработка...'}
+          {progress < 30 && 'Building protocol...'}
+          {progress >= 30 && progress < 70 && 'Generating Whale Voice...'}
+          {progress >= 70 && 'Mixing binaural beats...'}
         </p>
 
         <div className="w-full max-w-xs">
@@ -420,11 +447,9 @@ export default function GeneratePage() {
 
   // ============ STEP 5: Result ============
   if (step === 'result' && result) {
-    const scenarioLabels: Record<string, string> = {
-      morning: 'Утренняя',
-      evening: 'Вечерняя',
-      focus: 'Для работы',
-      sport: 'Спортивная',
+    const getScenarioLabel = (scenarioId: string | null): string => {
+      if (!scenarioId) return '';
+      return t(`scenarios.${scenarioId}.title`);
     };
 
     return (
@@ -432,7 +457,7 @@ export default function GeneratePage() {
         <div className="mb-4">
           <h1 className="text-2xl font-bold text-white">{t('player.play')}</h1>
           <p className="mt-1 text-slate-400">
-            {selectedScenario ? scenarioLabels[selectedScenario] : ''} аффирмация
+            {getScenarioLabel(selectedScenario)}
           </p>
         </div>
 
@@ -449,7 +474,7 @@ export default function GeneratePage() {
         <div className="mb-4">
           <AudioPlayer
             base64Audio={result.audioBase64}
-            title={selectedScenario ? scenarioLabels[selectedScenario] : 'Аффирмация'}
+            title={getScenarioLabel(selectedScenario) || 'Protocol'}
             subtitle={selectedTags.map(tag => t(`tags.${tag}`)).join(', ')}
             onSave={handleSave}
             onShare={handleShare}

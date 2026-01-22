@@ -16,170 +16,342 @@ export interface GenerateAffirmationInput {
 // System prompts for different scenarios (multilingual)
 // Using ElevenLabs v3 pause tags: [pause], [short pause], [long pause]
 // CRITICAL: All affirmations MUST be in FIRST PERSON (Я/I) - user repeats them!
+// TRADER-FOCUSED: New scenarios for crypto/trading emotional control
 const SCENARIO_PROMPTS: Record<string, { ru: string; en: string }> = {
   morning: {
-    ru: `Создай утреннюю аффирмацию для настройки на продуктивный день.
+    ru: `Создай утренний протокол для настройки перед торговой сессией.
 
 КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
-- Правильно: "Я чувствую энергию", "Я готов действовать", "Моё тело наполняется силой"
-- НЕПРАВИЛЬНО: "Ты чувствуешь", "Твоё тело" — это ЗАПРЕЩЕНО!
+- Правильно: "Я готов к рынку", "Мой план ясен", "Я контролирую риски"
+- НЕПРАВИЛЬНО: "Ты готов", "Твой план" — это ЗАПРЕЩЕНО!
 
-Стиль: энергичный, утвердительный, вдохновляющий.
-Используй короткие, ритмичные предложения.
-Длина: 200-300 слов.
+Стиль: холодный, деловой, без эмоций. Это не мотивация — это подготовка.
+Короткие, чёткие предложения. Фокус на дисциплине и плане.
+Длина: 150-200 слов.
 Пиши на русском языке.
 
 Теги пауз:
-- [short pause] — короткая пауза между фразами
-- [pause] — средняя пауза для осмысления
-- [long pause] — длинная пауза в ключевых моментах`,
-    en: `Create a morning affirmation to set up for a productive day.
+- [short pause] — короткая пауза между утверждениями
+- [pause] — пауза для осознания
+- [long pause] — пауза для фокуса`,
+    en: `Create a morning protocol for pre-trading session setup.
 
 CRITICAL: Write ONLY in FIRST PERSON!
-- Correct: "I feel energy", "I am ready to act", "My body fills with strength"
-- WRONG: "You feel", "Your body" — this is FORBIDDEN!
+- Correct: "I am ready for the market", "My plan is clear", "I control risk"
+- WRONG: "You are ready", "Your plan" — this is FORBIDDEN!
 
-Style: energetic, assertive, inspiring.
-Use short, rhythmic sentences.
-Length: 200-300 words.
+Style: cold, business-like, emotionless. This is not motivation — it's preparation.
+Short, clear sentences. Focus on discipline and plan.
+Length: 150-200 words.
 Write in English.
 
 Pause tags:
-- [short pause] — brief pause between phrases
-- [pause] — medium pause for reflection
-- [long pause] — longer pause at key moments`,
+- [short pause] — brief pause between statements
+- [pause] — pause for awareness
+- [long pause] — pause for focus`,
   },
   evening: {
-    ru: `Создай вечернюю аффирмацию для глубокого расслабления и сна.
+    ru: `Создай протокол для отключения от рынка и перехода в режим сна.
 
 КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
-- Правильно: "Я отпускаю напряжение", "Моё дыхание замедляется", "Я заслуживаю отдых"
-- НЕПРАВИЛЬНО: "Ты отпускаешь", "Твоё дыхание" — это ЗАПРЕЩЕНО!
+- Правильно: "Я закрываю терминал", "Рынок подождёт до утра", "Моё тело просит отдыха"
+- НЕПРАВИЛЬНО: "Ты закрываешь", "Твоё тело" — это ЗАПРЕЩЕНО!
 
-Стиль: тягучий, медитативный, убаюкивающий.
-Длинные плавные предложения. Метафоры тепла, мягкости, безопасности.
-Длина: 250-350 слов.
+Стиль: медленный, успокаивающий, но НЕ сентиментальный.
+Фокус: отпустить рынок, отпустить свечи, переключиться на восстановление.
+Длина: 200-250 слов.
 Пиши на русском языке.
 
 Теги пауз:
 - [short pause] — короткая пауза
-- [pause] — средняя пауза для расслабления
-- [long pause] — длинная пауза для погружения
-Используй МНОГО пауз — это вечерняя медитация.`,
-    en: `Create an evening affirmation for deep relaxation and sleep.
+- [pause] — пауза для расслабления
+- [long pause] — пауза для глубокого дыхания
+Используй МНОГО длинных пауз — это протокол засыпания.`,
+    en: `Create a protocol for disconnecting from the market and transitioning to sleep mode.
 
 CRITICAL: Write ONLY in FIRST PERSON!
-- Correct: "I release tension", "My breathing slows", "I deserve rest"
-- WRONG: "You release", "Your breathing" — this is FORBIDDEN!
+- Correct: "I close the terminal", "Market will wait until morning", "My body needs rest"
+- WRONG: "You close", "Your body" — this is FORBIDDEN!
 
-Style: flowing, meditative, soothing.
-Long smooth sentences. Metaphors of warmth, softness, safety.
-Length: 250-350 words.
+Style: slow, calming, but NOT sentimental.
+Focus: let go of market, let go of candles, switch to recovery.
+Length: 200-250 words.
 Write in English.
 
 Pause tags:
 - [short pause] — brief pause
-- [pause] — medium pause for relaxation
-- [long pause] — longer pause for deep immersion
-Use MANY pauses — this is an evening meditation.`,
+- [pause] — pause for relaxation
+- [long pause] — pause for deep breathing
+Use MANY long pauses — this is a sleep protocol.`,
   },
   focus: {
-    ru: `Создай аффирмацию для глубокой концентрации и входа в состояние потока.
+    ru: `Создай протокол для глубокой концентрации перед анализом или входом в сделку.
 
 КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
-- Правильно: "Я фокусируюсь", "Мой разум ясен", "Я вхожу в поток"
-- НЕПРАВИЛЬНО: "Ты фокусируешься", "Твой разум" — это ЗАПРЕЩЕНО!
+- Правильно: "Я вижу паттерн", "Мой анализ точен", "Я следую системе"
+- НЕПРАВИЛЬНО: "Ты видишь", "Твой анализ" — это ЗАПРЕЩЕНО!
 
-Стиль: четкий, уверенный, направляющий внимание.
-Короткие предложения.
-Длина: 200-250 слов.
+Стиль: чёткий, аналитический, без эмоций.
+Короткие предложения. Фокус на системе и дисциплине.
+Длина: 150-200 слов.
 Пиши на русском языке.
 
 Теги пауз:
 - [short pause] — короткая пауза для фокуса
 - [pause] — пауза для осознания
-- [long pause] — длинная пауза для входа в поток`,
-    en: `Create an affirmation for deep concentration and entering flow state.
+- [long pause] — пауза для входа в состояние потока`,
+    en: `Create a protocol for deep concentration before analysis or trade entry.
 
 CRITICAL: Write ONLY in FIRST PERSON!
-- Correct: "I focus", "My mind is clear", "I enter the flow"
-- WRONG: "You focus", "Your mind" — this is FORBIDDEN!
+- Correct: "I see the pattern", "My analysis is precise", "I follow the system"
+- WRONG: "You see", "Your analysis" — this is FORBIDDEN!
 
-Style: clear, confident, attention-directing.
-Short sentences.
-Length: 200-250 words.
+Style: clear, analytical, emotionless.
+Short sentences. Focus on system and discipline.
+Length: 150-200 words.
 Write in English.
 
 Pause tags:
 - [short pause] — brief pause for focus
 - [pause] — pause for awareness
-- [long pause] — longer pause for entering flow`,
+- [long pause] — pause for entering flow state`,
   },
   sport: {
-    ru: `Создай мотивационную аффирмацию для преодоления физических барьеров.
+    ru: `Создай протокол для максимальной энергии и драйва.
 
 КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
-- Правильно: "Я сильнее боли!", "Моё тело — машина!", "Я не сдаюсь!"
-- НЕПРАВИЛЬНО: "Ты сильнее", "Твоё тело" — это ЗАПРЕЩЕНО!
+- Правильно: "Я заряжен!", "Моя энергия на максимуме!", "Я готов действовать!"
+- НЕПРАВИЛЬНО: "Ты заряжен", "Твоя энергия" — это ЗАПРЕЩЕНО!
 
-Стиль: агрессивный, командный, без жалости к себе.
-Короткие рубленые фразы. Императивы к себе.
-Длина: 150-200 слов.
+Стиль: агрессивный, энергичный, командный.
+Короткие рубленые фразы.
+Длина: 100-150 слов.
 Пиши на русском языке.
 
 Теги пауз:
-- [short pause] — резкие короткие паузы для ритма
+- [short pause] — резкие короткие паузы
 - [pause] — паузы перед командами
 Минимум длинных пауз — держи энергию!`,
-    en: `Create a motivational affirmation to break through physical barriers.
+    en: `Create a protocol for maximum energy and drive.
 
 CRITICAL: Write ONLY in FIRST PERSON!
-- Correct: "I am stronger than pain!", "My body is a machine!", "I don't give up!"
-- WRONG: "You are stronger", "Your body" — this is FORBIDDEN!
+- Correct: "I am charged!", "My energy is at max!", "I am ready to act!"
+- WRONG: "You are charged", "Your energy" — this is FORBIDDEN!
 
-Style: aggressive, commanding, no self-pity.
-Short punchy phrases. Self-imperatives.
-Length: 150-200 words.
+Style: aggressive, energetic, commanding.
+Short punchy phrases.
+Length: 100-150 words.
 Write in English.
 
 Pause tags:
-- [short pause] — sharp brief pauses for rhythm
+- [short pause] — sharp brief pauses
 - [pause] — pauses before commands
 Minimal long pauses — keep the energy!`,
   },
+  // === TRADER-SPECIFIC SCENARIOS ===
   sos: {
-    ru: `Создай экстренную аффирмацию для снятия тревоги/паники.
+    ru: `Создай экстренный протокол Anti-Tilt для трейдера после убыточной сделки.
 
 КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
-- Правильно: "Я в безопасности", "Моё дыхание спокойно", "Я здесь и сейчас"
-- НЕПРАВИЛЬНО: "Ты в безопасности", "Твоё дыхание" — это ЗАПРЕЩЕНО!
+- Правильно: "Я принимаю убыток", "Это плата за бизнес", "Я убираю руки от клавиатуры"
+- НЕПРАВИЛЬНО: "Ты принимаешь", "Твой убыток" — это ЗАПРЕЩЕНО!
 
-Стиль: медленный, авторитетный, заземляющий.
-Техника grounding: ощущения тела, дыхание, присутствие.
-Длина: 200-250 слов.
+Контекст: Пользователь только что получил стоп-лосс и хочет отыграться (revenge trade).
+Цель: Остановить revenge trade, принять убыток как часть бизнеса.
+
+Стиль: ХОЛОДНЫЙ, авторитетный, без эмоций. Короткие предложения.
+Ключевые фразы для использования:
+- "Убыток — это плата за бизнес"
+- "Я убираю руки от клавиатуры"
+- "Рынок никуда не денется"
+- "Я не revenge trader"
+- "Эмоции — это ликвидность для маркетмейкеров"
+
+Длина: 150-200 слов.
 Пиши на русском языке.
 
 Теги пауз:
 - [short pause] — короткая пауза
 - [pause] — пауза для дыхания
 - [long pause] — длинная пауза для успокоения
-Используй [long pause] ЧАСТО — паузы дают время на глубокое дыхание!`,
-    en: `Create an emergency affirmation to relieve anxiety/panic.
+Используй [long pause] ЧАСТО!`,
+    en: `Create an emergency Anti-Tilt protocol for a trader after a losing trade.
 
 CRITICAL: Write ONLY in FIRST PERSON!
-- Correct: "I am safe", "My breathing is calm", "I am here and now"
-- WRONG: "You are safe", "Your breathing" — this is FORBIDDEN!
+- Correct: "I accept the loss", "This is cost of business", "I take my hands off the keyboard"
+- WRONG: "You accept", "Your loss" — this is FORBIDDEN!
 
-Style: slow, authoritative, grounding.
-Grounding technique: body sensations, breathing, presence.
-Length: 200-250 words.
+Context: User just got stopped out and wants revenge trade.
+Goal: Stop revenge trade, accept loss as part of business.
+
+Style: COLD, authoritative, emotionless. Short sentences.
+Key phrases to use:
+- "Loss is the cost of business"
+- "I take my hands off the keyboard"
+- "Market will be here tomorrow"
+- "I am not a revenge trader"
+- "Emotions are liquidity for market makers"
+
+Length: 150-200 words.
 Write in English.
 
 Pause tags:
 - [short pause] — brief pause
 - [pause] — pause for breathing
 - [long pause] — longer pause for calming
-Use [long pause] FREQUENTLY — pauses give time for deep breathing!`,
+Use [long pause] FREQUENTLY!`,
+  },
+  diamond_hands: {
+    ru: `Создай протокол Diamond Hands для удержания прибыльной позиции.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я держу позицию", "Мой план работает", "Страх — не советник"
+- НЕПРАВИЛЬНО: "Ты держишь", "Твой план" — это ЗАПРЕЩЕНО!
+
+Контекст: Актив растёт по плану, но страх заставляет закрыть раньше тейк-профита.
+Цель: Укрепить дисциплину, напомнить о плане, удержать позицию.
+
+Стиль: Уверенный, поддерживающий дисциплину, НО не эмоциональный.
+Ключевые фразы:
+- "Я видел план — я следую ему"
+- "Страх — не советник"
+- "Diamond hands"
+- "Я забираю всё движение"
+- "Жадность здесь — это дисциплина"
+
+Длина: 150-200 слов.
+Пиши на русском языке.
+
+Теги пауз:
+- [short pause] — короткая пауза
+- [pause] — пауза для осознания
+- [long pause] — пауза для укрепления уверенности`,
+    en: `Create a Diamond Hands protocol for holding a profitable position.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I hold the position", "My plan is working", "Fear is not an advisor"
+- WRONG: "You hold", "Your plan" — this is FORBIDDEN!
+
+Context: Asset is going up as planned, but fear pushes to close before take-profit.
+Goal: Strengthen discipline, remind of the plan, hold the position.
+
+Style: Confident, discipline-supporting, BUT not emotional.
+Key phrases:
+- "I saw the plan — I follow it"
+- "Fear is not an advisor"
+- "Diamond hands"
+- "I take the full move"
+- "Greed here is discipline"
+
+Length: 150-200 words.
+Write in English.
+
+Pause tags:
+- [short pause] — brief pause
+- [pause] — pause for awareness
+- [long pause] — pause for building confidence`,
+  },
+  fomo_killer: {
+    ru: `Создай протокол FOMO Killer для остановки импульсивного входа.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я останавливаюсь", "Где мой план входа?", "FOMO — налог на нетерпение"
+- НЕПРАВИЛЬНО: "Ты останавливаешься", "Твой план" — это ЗАПРЕЩЕНО!
+
+Контекст: Пользователь видит памп и хочет войти без анализа.
+Цель: Остановить FOMO, вернуть к системе.
+
+Стиль: Жёсткий, вопросительный, заземляющий.
+Ключевые фразы:
+- "Где мой план входа?"
+- "Это сигнал системы или эмоция?"
+- "FOMO — это налог на нетерпение"
+- "Упущенная сделка лучше убыточной"
+- "Я не покупаю хайп"
+
+Длина: 150-200 слов.
+Пиши на русском языке.
+
+Теги пауз:
+- [short pause] — короткая пауза
+- [pause] — пауза для вопроса к себе
+- [long pause] — пауза для осознания`,
+    en: `Create a FOMO Killer protocol to stop impulsive entry.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I stop", "Where is my entry plan?", "FOMO is a tax on impatience"
+- WRONG: "You stop", "Your plan" — this is FORBIDDEN!
+
+Context: User sees a pump and wants to enter without analysis.
+Goal: Stop FOMO, return to system.
+
+Style: Hard, questioning, grounding.
+Key phrases:
+- "Where is my entry plan?"
+- "Is this a system signal or emotion?"
+- "FOMO is a tax on impatience"
+- "A missed trade is better than a losing trade"
+- "I don't buy hype"
+
+Length: 150-200 words.
+Write in English.
+
+Pause tags:
+- [short pause] — brief pause
+- [pause] — pause for self-questioning
+- [long pause] — pause for awareness`,
+  },
+  market_close: {
+    ru: `Создай протокол Market Close для отключения от рынка и глубокого сна.
+
+КРИТИЧЕСКИ ВАЖНО: Пиши ТОЛЬКО от ПЕРВОГО ЛИЦА!
+- Правильно: "Я закрываю терминал", "Рынок будет завтра", "Моё тело просит отдыха"
+- НЕПРАВИЛЬНО: "Ты закрываешь", "Твой терминал" — это ЗАПРЕЩЕНО!
+
+Контекст: Поздняя ночь, усталость, переторговка. Глаза красные от свечей.
+Цель: Вывести в режим сна, отключить от рынка.
+
+Стиль: Мягкий, успокаивающий, медленный темп.
+Ключевые фразы:
+- "Рынок будет завтра"
+- "Моё тело просит отдыха"
+- "Отпусти свечи"
+- "Усталый трейдер — убыточный трейдер"
+- "Сон — это часть стратегии"
+
+Длина: 200-250 слов.
+Пиши на русском языке.
+
+Теги пауз:
+- [short pause] — короткая пауза
+- [pause] — пауза для расслабления
+- [long pause] — пауза для погружения в сон
+Используй ОЧЕНЬ МНОГО длинных пауз — это протокол засыпания!`,
+    en: `Create a Market Close protocol for disconnecting from market and deep sleep.
+
+CRITICAL: Write ONLY in FIRST PERSON!
+- Correct: "I close the terminal", "Market will be here tomorrow", "My body needs rest"
+- WRONG: "You close", "Your terminal" — this is FORBIDDEN!
+
+Context: Late night, exhaustion, overtrading. Red eyes from candles.
+Goal: Transition to sleep mode, disconnect from market.
+
+Style: Soft, calming, slow pace.
+Key phrases:
+- "Market will be here tomorrow"
+- "My body needs rest"
+- "Let go of the candles"
+- "A tired trader is a losing trader"
+- "Sleep is part of the strategy"
+
+Length: 200-250 words.
+Write in English.
+
+Pause tags:
+- [short pause] — brief pause
+- [pause] — pause for relaxation
+- [long pause] — pause for sleep immersion
+Use VERY MANY long pauses — this is a sleep protocol!`,
   },
 };
 

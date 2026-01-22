@@ -236,7 +236,7 @@ export type Database = {
         Row: {
           id: string;
           user_id: string;
-          provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa';
+          provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
           provider_subscription_id: string | null;
           tier: 'basic' | 'pro';
           status: 'active' | 'cancelled' | 'past_due';
@@ -247,7 +247,7 @@ export type Database = {
         Insert: {
           id?: string;
           user_id: string;
-          provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa';
+          provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
           provider_subscription_id?: string | null;
           tier: 'basic' | 'pro';
           status?: 'active' | 'cancelled' | 'past_due';
@@ -258,13 +258,66 @@ export type Database = {
         Update: {
           id?: string;
           user_id?: string;
-          provider?: 'telegram_stars' | 'lemon_squeezy' | 'yookassa';
+          provider?: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
           provider_subscription_id?: string | null;
           tier?: 'basic' | 'pro';
           status?: 'active' | 'cancelled' | 'past_due';
           current_period_start?: string | null;
           current_period_end?: string | null;
           created_at?: string;
+        };
+      };
+      payments: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          telegram_id: number | null;
+          provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
+          provider_payment_id: string | null;
+          order_id: string;
+          tier: 'free' | 'basic' | 'pro';
+          amount: number;
+          currency: string;
+          status: string;
+          payment_url: string | null;
+          paid_at: string | null;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          telegram_id?: number | null;
+          provider?: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
+          provider_payment_id?: string | null;
+          order_id: string;
+          tier: 'free' | 'basic' | 'pro';
+          amount: number;
+          currency?: string;
+          status?: string;
+          payment_url?: string | null;
+          paid_at?: string | null;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          telegram_id?: number | null;
+          provider?: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
+          provider_payment_id?: string | null;
+          order_id?: string;
+          tier?: 'free' | 'basic' | 'pro';
+          amount?: number;
+          currency?: string;
+          status?: string;
+          payment_url?: string | null;
+          paid_at?: string | null;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
         };
       };
       referrals: {
@@ -306,7 +359,7 @@ export type Database = {
       input_type: 'tags' | 'voice' | 'text';
       voice_type: 'default' | 'cloned';
       tag_category: 'goal' | 'emotion' | 'situation';
-      payment_provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa';
+      payment_provider: 'telegram_stars' | 'lemon_squeezy' | 'yookassa' | 'cryptomus';
       subscription_status: 'active' | 'cancelled' | 'past_due';
       referral_status: 'pending' | 'converted' | 'paid';
     };

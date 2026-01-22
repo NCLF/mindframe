@@ -33,6 +33,11 @@ import {
   Headphones,
   Gift,
   Heart,
+  AlertCircle,
+  Diamond,
+  Bitcoin,
+  Building2,
+  Crown,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -398,6 +403,187 @@ export default function LandingPage() {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Solution Section */}
+      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-600/20 rounded-full blur-[150px]" />
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <Badge variant="secondary" className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 px-4 py-2 rounded-full border border-purple-500/20">
+              <Shield className="mr-2 h-4 w-4 text-purple-400" />
+              {t('solution.badge')}
+            </Badge>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              {t('solution.title')}{' '}
+              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                {t('solution.titleHighlight')}
+              </span>
+            </h2>
+            <p className="text-lg text-white/60 max-w-2xl mx-auto">
+              {t('solution.description')}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Waves,
+                title: t('solution.step1.title'),
+                description: t('solution.step1.description'),
+                gradient: 'from-blue-500/20 to-cyan-500/20',
+                borderColor: 'border-blue-500/30',
+                iconColor: 'text-blue-400',
+              },
+              {
+                icon: Mic2,
+                title: t('solution.step2.title'),
+                description: t('solution.step2.description'),
+                gradient: 'from-purple-500/20 to-pink-500/20',
+                borderColor: 'border-purple-500/30',
+                iconColor: 'text-purple-400',
+              },
+              {
+                icon: Target,
+                title: t('solution.step3.title'),
+                description: t('solution.step3.description'),
+                gradient: 'from-amber-500/20 to-orange-500/20',
+                borderColor: 'border-amber-500/30',
+                iconColor: 'text-amber-400',
+              },
+            ].map((step, index) => (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                whileHover={{ y: -5 }}
+                className="relative group"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${step.gradient} rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                <div className={`relative p-8 rounded-3xl bg-white/[0.02] border ${step.borderColor} backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04]`}>
+                  <div className={`w-14 h-14 mb-6 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center`}>
+                    <step.icon className={`w-7 h-7 ${step.iconColor}`} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
+                  <p className="text-white/50 leading-relaxed">{step.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Protocols Section */}
+      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <Badge variant="secondary" className="mb-6 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 px-4 py-2 rounded-full border border-emerald-500/20">
+              <Zap className="mr-2 h-4 w-4 text-emerald-400" />
+              {t('protocols.badge')}
+            </Badge>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              {t('protocols.title')}{' '}
+              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                {t('protocols.titleHighlight')}
+              </span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                id: 'sos',
+                icon: AlertCircle,
+                name: t('protocols.cards.sos.name'),
+                when: t('protocols.cards.sos.when'),
+                effect: t('protocols.cards.sos.effect'),
+                result: t('protocols.cards.sos.result'),
+                gradient: 'from-red-500 to-orange-500',
+                bgGradient: 'from-red-500/10 to-orange-500/10',
+                borderColor: 'border-red-500/30',
+              },
+              {
+                id: 'diamond_hands',
+                icon: Diamond,
+                name: t('protocols.cards.diamond_hands.name'),
+                when: t('protocols.cards.diamond_hands.when'),
+                effect: t('protocols.cards.diamond_hands.effect'),
+                result: t('protocols.cards.diamond_hands.result'),
+                gradient: 'from-cyan-500 to-blue-500',
+                bgGradient: 'from-cyan-500/10 to-blue-500/10',
+                borderColor: 'border-cyan-500/30',
+              },
+              {
+                id: 'market_close',
+                icon: Moon,
+                name: t('protocols.cards.market_close.name'),
+                when: t('protocols.cards.market_close.when'),
+                effect: t('protocols.cards.market_close.effect'),
+                result: t('protocols.cards.market_close.result'),
+                gradient: 'from-indigo-500 to-purple-500',
+                bgGradient: 'from-indigo-500/10 to-purple-500/10',
+                borderColor: 'border-indigo-500/30',
+              },
+            ].map((protocol, index) => (
+              <motion.div
+                key={protocol.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                whileHover={{ y: -5 }}
+                className="relative group"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${protocol.bgGradient} rounded-3xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
+                <div className={`relative p-6 rounded-3xl bg-white/[0.02] border ${protocol.borderColor} backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04] h-full`}>
+                  <div className={`w-12 h-12 mb-4 rounded-xl bg-gradient-to-br ${protocol.gradient} flex items-center justify-center`}>
+                    <protocol.icon className="w-6 h-6 text-white" />
+                  </div>
+
+                  <h3 className="text-lg font-bold text-white mb-3">{protocol.name}</h3>
+
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-white/40 uppercase tracking-wide mb-1">{locale === 'ru' ? 'Когда' : 'When'}</p>
+                      <p className="text-sm text-white/70">{protocol.when}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40 uppercase tracking-wide mb-1">{locale === 'ru' ? 'Эффект' : 'Effect'}</p>
+                      <p className="text-sm text-white/70">{protocol.effect}</p>
+                    </div>
+                    <div className={`mt-4 p-3 rounded-xl bg-gradient-to-r ${protocol.bgGradient} border ${protocol.borderColor}`}>
+                      <p className="text-sm font-medium text-white">{protocol.result}</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -882,31 +1068,152 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-8"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               {t('pricing.title')}
             </h2>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          {/* Anchor Pricing */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="max-w-3xl mx-auto mb-12"
+          >
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+              <p className="text-center text-amber-200 mb-2">{t('pricing.anchor')}</p>
+              <div className="flex items-center justify-center gap-2">
+                <AlertCircle className="w-5 h-5 text-red-400" />
+                <p className="text-center text-red-300 font-medium">{t('pricing.roi')}</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Crypto Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex items-center justify-center gap-2 mb-12"
+          >
+            <Bitcoin className="w-5 h-5 text-amber-400" />
+            <span className="text-amber-300 font-medium">
+              {locale === 'ru' ? 'Оплата криптой через Cryptomus' : 'Crypto payments via Cryptomus'}
+            </span>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {/* Paper Hands - Free */}
             <PricingCard
               name={t('pricing.free.name')}
               price={t('pricing.free.price')}
+              description={t('pricing.free.description')}
               features={t.raw('pricing.free.features') as string[]}
+              icon={TrendingUp}
+              gradient="from-slate-500 to-slate-600"
             />
+            {/* Trader - $49 */}
             <PricingCard
               name={t('pricing.basic.name')}
               price={t('pricing.basic.price')}
+              description={t('pricing.basic.description')}
               features={t.raw('pricing.basic.features') as string[]}
-              highlighted
+              icon={Zap}
+              gradient="from-blue-500 to-cyan-500"
             />
+            {/* Whale - $99 */}
             <PricingCard
               name={t('pricing.pro.name')}
               price={t('pricing.pro.price')}
+              description={t('pricing.pro.description')}
               features={t.raw('pricing.pro.features') as string[]}
+              highlighted
+              badge={t('pricing.pro.badge')}
+              icon={Crown}
+              gradient="from-purple-500 to-pink-500"
+            />
+            {/* Institutional - $2499 */}
+            <PricingCard
+              name={t('pricing.enterprise.name')}
+              price={t('pricing.enterprise.price')}
+              description={t('pricing.enterprise.description')}
+              features={t.raw('pricing.enterprise.features') as string[]}
+              icon={Building2}
+              gradient="from-amber-500 to-orange-500"
+              isLifetime
             />
           </div>
+        </div>
+      </section>
+
+      {/* Referral Section */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <Badge variant="secondary" className="mb-6 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 px-4 py-2 rounded-full border border-emerald-500/20">
+              <Bitcoin className="mr-2 h-4 w-4 text-emerald-400" />
+              {t('referral.badge')}
+            </Badge>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              {t('referral.title')}{' '}
+              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                {t('referral.titleHighlight')}
+              </span>
+            </h2>
+
+            <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8">
+              {t('referral.description')}
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              {(t.raw('referral.benefits') as string[]).map((benefit, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20"
+                >
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span className="text-emerald-300 text-sm">{benefit}</span>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-block"
+            >
+              <Button
+                size="lg"
+                className="px-8 py-6 rounded-full bg-gradient-to-r from-emerald-600 to-cyan-500 text-white text-lg font-semibold"
+                asChild
+              >
+                <a href="https://t.me/mindframe_support" target="_blank" rel="noopener noreferrer">
+                  {t('referral.cta')}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </a>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -922,12 +1229,13 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
               {t('cta.title')}{' '}
               <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 {t('cta.titleHighlight')}
               </span>
             </h2>
+            <p className="text-xl text-white/60 mb-8">{t('cta.subtitle')}</p>
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -944,6 +1252,7 @@ export default function LandingPage() {
                 </a>
               </Button>
             </motion.div>
+            <p className="text-sm text-white/40 mt-4">{t('cta.subtext')}</p>
           </motion.div>
         </div>
       </section>
@@ -996,6 +1305,13 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-slate-800 px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
+          {/* Disclaimer */}
+          <div className="mb-8 p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+            <p className="text-xs text-slate-500 text-center leading-relaxed">
+              {t('footer.disclaimer')}
+            </p>
+          </div>
+
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -1004,6 +1320,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <span className="text-xl font-bold text-white">MindFrame</span>
+              <span className="text-sm text-slate-500 ml-1">Terminal</span>
             </div>
             <p className="text-sm text-slate-500">
               &copy; {new Date().getFullYear()} MindFrame. All rights reserved.
@@ -1026,13 +1343,23 @@ export default function LandingPage() {
 function PricingCard({
   name,
   price,
+  description,
   features,
   highlighted = false,
+  badge,
+  icon: Icon,
+  gradient,
+  isLifetime = false,
 }: {
   name: string;
   price: string;
+  description?: string;
   features: string[];
   highlighted?: boolean;
+  badge?: string;
+  icon?: typeof TrendingUp;
+  gradient?: string;
+  isLifetime?: boolean;
 }) {
   return (
     <motion.div
@@ -1044,46 +1371,58 @@ function PricingCard({
       className="relative"
     >
       {highlighted && (
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl blur-xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl" />
       )}
       <Card
-        className={`relative ${
+        className={`relative h-full ${
           highlighted
             ? 'border-purple-500/50 bg-gradient-to-b from-purple-500/10 to-slate-900/50'
             : 'border-slate-800 bg-slate-900/50'
         }`}
       >
-        {highlighted && (
+        {badge && (
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-purple-500 text-white">Popular</Badge>
+            <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">{badge}</Badge>
           </div>
         )}
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl text-white">{name}</CardTitle>
-          <div className="mt-4">
-            <span className="text-4xl font-bold text-white">${price}</span>
-            {price !== '0' && <span className="text-slate-400">/mo</span>}
+        <CardHeader className="text-center pb-4">
+          {Icon && gradient && (
+            <div className={`w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+              <Icon className="w-6 h-6 text-white" />
+            </div>
+          )}
+          <CardTitle className="text-lg text-white">{name}</CardTitle>
+          {description && (
+            <CardDescription className="text-slate-400 text-sm">{description}</CardDescription>
+          )}
+          <div className="mt-3">
+            <span className="text-3xl font-bold text-white">${price}</span>
+            {price !== '0' && (
+              <span className="text-slate-400 text-sm">
+                {isLifetime ? ' lifetime' : '/mo'}
+              </span>
+            )}
           </div>
         </CardHeader>
-        <CardContent>
-          <ul className="space-y-3">
+        <CardContent className="pt-0">
+          <ul className="space-y-2">
             {features.map((feature, index) => (
-              <li key={index} className="flex items-center text-slate-300">
-                <Check className="mr-2 h-4 w-4 text-green-400" />
-                {feature}
+              <li key={index} className="flex items-start text-slate-300 text-sm">
+                <Check className="mr-2 h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <span>{feature}</span>
               </li>
             ))}
           </ul>
           <Button
             className={`mt-6 w-full ${
               highlighted
-                ? 'bg-purple-600 hover:bg-purple-500'
+                ? 'bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400'
                 : 'bg-slate-700 hover:bg-slate-600'
             }`}
             asChild
           >
             <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
-              Get Started
+              {isLifetime ? 'Contact Us' : 'Get Started'}
             </a>
           </Button>
         </CardContent>

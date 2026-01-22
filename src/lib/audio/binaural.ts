@@ -73,12 +73,17 @@ export const BINAURAL_PRESETS: Record<BinauralPreset, BinauralConfig> = {
 
 // ============ Scenario to Binaural Mapping ============
 // Each scenario has an optimal binaural preset
+// Trader scenarios: alpha for grounding, beta for discipline, delta for sleep
 export const SCENARIO_BINAURAL_MAP: Record<ScenarioType, BinauralPreset> = {
   morning: 'gamma',   // Activation: gamma for peak alertness
   sport: 'gamma',     // Energy: gamma for maximum drive
-  focus: 'alpha',     // Focus: alpha for flow state
+  focus: 'beta',      // Focus: beta for analytical thinking
   evening: 'theta',   // Deactivation: theta for relaxation
-  sos: 'alpha',       // SOS: alpha for grounding
+  // === TRADER-SPECIFIC SCENARIOS ===
+  sos: 'alpha',           // Anti-Tilt: alpha for grounding, calm panic
+  diamond_hands: 'beta',  // Hold position: beta for discipline & concentration
+  fomo_killer: 'alpha',   // Stop FOMO: alpha for grounding impulsive thoughts
+  market_close: 'delta',  // Deep sleep: delta for fast recovery
 };
 
 // Get binaural config for scenario
@@ -127,6 +132,25 @@ export const SCENARIO_MIX_CONFIG: Record<ScenarioType, MixConfig> = {
     binauralVolume: 0.5,   // Increased for grounding effect
     fadeInDuration: 2,
     fadeOutDuration: 3,
+  },
+  // === TRADER-SPECIFIC SCENARIOS ===
+  diamond_hands: {
+    voiceVolume: 0.85,
+    binauralVolume: 0.45,  // Beta for discipline
+    fadeInDuration: 2,
+    fadeOutDuration: 3,
+  },
+  fomo_killer: {
+    voiceVolume: 0.8,
+    binauralVolume: 0.5,   // Alpha for grounding
+    fadeInDuration: 2,
+    fadeOutDuration: 3,
+  },
+  market_close: {
+    voiceVolume: 0.7,      // Lower voice for sleep
+    binauralVolume: 0.6,   // Higher delta for deep sleep
+    fadeInDuration: 5,
+    fadeOutDuration: 10,   // Long fade for sleep transition
   },
 };
 

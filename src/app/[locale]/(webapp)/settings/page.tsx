@@ -126,8 +126,7 @@ export default function SettingsPage() {
 
   const handleUpgrade = () => {
     haptic('medium');
-    // TODO: Open payment flow
-    alert('Upgrade feature coming soon!');
+    router.push(`/${locale}/upgrade`);
   };
 
   return (

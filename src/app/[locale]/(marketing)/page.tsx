@@ -441,7 +441,7 @@ const Hero = () => {
               SYSTEM ALERT: EMOTIONAL RISK DETECTED
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-mono font-bold text-white leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-mono font-bold text-white leading-tight mb-4">
               <GlitchText
                 text={t('hero.titlePart1')}
                 className="block"
@@ -451,8 +451,22 @@ const Hero = () => {
               </span>
             </h1>
 
+            {/* Философский слоган */}
+            <p className="text-lg sm:text-xl font-mono text-green-400/80 mb-2">
+              {locale === 'ru'
+                ? 'Спокойствие — это твоя главная Alpha.'
+                : 'Calm is your ultimate Alpha.'}
+            </p>
+            <p className="text-sm sm:text-base text-zinc-500 italic mb-6">
+              {locale === 'ru'
+                ? 'Рынок — это хаос. Твой разум должен быть тихим.'
+                : 'The market is chaos. Your mind must be still.'}
+            </p>
+
             <p className="text-zinc-400 text-base sm:text-lg mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              {t('hero.subtitle')}
+              {locale === 'ru'
+                ? 'Нейро-интерфейс для возврата в состояние Потока.'
+                : 'Neuro-interface for returning to Flow state.'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -730,8 +744,10 @@ const TechFeatures = () => {
             TECHNICAL SPECIFICATION v2.4.1
           </div>
           <h2 className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-            {t('solution.title')}
-            <span className="block text-green-500">{t('solution.titleHighlight')}</span>
+            {locale === 'ru' ? 'НЕЙРО-ИНТЕРФЕЙС' : 'NEURO-INTERFACE'}
+            <span className="block text-green-500">
+              {locale === 'ru' ? 'ДЛЯ СОСТОЯНИЯ ПОТОКА' : 'FOR FLOW STATE'}
+            </span>
           </h2>
         </motion.div>
 
@@ -846,73 +862,73 @@ const Protocols = () => {
   const protocols = [
     {
       id: 'sos',
-      title: 'SOS / STOP-LOSS',
-      subtitle: 'Emergency Protocol',
+      title: 'RESET PROTOCOL',
+      subtitle: locale === 'ru' ? 'Мягкий выход из стресса' : 'Soft stress exit',
       icon: AlertOctagon,
       color: 'red',
       description: locale === 'ru'
-        ? 'Остановка тильта. Сохранение депозита.'
-        : 'Tilt shutdown. Deposit preservation.',
+        ? 'Плавный сброс напряжения. Возврат к ясности.'
+        : 'Smooth tension release. Return to clarity.',
       details: locale === 'ru'
         ? [
-          'Мгновенная активация при обнаружении паттернов тильта',
-          'Принудительный cooldown на 15-60 минут',
-          'Guided breathing + аудио-реорентация',
-          'Блокировка торговых приложений (опционально)',
+          'Alpha-волны успокаивают нервную систему',
+          'Дыхательные практики для сброса кортизола',
+          'Голос авторитета возвращает контроль',
+          'Восстановление ясности за 3-5 минут',
         ]
         : [
-          'Instant activation on tilt pattern detection',
-          'Forced cooldown for 15-60 minutes',
-          'Guided breathing + audio reorientation',
-          'Trading app blocking (optional)',
+          'Alpha waves calm the nervous system',
+          'Breathing exercises to release cortisol',
+          'Authority voice restores control',
+          'Clarity restored in 3-5 minutes',
         ],
       status: 'CRITICAL',
     },
     {
       id: 'diamond',
-      title: 'DIAMOND HANDS',
-      subtitle: 'Hold Protocol',
+      title: 'WHALE MINDSET',
+      subtitle: locale === 'ru' ? 'Голос на частоте уверенности' : 'Voice at confidence frequency',
       icon: Diamond,
       color: 'cyan',
       description: locale === 'ru'
-        ? 'Удержание позиции до тейка.'
-        : 'Holding position to take profit.',
+        ? 'Думай как кит. Торгуй без эмоций.'
+        : 'Think like a whale. Trade without emotion.',
       details: locale === 'ru'
         ? [
-          'Укрепление решимости через нейро-программирование',
-          'Визуализация целевой цены',
-          'Whale Voice мотивация каждые 4 часа',
-          'Реалтайм мониторинг уровня уверенности',
+          'Beta-волны для концентрации и решимости',
+          'Голос институционального трейдера',
+          'Укрепление дисциплины и плана',
+          'Эмоциональная отстранённость от P&L',
         ]
         : [
-          'Resolution strengthening through neuro-programming',
-          'Target price visualization',
-          'Whale Voice motivation every 4 hours',
-          'Real-time confidence level monitoring',
+          'Beta waves for focus and determination',
+          'Institutional trader voice',
+          'Discipline and plan reinforcement',
+          'Emotional detachment from P&L',
         ],
       status: 'ACTIVE',
     },
     {
       id: 'sleep',
       title: 'DEEP SLEEP',
-      subtitle: 'Recovery Protocol',
+      subtitle: locale === 'ru' ? 'Дельта-волны для нейропластичности' : 'Delta waves for neuroplasticity',
       icon: Moon,
       color: 'purple',
       description: locale === 'ru'
-        ? 'Принудительный вход в Delta-сон.'
-        : 'Forced entry into Delta-sleep.',
+        ? 'Восстановление мозга. Новые нейронные связи за ночь.'
+        : 'Brain recovery. New neural pathways overnight.',
       details: locale === 'ru'
         ? [
-          'Биноуральные ритмы для глубокого сна',
-          '8-часовой цикл восстановления',
-          'Отключение всех уведомлений',
-          'Утренний брифинг по рынку',
+          'Delta-волны запускают глубокий сон',
+          'Нейропластичность активируется ночью',
+          'Консолидация торговых паттернов',
+          'Свежий разум к открытию рынка',
         ]
         : [
-          'Binaural beats for deep sleep',
-          '8-hour recovery cycle',
-          'All notifications disabled',
-          'Morning market briefing',
+          'Delta waves trigger deep sleep',
+          'Neuroplasticity activates overnight',
+          'Trading pattern consolidation',
+          'Fresh mind for market open',
         ],
       status: 'STANDBY',
     },
@@ -1149,11 +1165,11 @@ const Pricing = () => {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 border border-green-500/30 bg-green-500/5 font-mono text-xs text-green-400 mb-6">
-            ROI CALCULATOR
+            {locale === 'ru' ? 'ИНВЕСТИЦИЯ В СЕБЯ' : 'INVESTMENT IN YOURSELF'}
           </div>
           <h2 className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-            {locale === 'ru' ? 'СКОЛЬКО СТОИТ' : 'HOW MUCH IS'}
-            <span className="block text-red-500">{locale === 'ru' ? 'ТВОЯ ОШИБКА?' : 'YOUR MISTAKE?'}</span>
+            {locale === 'ru' ? 'ИНВЕСТИЦИЯ' : 'INVESTMENT'}
+            <span className="block text-green-500">{locale === 'ru' ? 'В СВОЁ СОСТОЯНИЕ' : 'IN YOUR STATE'}</span>
           </h2>
         </motion.div>
 
@@ -1188,11 +1204,16 @@ const Pricing = () => {
               </div>
             </div>
           </div>
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-3">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-900 border border-zinc-800 font-mono">
               <span className="text-zinc-400">ROI:</span>
               <span className="text-2xl font-bold text-green-500">2000%+</span>
             </div>
+            <p className="font-mono text-sm text-zinc-500 italic">
+              {locale === 'ru'
+                ? 'Одно взвешенное решение окупает подписку на год.'
+                : 'One balanced decision pays for a year of subscription.'}
+            </p>
           </div>
         </motion.div>
 
@@ -1323,12 +1344,17 @@ const Footer = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="font-mono text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
+          <h2 className="font-mono text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
             {locale === 'ru' ? 'ПРЕКРАТИ БЫТЬ ЛИКВИДНОСТЬЮ.' : "STOP BEING LIQUIDITY."}
             <span className="block text-green-500">
               {locale === 'ru' ? 'СТАНЬ ОПЕРАТОРОМ РЫНКА.' : 'BECOME A MARKET OPERATOR.'}
             </span>
           </h2>
+          <p className="text-zinc-500 text-sm italic mb-4">
+            {locale === 'ru'
+              ? 'Спокойный разум — твоё преимущество.'
+              : 'A calm mind is your edge.'}
+          </p>
           <motion.a
             href="https://t.me/Mind_Frame_bot"
             target="_blank"

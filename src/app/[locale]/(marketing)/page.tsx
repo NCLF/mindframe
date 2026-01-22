@@ -4,1429 +4,1433 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Brain,
-  Mic2,
-  Waves,
-  Sun,
+  AlertOctagon,
+  Diamond,
   Moon,
-  Target,
-  Briefcase,
-  Check,
-  ArrowRight,
-  Users,
-  TrendingUp,
-  Zap,
-  Sparkles,
+  ChevronRight,
+  TrendingDown,
+  UserX,
   Activity,
-  HeartPulse,
+  Waves,
+  Mic,
+  FileCode,
+  Cpu,
+  Shield,
+  Zap,
+  Crown,
+  Building,
+  Check,
   Play,
   Pause,
-  Volume2,
-  Shield,
-  Award,
-  Lock,
-  X,
   Headphones,
-  Gift,
-  Heart,
-  AlertCircle,
-  Diamond,
-  Bitcoin,
-  Building2,
-  Crown,
 } from 'lucide-react';
 
-export default function LandingPage() {
-  const t = useTranslations('landing');
-  const locale = useLocale();
-  const [playingDemo, setPlayingDemo] = useState<string | null>(null);
-  const [demoProgress, setDemoProgress] = useState(0);
-  const [activeTrack, setActiveTrack] = useState<'generic' | 'neuroself'>('neuroself');
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+/* --------------------------------------------------------------------------------
+ * ANIMATED BACKGROUND WITH CANVAS
+ * -------------------------------------------------------------------------------- */
 
-  // Audio paths based on locale
-  const morningAudioUrl = `/audio/samples/morning_${locale}.mp3`;
-  const eveningAudioUrl = `/audio/samples/evening_${locale}.mp3`;
-
-  const handlePlayDemo = (demoId: string, audioUrl: string) => {
-    if (playingDemo === demoId) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
-      setPlayingDemo(null);
-      setDemoProgress(0);
-    } else {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.onended = () => {
-        setPlayingDemo(null);
-        setDemoProgress(0);
-        if (progressInterval.current) clearInterval(progressInterval.current);
-      };
-      audioRef.current.onerror = () => {
-        setPlayingDemo(null);
-        setDemoProgress(0);
-      };
-      audioRef.current.play().catch(() => {
-        setPlayingDemo(null);
-      });
-      setPlayingDemo(demoId);
-
-      // Progress simulation
-      progressInterval.current = setInterval(() => {
-        if (audioRef.current) {
-          const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-          setDemoProgress(progress || 0);
-        }
-      }, 100);
-    }
-  };
+const AnimatedBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      opacity: number;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    const createParticles = () => {
+      particles = [];
+      const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          size: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.5 + 0.1,
+        });
+      }
+    };
+
+    const drawGrid = () => {
+      ctx.strokeStyle = 'rgba(34, 197, 94, 0.03)';
+      ctx.lineWidth = 0.5;
+      const gridSize = 50;
+
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+    };
+
+    const animate = () => {
+      ctx.fillStyle = '#050505';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      drawGrid();
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(34, 197, 94, ${p.opacity})`;
+        ctx.fill();
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    resize();
+    createParticles();
+    animate();
+
+    const handleResize = () => {
+      resize();
+      createParticles();
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      if (progressInterval.current) clearInterval(progressInterval.current);
-      if (audioRef.current) audioRef.current.pause();
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
-    <main className="relative overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 py-24 sm:px-6 lg:px-8">
-        {/* Animated Background Orbs */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-purple-600/30 rounded-full blur-[120px]"
-          />
-          <motion.div
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.2, 0.4, 0.2],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[100px]"
-          />
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-0"
+    />
+  );
+};
 
-          {/* Grid Pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.02]"
-            style={{
-              backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                               linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-              backgroundSize: '50px 50px',
-            }}
+/* --------------------------------------------------------------------------------
+ * GLITCH TEXT COMPONENT
+ * -------------------------------------------------------------------------------- */
+
+const GlitchText = ({ text, className = '' }: { text: string; className?: string }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [isGlitching, setIsGlitching] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+
+    const typeInterval = setInterval(() => {
+      if (index <= text.length) {
+        setDisplayText(text.slice(0, index));
+        index++;
+      } else {
+        clearInterval(typeInterval);
+      }
+    }, 50);
+
+    const glitchInterval = setInterval(() => {
+      setIsGlitching(true);
+      setTimeout(() => setIsGlitching(false), 100);
+    }, 3000);
+
+    return () => {
+      clearInterval(typeInterval);
+      clearInterval(glitchInterval);
+    };
+  }, [text]);
+
+  return (
+    <span className={`relative inline-block ${className}`}>
+      <span className={`${isGlitching ? 'opacity-0' : 'opacity-100'}`}>
+        {displayText}
+      </span>
+      {isGlitching && (
+        <>
+          <span className="absolute inset-0 text-red-500 transform translate-x-[2px] translate-y-[1px] opacity-70">
+            {displayText}
+          </span>
+          <span className="absolute inset-0 text-cyan-400 transform -translate-x-[2px] -translate-y-[1px] opacity-70">
+            {displayText}
+          </span>
+        </>
+      )}
+      <motion.span
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{ duration: 0.8, repeat: Infinity }}
+        className="text-green-500"
+      >
+        _
+      </motion.span>
+    </span>
+  );
+};
+
+/* --------------------------------------------------------------------------------
+ * CANDLESTICK CHART
+ * -------------------------------------------------------------------------------- */
+
+const CandlestickChart = () => {
+  const [candles, setCandles] = useState<Array<{
+    open: number;
+    close: number;
+    high: number;
+    low: number;
+    isGreen: boolean;
+    isVolatile: boolean;
+  }>>([]);
+
+  useEffect(() => {
+    const generateCandles = () => {
+      const newCandles = [];
+      let basePrice = 100;
+
+      for (let i = 0; i < 20; i++) {
+        const volatility = i < 10 ? 15 : 3;
+        const trend = i < 10 ? (Math.random() - 0.6) : (Math.random() - 0.3);
+
+        const open = basePrice;
+        const change = (Math.random() - 0.5) * volatility + trend * 5;
+        const close = basePrice + change;
+        const high = Math.max(open, close) + Math.random() * volatility * 0.5;
+        const low = Math.min(open, close) - Math.random() * volatility * 0.5;
+
+        newCandles.push({
+          open,
+          close,
+          high,
+          low,
+          isGreen: close > open,
+          isVolatile: i < 10,
+        });
+
+        basePrice = close;
+      }
+      setCandles(newCandles);
+    };
+
+    generateCandles();
+    const interval = setInterval(generateCandles, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (candles.length === 0) return null;
+
+  const minPrice = Math.min(...candles.map(c => c.low), 80);
+  const maxPrice = Math.max(...candles.map(c => c.high), 120);
+  const priceRange = maxPrice - minPrice;
+
+  const scaleY = (price: number) => {
+    return 180 - ((price - minPrice) / priceRange) * 160;
+  };
+
+  return (
+    <div className="relative w-full max-w-lg mx-auto h-64 bg-[#0a0a0a] border border-zinc-800 rounded-lg overflow-hidden">
+      <svg className="absolute inset-0 w-full h-full">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <line
+            key={`h-${i}`}
+            x1="0"
+            y1={i * 50 + 20}
+            x2="100%"
+            y2={i * 50 + 20}
+            stroke="rgba(34, 197, 94, 0.1)"
+            strokeWidth="0.5"
           />
-        </div>
+        ))}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+          <line
+            key={`v-${i}`}
+            x1={i * 50 + 20}
+            y1="0"
+            x2={i * 50 + 20}
+            y2="100%"
+            stroke="rgba(34, 197, 94, 0.1)"
+            strokeWidth="0.5"
+          />
+        ))}
+      </svg>
 
-        <div className="relative z-10 mx-auto max-w-5xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Badge variant="secondary" className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 px-4 py-2 rounded-full border border-purple-500/20">
-              <Brain className="mr-2 h-4 w-4 text-purple-400" />
-              {t('hero.badge')}
-            </Badge>
-          </motion.div>
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
+        {candles.map((candle, i) => {
+          const x = i * 20 + 10;
+          const wickTop = scaleY(candle.high);
+          const wickBottom = scaleY(candle.low);
+          const bodyTop = scaleY(Math.max(candle.open, candle.close));
+          const bodyBottom = scaleY(Math.min(candle.open, candle.close));
+          const bodyHeight = Math.max(bodyBottom - bodyTop, 2);
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl leading-tight"
-          >
-            <span className="text-white">{t('hero.titlePart1')}</span>
-            <br />
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-              {t('hero.titlePart2')}
+          const color = candle.isVolatile
+            ? (candle.isGreen ? '#22c55e' : '#ef4444')
+            : '#22c55e';
+
+          return (
+            <motion.g
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.3 }}
+            >
+              <line
+                x1={x}
+                y1={wickTop}
+                x2={x}
+                y2={wickBottom}
+                stroke={color}
+                strokeWidth="1"
+              />
+              <rect
+                x={x - 4}
+                y={bodyTop}
+                width="8"
+                height={bodyHeight}
+                fill={candle.isGreen ? color : 'transparent'}
+                stroke={color}
+                strokeWidth="1"
+              />
+            </motion.g>
+          );
+        })}
+      </svg>
+
+      <div className="absolute bottom-2 left-2 text-[10px] font-mono text-zinc-500">
+        VOLATILITY → STABILITY
+      </div>
+      <div className="absolute top-2 right-2 flex items-center gap-2">
+        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+        <span className="text-[10px] font-mono text-zinc-500">LIVE</span>
+      </div>
+    </div>
+  );
+};
+
+/* --------------------------------------------------------------------------------
+ * HEADER
+ * -------------------------------------------------------------------------------- */
+
+const Header = () => {
+  const [gasPrice, setGasPrice] = useState(12);
+  const locale = useLocale();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGasPrice(Math.floor(Math.random() * 20) + 8);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <motion.header
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/90 backdrop-blur-md border-b border-zinc-800/50"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <span className="font-mono text-lg sm:text-xl font-bold text-white tracking-tight">
+              MINDFRAME
+              <span className="text-green-500">_</span>
+              TERMINAL
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="text-green-500"
+              >
+                ▌
+              </motion.span>
             </span>
-          </motion.h1>
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mx-auto mb-8 max-w-3xl text-lg text-slate-400 sm:text-xl leading-relaxed"
-          >
-            {t('hero.subtitle')}
-          </motion.p>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="font-mono text-xs text-zinc-400">
+                Status: <span className="text-green-500">ONLINE</span>
+              </span>
+            </div>
 
-          {/* Benefits Pills */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="flex flex-wrap justify-center gap-3 mb-10"
-          >
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              <span className="text-white/90 text-sm font-medium">{t('hero.benefit1')}</span>
+            <div className="hidden md:flex items-center gap-2 font-mono text-xs text-zinc-400">
+              <span className="text-zinc-500">Gas:</span>
+              <motion.span
+                key={gasPrice}
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-cyan-400"
+              >
+                {gasPrice} Gwei
+              </motion.span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Zap className="w-4 h-4 text-purple-400" />
-              <span className="text-white/90 text-sm font-medium">{t('hero.benefit2')}</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Moon className="w-4 h-4 text-blue-400" />
-              <span className="text-white/90 text-sm font-medium">{t('hero.benefit3')}</span>
-            </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col items-center justify-center gap-4 sm:flex-row mb-12"
-          >
-            <motion.div
+            <motion.a
+              href="https://t.me/Mind_Frame_bot"
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="relative group"
+              className="relative px-4 py-2 font-mono text-xs sm:text-sm font-medium text-green-400 border border-green-500/50 bg-green-500/5 hover:bg-green-500/10 transition-all duration-200 group"
             >
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 rounded-full blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
-              <Button
-                size="lg"
-                className="relative bg-gradient-to-r from-purple-600 to-blue-600 text-lg hover:from-purple-500 hover:to-blue-500 px-8 py-6 rounded-full font-semibold shadow-2xl shadow-purple-500/30 border-0"
-                asChild
-              >
-                <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
-                  {t('hero.cta')}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          {/* Social Proof */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="flex items-center justify-center gap-3"
-          >
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full border-2 border-slate-900 bg-gradient-to-br from-purple-400/20 to-blue-400/20 backdrop-blur-sm flex items-center justify-center"
-                >
-                  <Users className="w-4 h-4 text-white/50" />
-                </div>
-              ))}
-            </div>
-            <div className="text-left">
-              <p className="text-white font-semibold">{t('hero.socialProofNumber')}</p>
-              <p className="text-white/50 text-sm">{t('hero.socialProofText')}</p>
-            </div>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2"
-            >
+              <span className="relative z-10">[ CONNECT ]</span>
               <motion.div
-                animate={{ opacity: [1, 0, 1], y: [0, 8, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-1.5 h-1.5 rounded-full bg-white/50"
+                className="absolute inset-0 bg-green-500/20"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{ transformOrigin: 'left' }}
               />
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Problem/Solution Section */}
-      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-red-500/10 rounded-full blur-[100px]" />
-          <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px]" />
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('problem.title')}
-              <span className="text-red-400"> {t('problem.titleHighlight')}</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Bad Side */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent rounded-3xl blur-xl opacity-50" />
-              <div className="relative p-8 rounded-3xl bg-white/[0.02] border border-red-500/20 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center">
-                    <X className="w-6 h-6 text-red-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white/80">{t('problem.badTitle')}</h3>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
-                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                      <Volume2 className="w-4 h-4 text-red-400" />
-                    </div>
-                    <p className="text-white/60 leading-relaxed">{t('problem.bad1')}</p>
-                  </div>
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-red-500/5 border border-red-500/10">
-                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                      <X className="w-4 h-4 text-red-400" />
-                    </div>
-                    <p className="text-white/60 leading-relaxed">{t('problem.bad2')}</p>
-                  </div>
-                </div>
-
-                {/* Static Waveform */}
-                <div className="mt-6 p-4 rounded-xl bg-black/30">
-                  <div className="flex items-center gap-1 h-12">
-                    {Array.from({ length: 40 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 bg-red-500/30 rounded-full"
-                        style={{ height: `${Math.random() * 60 + 20}%` }}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-center text-sm text-white/30 mt-2">{t('problem.badWaveText')}</p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Good Side */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-blue-500/10 rounded-3xl blur-xl opacity-70" />
-              <div className="relative p-8 rounded-3xl bg-white/[0.03] border border-purple-500/30 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-                    <Check className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white">{t('problem.goodTitle')}</h3>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-transparent border border-purple-500/20">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0">
-                      <Brain className="w-4 h-4 text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">{t('problem.good1Title')}</p>
-                      <p className="text-white/60 text-sm mt-1">{t('problem.good1')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-transparent border border-purple-500/20">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0">
-                      <Waves className="w-4 h-4 text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">{t('problem.good2Title')}</p>
-                      <p className="text-white/60 text-sm mt-1">{t('problem.good2')}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Animated Waveform */}
-                <div className="mt-6 p-4 rounded-xl bg-black/30 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-blue-500/5" />
-                  <div className="flex items-center gap-1 h-12 relative">
-                    {Array.from({ length: 40 }).map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="flex-1 rounded-full bg-gradient-to-t from-purple-500 to-blue-400"
-                        animate={{
-                          height: ['30%', `${Math.random() * 80 + 20}%`, '30%'],
-                        }}
-                        transition={{
-                          duration: 0.8,
-                          repeat: Infinity,
-                          delay: i * 0.02,
-                          ease: 'easeInOut',
-                        }}
-                        style={{ height: '30%' }}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-center text-sm text-purple-300/70 mt-2">{t('problem.goodWaveText')}</p>
-                </div>
-              </div>
-            </motion.div>
+            </motion.a>
           </div>
         </div>
-      </section>
+      </div>
+    </motion.header>
+  );
+};
 
-      {/* Solution Section */}
-      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-600/20 rounded-full blur-[150px]" />
-        </div>
+/* --------------------------------------------------------------------------------
+ * HERO SECTION
+ * -------------------------------------------------------------------------------- */
 
-        <div className="relative z-10 max-w-6xl mx-auto">
+const Hero = () => {
+  const t = useTranslations('landing');
+  const locale = useLocale();
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center pt-16 px-4 overflow-hidden">
+      <div className="max-w-6xl mx-auto w-full">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-center lg:text-left"
           >
-            <Badge variant="secondary" className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 px-4 py-2 rounded-full border border-purple-500/20">
-              <Shield className="mr-2 h-4 w-4 text-purple-400" />
-              {t('solution.badge')}
-            </Badge>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('solution.title')}{' '}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {t('solution.titleHighlight')}
-              </span>
-            </h2>
-            <p className="text-lg text-white/60 max-w-2xl mx-auto">
-              {t('solution.description')}
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Waves,
-                title: t('solution.step1.title'),
-                description: t('solution.step1.description'),
-                gradient: 'from-blue-500/20 to-cyan-500/20',
-                borderColor: 'border-blue-500/30',
-                iconColor: 'text-blue-400',
-              },
-              {
-                icon: Mic2,
-                title: t('solution.step2.title'),
-                description: t('solution.step2.description'),
-                gradient: 'from-purple-500/20 to-pink-500/20',
-                borderColor: 'border-purple-500/30',
-                iconColor: 'text-purple-400',
-              },
-              {
-                icon: Target,
-                title: t('solution.step3.title'),
-                description: t('solution.step3.description'),
-                gradient: 'from-amber-500/20 to-orange-500/20',
-                borderColor: 'border-amber-500/30',
-                iconColor: 'text-amber-400',
-              },
-            ].map((step, index) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
-                whileHover={{ y: -5 }}
-                className="relative group"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${step.gradient} rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className={`relative p-8 rounded-3xl bg-white/[0.02] border ${step.borderColor} backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04]`}>
-                  <div className={`w-14 h-14 mb-6 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center`}>
-                    <step.icon className={`w-7 h-7 ${step.iconColor}`} />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
-                  <p className="text-white/50 leading-relaxed">{step.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Protocols Section */}
-      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px]" />
-        </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <Badge variant="secondary" className="mb-6 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 px-4 py-2 rounded-full border border-emerald-500/20">
-              <Zap className="mr-2 h-4 w-4 text-emerald-400" />
-              {t('protocols.badge')}
-            </Badge>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('protocols.title')}{' '}
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                {t('protocols.titleHighlight')}
-              </span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                id: 'sos',
-                icon: AlertCircle,
-                name: t('protocols.cards.sos.name'),
-                when: t('protocols.cards.sos.when'),
-                effect: t('protocols.cards.sos.effect'),
-                result: t('protocols.cards.sos.result'),
-                gradient: 'from-red-500 to-orange-500',
-                bgGradient: 'from-red-500/10 to-orange-500/10',
-                borderColor: 'border-red-500/30',
-              },
-              {
-                id: 'diamond_hands',
-                icon: Diamond,
-                name: t('protocols.cards.diamond_hands.name'),
-                when: t('protocols.cards.diamond_hands.when'),
-                effect: t('protocols.cards.diamond_hands.effect'),
-                result: t('protocols.cards.diamond_hands.result'),
-                gradient: 'from-cyan-500 to-blue-500',
-                bgGradient: 'from-cyan-500/10 to-blue-500/10',
-                borderColor: 'border-cyan-500/30',
-              },
-              {
-                id: 'market_close',
-                icon: Moon,
-                name: t('protocols.cards.market_close.name'),
-                when: t('protocols.cards.market_close.when'),
-                effect: t('protocols.cards.market_close.effect'),
-                result: t('protocols.cards.market_close.result'),
-                gradient: 'from-indigo-500 to-purple-500',
-                bgGradient: 'from-indigo-500/10 to-purple-500/10',
-                borderColor: 'border-indigo-500/30',
-              },
-            ].map((protocol, index) => (
-              <motion.div
-                key={protocol.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
-                whileHover={{ y: -5 }}
-                className="relative group"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${protocol.bgGradient} rounded-3xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className={`relative p-6 rounded-3xl bg-white/[0.02] border ${protocol.borderColor} backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04] h-full`}>
-                  <div className={`w-12 h-12 mb-4 rounded-xl bg-gradient-to-br ${protocol.gradient} flex items-center justify-center`}>
-                    <protocol.icon className="w-6 h-6 text-white" />
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-3">{protocol.name}</h3>
-
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-xs text-white/40 uppercase tracking-wide mb-1">{locale === 'ru' ? 'Когда' : 'When'}</p>
-                      <p className="text-sm text-white/70">{protocol.when}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-white/40 uppercase tracking-wide mb-1">{locale === 'ru' ? 'Эффект' : 'Effect'}</p>
-                      <p className="text-sm text-white/70">{protocol.effect}</p>
-                    </div>
-                    <div className={`mt-4 p-3 rounded-xl bg-gradient-to-r ${protocol.bgGradient} border ${protocol.borderColor}`}>
-                      <p className="text-sm font-medium text-white">{protocol.result}</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Demo Section */}
-      <section id="demo" className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-600/30 via-pink-500/20 to-blue-500/30 rounded-full blur-[150px]"
-          />
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6">
-              <Headphones className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-purple-300">{t('demo.badge')}</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('demo.title')}{' '}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {t('demo.titleHighlight')}
-              </span>
-            </h2>
-          </motion.div>
-
-          {/* Demo Cards */}
-          <div className="grid gap-6 sm:grid-cols-2">
-            {/* Morning Demo */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              whileHover={{ y: -5 }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <button
-                onClick={() => handlePlayDemo('morning', morningAudioUrl)}
-                className="relative w-full p-8 rounded-3xl bg-white/[0.02] border border-amber-500/30 backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-amber-500/50 text-left"
-              >
-                <div className="flex items-start gap-5">
-                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0">
-                    {playingDemo === 'morning' ? (
-                      <Pause className="w-8 h-8 text-amber-400" />
-                    ) : (
-                      <Play className="w-8 h-8 text-amber-400 ml-1" />
-                    )}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/30 blur-lg opacity-50" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-2">{t('demo.morning.title')}</h3>
-                    <p className="text-white/50 leading-relaxed">{t('demo.morning.description')}</p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <span className="px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                        {t('demo.morning.tag1')}
-                      </span>
-                      <span className="px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                        40Hz Gamma
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {playingDemo === 'morning' && (
-                  <div className="mt-4 h-1 rounded-full bg-amber-500/20 overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-amber-500 to-orange-400"
-                      style={{ width: `${demoProgress}%` }}
-                    />
-                  </div>
-                )}
-              </button>
-            </motion.div>
-
-            {/* Evening Demo */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              whileHover={{ y: -5 }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <button
-                onClick={() => handlePlayDemo('evening', eveningAudioUrl)}
-                className="relative w-full p-8 rounded-3xl bg-white/[0.02] border border-indigo-500/30 backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-indigo-500/50 text-left"
-              >
-                <div className="flex items-start gap-5">
-                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    {playingDemo === 'evening' ? (
-                      <Pause className="w-8 h-8 text-indigo-400" />
-                    ) : (
-                      <Play className="w-8 h-8 text-indigo-400 ml-1" />
-                    )}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/30 to-purple-500/30 blur-lg opacity-50" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-2">{t('demo.evening.title')}</h3>
-                    <p className="text-white/50 leading-relaxed">{t('demo.evening.description')}</p>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <span className="px-3 py-1 rounded-full text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                        {t('demo.evening.tag1')}
-                      </span>
-                      <span className="px-3 py-1 rounded-full text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                        6Hz Theta
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {playingDemo === 'evening' && (
-                  <div className="mt-4 h-1 rounded-full bg-indigo-500/20 overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-400"
-                      style={{ width: `${demoProgress}%` }}
-                    />
-                  </div>
-                )}
-              </button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section id="features" className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent pointer-events-none" />
-
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('features.title')}{' '}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {t('features.titleHighlight')}
-              </span>
-            </h2>
-            <p className="text-lg text-white/50 max-w-xl mx-auto">
-              {t('features.subtitle')}
-            </p>
-          </motion.div>
-
-          <div className="relative">
-            {/* Connecting Line */}
-            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-px">
-              <div className="w-full h-full bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+            <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-zinc-900/50 font-mono text-xs text-zinc-400">
+              <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+              SYSTEM ALERT: EMOTIONAL RISK DETECTED
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-              {[
-                {
-                  number: '01',
-                  icon: Mic2,
-                  title: t('features.step1.title'),
-                  description: t('features.step1.description'),
-                  accent: 'purple',
-                },
-                {
-                  number: '02',
-                  icon: Target,
-                  title: t('features.step2.title'),
-                  description: t('features.step2.description'),
-                  accent: 'pink',
-                },
-                {
-                  number: '03',
-                  icon: Sparkles,
-                  title: t('features.step3.title'),
-                  description: t('features.step3.description'),
-                  accent: 'blue',
-                },
-              ].map((step, index) => (
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-mono font-bold text-white leading-tight mb-6">
+              <GlitchText
+                text={t('hero.titlePart1')}
+                className="block"
+              />
+              <span className="block mt-2 text-green-500">
+                {t('hero.titlePart2')}
+              </span>
+            </h1>
+
+            <p className="text-zinc-400 text-base sm:text-lg mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              {t('hero.subtitle')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <motion.a
+                href="https://t.me/Mind_Frame_bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative group px-8 py-4 bg-green-500 text-black font-mono font-bold text-sm sm:text-base overflow-hidden"
+              >
+                <span className="relative z-10">[ {t('hero.cta')} ]</span>
                 <motion.div
-                  key={step.number}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                  className="relative"
+                  className="absolute inset-0 bg-white"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.5 }}
+                />
+              </motion.a>
+              <span className="text-zinc-500 font-mono text-xs self-center">
+                {t('hero.ctaSubtext')}
+              </span>
+            </div>
+
+            <div className="mt-12 grid grid-cols-3 gap-4 border-t border-zinc-800 pt-8">
+              {[
+                { value: '2,847', label: 'ACTIVE TRADERS' },
+                { value: '$12.4M', label: 'SAVED FROM TILT' },
+                { value: '99.2%', label: 'UPTIME' },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="text-center"
                 >
-                  <div className="relative p-8 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-sm text-center group hover:bg-white/[0.04] transition-all duration-300">
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
-                          step.accent === 'purple'
-                            ? 'bg-gradient-to-r from-purple-600 to-purple-400'
-                            : step.accent === 'pink'
-                            ? 'bg-gradient-to-r from-pink-600 to-pink-400'
-                            : 'bg-gradient-to-r from-blue-600 to-blue-400'
-                        }`}
-                      >
-                        <span className="text-xs font-bold text-white">{step.number}</span>
-                      </motion.div>
-                    </div>
-
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center relative mt-4 ${
-                        step.accent === 'purple'
-                          ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20'
-                          : step.accent === 'pink'
-                          ? 'bg-gradient-to-br from-pink-500/20 to-rose-500/20'
-                          : 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20'
-                      }`}
-                    >
-                      <step.icon
-                        className={`w-10 h-10 ${
-                          step.accent === 'purple'
-                            ? 'text-purple-400'
-                            : step.accent === 'pink'
-                            ? 'text-pink-400'
-                            : 'text-blue-400'
-                        }`}
-                      />
-                      <div
-                        className={`absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity ${
-                          step.accent === 'purple'
-                            ? 'bg-gradient-to-br from-purple-500/30 to-pink-500/30'
-                            : step.accent === 'pink'
-                            ? 'bg-gradient-to-br from-pink-500/30 to-rose-500/30'
-                            : 'bg-gradient-to-br from-blue-500/30 to-cyan-500/30'
-                        }`}
-                      />
-                    </motion.div>
-
-                    <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
-                    <p className="text-white/50 leading-relaxed">{step.description}</p>
-
-                    <div
-                      className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${
-                        step.accent === 'purple'
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500'
-                          : step.accent === 'pink'
-                          ? 'bg-gradient-to-r from-pink-500 to-rose-500'
-                          : 'bg-gradient-to-r from-blue-500 to-cyan-500'
-                      }`}
-                    />
+                  <div className="font-mono text-xl sm:text-2xl font-bold text-green-500">
+                    {stat.value}
                   </div>
-
-                  {index < 2 && (
-                    <div className="hidden lg:flex absolute top-1/2 -right-6 -translate-y-1/2 w-12 items-center justify-center">
-                      <motion.svg
-                        initial={{ opacity: 0.3 }}
-                        animate={{ opacity: [0.3, 0.6, 0.3] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="w-6 h-6 text-purple-500/50"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </motion.svg>
-                    </div>
-                  )}
+                  <div className="font-mono text-[10px] sm:text-xs text-zinc-500 mt-1">
+                    {stat.label}
+                  </div>
                 </motion.div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Scenarios Section */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('scenarios.title')}
-            </h2>
-            <p className="text-lg text-white/50 max-w-2xl mx-auto">
-              {t('scenarios.subtitle')}
-            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                icon: Zap,
-                title: t('scenarios.morning.title'),
-                description: t('scenarios.morning.description'),
-                gradient: 'from-amber-500/20 to-orange-500/20',
-                borderColor: 'border-amber-500/30',
-                iconColor: 'text-amber-400',
-              },
-              {
-                icon: Shield,
-                title: t('scenarios.anxiety.title'),
-                description: t('scenarios.anxiety.description'),
-                gradient: 'from-emerald-500/20 to-teal-500/20',
-                borderColor: 'border-emerald-500/30',
-                iconColor: 'text-emerald-400',
-              },
-              {
-                icon: Brain,
-                title: t('scenarios.focus.title'),
-                description: t('scenarios.focus.description'),
-                gradient: 'from-violet-500/20 to-fuchsia-500/20',
-                borderColor: 'border-violet-500/30',
-                iconColor: 'text-violet-400',
-              },
-              {
-                icon: Moon,
-                title: t('scenarios.sleep.title'),
-                description: t('scenarios.sleep.description'),
-                gradient: 'from-blue-500/20 to-indigo-500/20',
-                borderColor: 'border-blue-500/30',
-                iconColor: 'text-blue-400',
-              },
-            ].map((scenario, index) => (
-              <motion.div
-                key={scenario.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="relative group"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${scenario.gradient} rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className={`relative p-8 rounded-3xl bg-white/[0.02] border ${scenario.borderColor} backdrop-blur-sm transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-opacity-50`}>
-                  <div className="flex items-start gap-5">
-                    <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${scenario.gradient} flex items-center justify-center flex-shrink-0`}>
-                      <scenario.icon className={`w-7 h-7 ${scenario.iconColor}`} />
-                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${scenario.gradient} blur-lg opacity-50`} />
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative"
+          >
+            <div className="absolute -inset-4 bg-gradient-to-r from-green-500/10 to-cyan-500/10 blur-3xl opacity-30" />
+            <CandlestickChart />
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 }}
+              className="absolute -bottom-4 -right-4 bg-zinc-900 border border-zinc-700 px-3 py-2 font-mono text-xs"
+            >
+              <span className="text-zinc-500">EMOTION LEVEL:</span>
+              <span className="text-green-500 ml-2">STABLE</span>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="w-6 h-10 border border-zinc-600 rounded-full flex justify-center pt-2"
+        >
+          <div className="w-1 h-2 bg-green-500 rounded-full" />
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+};
+
+/* --------------------------------------------------------------------------------
+ * PAIN SECTION
+ * -------------------------------------------------------------------------------- */
+
+const PainSection = () => {
+  const t = useTranslations('landing');
+  const locale = useLocale();
+
+  const painCards = [
+    {
+      title: 'REVENGE TRADE',
+      icon: TrendingDown,
+      text: locale === 'ru'
+        ? 'Попытка отыграться с плечом x20. Итог: Ликвидация.'
+        : 'Trying to recover with x20 leverage. Result: Liquidation.',
+      loss: '-$5,420',
+    },
+    {
+      title: 'WEAK HANDS',
+      icon: UserX,
+      text: locale === 'ru'
+        ? 'Паника на коррекции. Продажа дна. Итог: Упущенные иксы.'
+        : 'Panic on correction. Selling the bottom. Result: Missed gains.',
+      loss: '-$12,800',
+    },
+    {
+      title: 'OVERTRADING',
+      icon: Activity,
+      text: locale === 'ru'
+        ? 'Торговля от скуки во флете. Итог: Сжигание депозита.'
+        : 'Trading from boredom in sideways market. Result: Burned deposit.',
+      loss: '-$3,200',
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-4">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-red-500/30 bg-red-500/5 font-mono text-xs text-red-400 mb-6">
+            <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+            WARNING: HIGH RISK PATTERNS
+          </div>
+          <h2 className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            {t('problem.title')}
+            <span className="block text-red-500">{t('problem.titleHighlight')}</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {painCards.map((card, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              className="group relative bg-[#0a0a0a] border border-zinc-800 p-6 hover:border-red-500/50 transition-all duration-300"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-red-500/0 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <card.icon className="w-8 h-8 text-red-500" />
+                  <span className="font-mono text-xs text-zinc-600">
+                    #{String(i + 1).padStart(3, '0')}
+                  </span>
+                </div>
+
+                <h3 className="font-mono text-xl font-bold text-white mb-3 group-hover:text-red-400 transition-colors">
+                  {card.title}
+                </h3>
+
+                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                  {card.text}
+                </p>
+
+                <div className="pt-4 border-t border-zinc-800">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-zinc-500">AVG LOSS</span>
+                    <span className="font-mono text-lg font-bold text-red-500">
+                      {card.loss}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-red-500/30 group-hover:border-red-500 transition-colors" />
+              <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-red-500/30 group-hover:border-red-500 transition-colors" />
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-red-500/30 group-hover:border-red-500 transition-colors" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-red-500/30 group-hover:border-red-500 transition-colors" />
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 text-center"
+        >
+          <div className="inline-flex items-center gap-4 px-6 py-3 bg-zinc-900/50 border border-zinc-800">
+            <span className="font-mono text-sm text-zinc-400">
+              {locale === 'ru'
+                ? '95% трейдеров теряют деньги из-за эмоций'
+                : '95% of traders lose money due to emotions'}
+            </span>
+            <span className="text-red-500 font-mono font-bold">
+              {locale === 'ru' ? 'НЕ БУДЬ СТАТИСТИКОЙ' : "DON'T BE A STATISTIC"}
+            </span>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+/* --------------------------------------------------------------------------------
+ * TECH FEATURES
+ * -------------------------------------------------------------------------------- */
+
+const TechFeatures = () => {
+  const t = useTranslations('landing');
+  const locale = useLocale();
+
+  const features = [
+    {
+      icon: Waves,
+      title: 'FREQUENCY SHIFT',
+      code: 'FSH_001',
+      description: locale === 'ru'
+        ? 'Мгновенный сброс Beta-волн в Alpha-режим.'
+        : 'Instant Beta-wave reset to Alpha-mode.',
+      specs: ['40Hz → 10Hz', 'Latency: <200ms', 'Neural sync: Active'],
+    },
+    {
+      icon: Mic,
+      title: 'WHALE VOICE 2.0',
+      code: 'WV_002',
+      description: locale === 'ru'
+        ? 'Голос, который управляет миллиардами. AI убирает дрожь и эмоции.'
+        : 'Voice that manages billions. AI removes tremor and emotion.',
+      specs: ['Voice cloning: Yes', 'Confidence boost: +340%', 'Languages: 12'],
+    },
+    {
+      icon: FileCode,
+      title: 'CONTEXT SCRIPTS',
+      code: 'CS_003',
+      description: locale === 'ru'
+        ? "Никаких мантр. Только жесткие команды: 'Прими убыток', 'Держи строй'."
+        : "No mantras. Only hard commands: 'Accept the loss', 'Hold the line'.",
+      specs: ['Scripts: 847+', 'Market-aware: Yes', 'Custom: Available'],
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-4 overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+        }}
+      />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-green-500/30 bg-green-500/5 font-mono text-xs text-green-400 mb-6">
+            <Cpu className="w-3 h-3" />
+            TECHNICAL SPECIFICATION v2.4.1
+          </div>
+          <h2 className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            {t('solution.title')}
+            <span className="block text-green-500">{t('solution.titleHighlight')}</span>
+          </h2>
+        </motion.div>
+
+        <div className="space-y-6">
+          {features.map((feature, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              className="group relative"
+            >
+              <div className="relative bg-[#0a0a0a] border border-zinc-800 hover:border-green-500/30 transition-all duration-300">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800 bg-zinc-900/50">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
                     </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-white/90 transition-colors">
-                        {scenario.title}
+                    <span className="font-mono text-xs text-zinc-500">
+                      module://{feature.code.toLowerCase()}
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs text-zinc-600">
+                    {feature.code}
+                  </span>
+                </div>
+
+                <div className="p-6 lg:p-8">
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 border border-green-500/30 bg-green-500/5 flex items-center justify-center group-hover:bg-green-500/10 transition-colors">
+                        <feature.icon className="w-8 h-8 text-green-500" />
+                      </div>
+                    </div>
+
+                    <div className="flex-grow">
+                      <h3 className="font-mono text-xl lg:text-2xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors">
+                        {feature.title}
                       </h3>
-                      <p className="text-white/50 leading-relaxed group-hover:text-white/60 transition-colors">
-                        {scenario.description}
+                      <p className="text-zinc-400 leading-relaxed">
+                        {feature.description}
                       </p>
+                    </div>
+
+                    <div className="flex-shrink-0 lg:text-right">
+                      <div className="space-y-1">
+                        {feature.specs.map((spec, j) => (
+                          <div
+                            key={j}
+                            className="font-mono text-xs text-zinc-500"
+                          >
+                            <span className="text-green-500/50 mr-2">›</span>
+                            {spec}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Trust/Science Section */}
-      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-t from-purple-500/5 via-transparent to-transparent" />
+                <div className="h-0.5 bg-zinc-800">
+                  <motion.div
+                    className="h-full bg-green-500"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: '100%' }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, delay: i * 0.2 }}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              <span className="text-sm text-emerald-300">{t('science.badge')}</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 flex flex-wrap justify-center gap-4"
+        >
+          {[
+            { icon: Shield, text: 'SOC 2 Compliant' },
+            { icon: Zap, text: '99.99% Uptime' },
+            { icon: Cpu, text: 'Edge Computing' },
+          ].map((badge, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-2 px-4 py-2 border border-zinc-800 bg-zinc-900/50 font-mono text-xs text-zinc-400"
+            >
+              <badge.icon className="w-3 h-3 text-green-500" />
+              {badge.text}
             </div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6 max-w-3xl mx-auto leading-tight">
-              {t('science.title')}{' '}
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                {t('science.titleHighlight')}
-              </span>
-            </h2>
+/* --------------------------------------------------------------------------------
+ * PROTOCOLS SECTION
+ * -------------------------------------------------------------------------------- */
 
-            <p className="text-lg text-white/50 max-w-2xl mx-auto">
-              {t('science.description')}
-            </p>
-          </motion.div>
+const Protocols = () => {
+  const [activeProtocol, setActiveProtocol] = useState('sos');
+  const locale = useLocale();
 
-          {/* Trust Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-16">
-            {[
-              { icon: Brain, label: t('science.badge1'), sublabel: t('science.badge1Sub') },
-              { icon: Award, label: t('science.badge2'), sublabel: t('science.badge2Sub') },
-              { icon: Lock, label: t('science.badge3'), sublabel: t('science.badge3Sub') },
-              { icon: Shield, label: t('science.badge4'), sublabel: t('science.badge4Sub') },
-            ].map((badge, index) => (
-              <motion.div
-                key={badge.label}
+  const protocols = [
+    {
+      id: 'sos',
+      title: 'SOS / STOP-LOSS',
+      subtitle: 'Emergency Protocol',
+      icon: AlertOctagon,
+      color: 'red',
+      description: locale === 'ru'
+        ? 'Остановка тильта. Сохранение депозита.'
+        : 'Tilt shutdown. Deposit preservation.',
+      details: locale === 'ru'
+        ? [
+          'Мгновенная активация при обнаружении паттернов тильта',
+          'Принудительный cooldown на 15-60 минут',
+          'Guided breathing + аудио-реорентация',
+          'Блокировка торговых приложений (опционально)',
+        ]
+        : [
+          'Instant activation on tilt pattern detection',
+          'Forced cooldown for 15-60 minutes',
+          'Guided breathing + audio reorientation',
+          'Trading app blocking (optional)',
+        ],
+      status: 'CRITICAL',
+    },
+    {
+      id: 'diamond',
+      title: 'DIAMOND HANDS',
+      subtitle: 'Hold Protocol',
+      icon: Diamond,
+      color: 'cyan',
+      description: locale === 'ru'
+        ? 'Удержание позиции до тейка.'
+        : 'Holding position to take profit.',
+      details: locale === 'ru'
+        ? [
+          'Укрепление решимости через нейро-программирование',
+          'Визуализация целевой цены',
+          'Whale Voice мотивация каждые 4 часа',
+          'Реалтайм мониторинг уровня уверенности',
+        ]
+        : [
+          'Resolution strengthening through neuro-programming',
+          'Target price visualization',
+          'Whale Voice motivation every 4 hours',
+          'Real-time confidence level monitoring',
+        ],
+      status: 'ACTIVE',
+    },
+    {
+      id: 'sleep',
+      title: 'DEEP SLEEP',
+      subtitle: 'Recovery Protocol',
+      icon: Moon,
+      color: 'purple',
+      description: locale === 'ru'
+        ? 'Принудительный вход в Delta-сон.'
+        : 'Forced entry into Delta-sleep.',
+      details: locale === 'ru'
+        ? [
+          'Биноуральные ритмы для глубокого сна',
+          '8-часовой цикл восстановления',
+          'Отключение всех уведомлений',
+          'Утренний брифинг по рынку',
+        ]
+        : [
+          'Binaural beats for deep sleep',
+          '8-hour recovery cycle',
+          'All notifications disabled',
+          'Morning market briefing',
+        ],
+      status: 'STANDBY',
+    },
+  ];
+
+  const getColorClasses = (color: string) => {
+    const colors: Record<string, {
+      border: string;
+      bg: string;
+      text: string;
+      glow: string;
+    }> = {
+      red: {
+        border: 'border-red-500/50',
+        bg: 'bg-red-500/10',
+        text: 'text-red-400',
+        glow: 'shadow-red-500/20',
+      },
+      cyan: {
+        border: 'border-cyan-500/50',
+        bg: 'bg-cyan-500/10',
+        text: 'text-cyan-400',
+        glow: 'shadow-cyan-500/20',
+      },
+      purple: {
+        border: 'border-purple-500/50',
+        bg: 'bg-purple-500/10',
+        text: 'text-purple-400',
+        glow: 'shadow-purple-500/20',
+      },
+    };
+    return colors[color];
+  };
+
+  const activeData = protocols.find((p) => p.id === activeProtocol)!;
+  const colorClasses = getColorClasses(activeData.color);
+
+  return (
+    <section className="relative py-24 px-4">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-zinc-900/50 font-mono text-xs text-zinc-400 mb-6">
+            SELECT PROTOCOL
+          </div>
+          <h2 className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            OPERATIONAL
+            <span className="block text-green-500">PROTOCOLS</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-4 mb-8">
+          {protocols.map((protocol, i) => {
+            const pColors = getColorClasses(protocol.color);
+            const isActive = activeProtocol === protocol.id;
+
+            return (
+              <motion.button
+                key={protocol.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="relative group"
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                onClick={() => setActiveProtocol(protocol.id)}
+                className={`relative p-4 border text-left transition-all duration-300 ${
+                  isActive
+                    ? `${pColors.border} ${pColors.bg} shadow-lg ${pColors.glow}`
+                    : 'border-zinc-800 bg-zinc-900/30 hover:border-zinc-700'
+                }`}
               >
-                <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-sm text-center hover:bg-white/[0.04] hover:border-white/20 transition-all duration-300">
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center">
-                    <badge.icon className="w-6 h-6 text-white/70 group-hover:text-white transition-colors" />
-                  </div>
-                  <h4 className="text-white font-semibold mb-1">{badge.label}</h4>
-                  <p className="text-xs text-white/40 leading-relaxed">{badge.sublabel}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <protocol.icon
+                    className={`w-5 h-5 ${isActive ? pColors.text : 'text-zinc-500'}`}
+                  />
+                  <span
+                    className={`font-mono text-[10px] ${
+                      isActive ? pColors.text : 'text-zinc-600'
+                    }`}
+                  >
+                    {protocol.status}
+                  </span>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Statistics */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-3 gap-8 mb-16"
-          >
-            {[
-              { value: t('stats.sleepImprovement'), label: t('stats.sleepLabel') },
-              { value: t('stats.stressReduction'), label: t('stats.stressLabel') },
-              { value: '100%', label: t('stats.personalizationLabel') },
-            ].map((stat, index) => (
-              <div key={stat.label} className="text-center">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 200,
-                    damping: 15,
-                    delay: index * 0.1 + 0.5,
-                  }}
-                  className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-2"
+                <h3
+                  className={`font-mono text-sm font-bold ${
+                    isActive ? 'text-white' : 'text-zinc-400'
+                  }`}
                 >
-                  {stat.value}
-                </motion.div>
-                <p className="text-sm text-white/40">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
+                  {protocol.title}
+                </h3>
+                <p className="font-mono text-xs text-zinc-500 mt-1">
+                  {protocol.subtitle}
+                </p>
 
-          {/* Huberman Video */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="max-w-3xl mx-auto"
-          >
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-white mb-2">{t('science.videoTitle')}</h3>
-              <p className="text-white/50">{t('science.videoSubtitle')}</p>
-            </div>
-            <div className="aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/20">
-              <iframe
-                src="https://www.youtube.com/embed/BCV8PCU8YGM"
-                title={t('science.videoTitle')}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            </div>
-          </motion.div>
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className={`absolute bottom-0 left-0 right-0 h-0.5 ${pColors.bg.replace('/10', '')}`}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
         </div>
-      </section>
 
-      {/* Pricing Section */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
+        <AnimatePresence mode="wait">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-8"
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('pricing.title')}
-            </h2>
-          </motion.div>
-
-          {/* Anchor Pricing */}
-          <motion.div
+            key={activeProtocol}
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="max-w-3xl mx-auto mb-12"
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className={`relative bg-[#0a0a0a] border ${colorClasses.border} p-6 lg:p-8`}
           >
-            <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
-              <p className="text-center text-amber-200 mb-2">{t('pricing.anchor')}</p>
-              <div className="flex items-center justify-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-400" />
-                <p className="text-center text-red-300 font-medium">{t('pricing.roi')}</p>
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+                <div className="flex-shrink-0">
+                  <div
+                    className={`w-20 h-20 border ${colorClasses.border} ${colorClasses.bg} flex items-center justify-center`}
+                  >
+                    <activeData.icon className={`w-10 h-10 ${colorClasses.text}`} />
+                  </div>
+                </div>
+
+                <div className="flex-grow">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="font-mono text-2xl font-bold text-white">
+                      {activeData.title}
+                    </h3>
+                    <span
+                      className={`px-2 py-0.5 font-mono text-xs ${colorClasses.bg} ${colorClasses.text}`}
+                    >
+                      {activeData.status}
+                    </span>
+                  </div>
+
+                  <p className="text-zinc-400 text-lg mb-6">
+                    {activeData.description}
+                  </p>
+
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {activeData.details.map((detail, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-2 text-sm text-zinc-400"
+                      >
+                        <ChevronRight
+                          className={`w-4 h-4 ${colorClasses.text} flex-shrink-0 mt-0.5`}
+                        />
+                        {detail}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex-shrink-0 lg:self-center">
+                  <motion.a
+                    href="https://t.me/Mind_Frame_bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`inline-block px-6 py-3 border ${colorClasses.border} ${colorClasses.bg} ${colorClasses.text} font-mono text-sm font-bold hover:bg-opacity-20 transition-all`}
+                  >
+                    [ ACTIVATE ]
+                  </motion.a>
+                </div>
               </div>
             </div>
           </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+};
 
-          {/* Crypto Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex items-center justify-center gap-2 mb-12"
-          >
-            <Bitcoin className="w-5 h-5 text-amber-400" />
-            <span className="text-amber-300 font-medium">
-              {locale === 'ru' ? 'Оплата криптой через Cryptomus' : 'Crypto payments via Cryptomus'}
-            </span>
-          </motion.div>
+/* --------------------------------------------------------------------------------
+ * PRICING SECTION
+ * -------------------------------------------------------------------------------- */
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {/* Paper Hands - Free */}
-            <PricingCard
-              name={t('pricing.free.name')}
-              price={t('pricing.free.price')}
-              description={t('pricing.free.description')}
-              features={t.raw('pricing.free.features') as string[]}
-              icon={TrendingUp}
-              gradient="from-slate-500 to-slate-600"
-            />
-            {/* Trader - $49 */}
-            <PricingCard
-              name={t('pricing.basic.name')}
-              price={t('pricing.basic.price')}
-              description={t('pricing.basic.description')}
-              features={t.raw('pricing.basic.features') as string[]}
-              icon={Zap}
-              gradient="from-blue-500 to-cyan-500"
-            />
-            {/* Whale - $99 */}
-            <PricingCard
-              name={t('pricing.pro.name')}
-              price={t('pricing.pro.price')}
-              description={t('pricing.pro.description')}
-              features={t.raw('pricing.pro.features') as string[]}
-              highlighted
-              badge={t('pricing.pro.badge')}
-              icon={Crown}
-              gradient="from-purple-500 to-pink-500"
-            />
-            {/* Institutional - $2499 */}
-            <PricingCard
-              name={t('pricing.enterprise.name')}
-              price={t('pricing.enterprise.price')}
-              description={t('pricing.enterprise.description')}
-              features={t.raw('pricing.enterprise.features') as string[]}
-              icon={Building2}
-              gradient="from-amber-500 to-orange-500"
-              isLifetime
-            />
+const Pricing = () => {
+  const t = useTranslations('landing');
+  const locale = useLocale();
+
+  const plans = [
+    {
+      name: 'TRADER',
+      price: '$49',
+      period: '/mo',
+      description: locale === 'ru' ? 'Для депозитов до $10k' : 'For deposits up to $10k',
+      icon: Zap,
+      features: locale === 'ru'
+        ? ['SOS Protocol', 'Basic Frequency Shift', '3 Context Scripts', 'Community Support']
+        : ['SOS Protocol', 'Basic Frequency Shift', '3 Context Scripts', 'Community Support'],
+      highlight: false,
+    },
+    {
+      name: 'WHALE',
+      price: '$99',
+      period: '/mo',
+      description: locale === 'ru' ? 'Для профи' : 'For professionals',
+      badge: 'BEST VALUE',
+      icon: Crown,
+      features: locale === 'ru'
+        ? ['All Protocols', 'Advanced Frequency Shift', 'Whale Voice Cloning', 'Anti-Panic Button', 'Unlimited Scripts', 'Priority Support', 'Custom Triggers']
+        : ['All Protocols', 'Advanced Frequency Shift', 'Whale Voice Cloning', 'Anti-Panic Button', 'Unlimited Scripts', 'Priority Support', 'Custom Triggers'],
+      highlight: true,
+    },
+    {
+      name: 'INSTITUTIONAL',
+      price: '$2,499',
+      period: '',
+      description: locale === 'ru' ? 'Lifetime License. B2B.' : 'Lifetime License. B2B.',
+      icon: Building,
+      features: locale === 'ru'
+        ? ['Everything in Whale', 'Team Dashboard', 'API Access', 'White-label Option', 'Dedicated Account Manager', 'Custom Integration']
+        : ['Everything in Whale', 'Team Dashboard', 'API Access', 'White-label Option', 'Dedicated Account Manager', 'Custom Integration'],
+      highlight: false,
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-4">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-green-500/30 bg-green-500/5 font-mono text-xs text-green-400 mb-6">
+            ROI CALCULATOR
           </div>
-        </div>
-      </section>
+          <h2 className="font-mono text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            {locale === 'ru' ? 'СКОЛЬКО СТОИТ' : 'HOW MUCH IS'}
+            <span className="block text-red-500">{locale === 'ru' ? 'ТВОЯ ОШИБКА?' : 'YOUR MISTAKE?'}</span>
+          </h2>
+        </motion.div>
 
-      {/* Referral Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[120px]" />
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <Badge variant="secondary" className="mb-6 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 px-4 py-2 rounded-full border border-emerald-500/20">
-              <Bitcoin className="mr-2 h-4 w-4 text-emerald-400" />
-              {t('referral.badge')}
-            </Badge>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              {t('referral.title')}{' '}
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                {t('referral.titleHighlight')}
-              </span>
-            </h2>
-
-            <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8">
-              {t('referral.description')}
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              {(t.raw('referral.benefits') as string[]).map((benefit, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20"
-                >
-                  <Check className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-300 text-sm">{benefit}</span>
-                </motion.div>
-              ))}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-16 max-w-2xl mx-auto"
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-red-500/5 border border-red-500/30 p-6 text-center">
+              <div className="font-mono text-sm text-zinc-400 mb-2">
+                {locale === 'ru' ? 'Тильтовый вход' : 'Tilt entry'}
+              </div>
+              <div className="font-mono text-3xl font-bold text-red-500">
+                -$2,000
+              </div>
+              <div className="font-mono text-xs text-zinc-500 mt-2">
+                Average loss per incident
+              </div>
             </div>
-
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-block"
-            >
-              <Button
-                size="lg"
-                className="px-8 py-6 rounded-full bg-gradient-to-r from-emerald-600 to-cyan-500 text-white text-lg font-semibold"
-                asChild
-              >
-                <a href="https://t.me/mindframe_support" target="_blank" rel="noopener noreferrer">
-                  {t('referral.cta')}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050508] to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
-              {t('cta.title')}{' '}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {t('cta.titleHighlight')}
-              </span>
-            </h2>
-            <p className="text-xl text-white/60 mb-8">{t('cta.subtitle')}</p>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-block"
-            >
-              <Button
-                size="lg"
-                className="relative group px-8 py-6 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white text-lg font-semibold shadow-2xl shadow-purple-500/30 border-0"
-                asChild
-              >
-                <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
-                  <span className="relative z-10">{t('cta.button')}</span>
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-                </a>
-              </Button>
-            </motion.div>
-            <p className="text-sm text-white/40 mt-4">{t('cta.subtext')}</p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Gift Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[120px]" />
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20 mb-6">
-              <Gift className="w-4 h-4 text-pink-400" />
-              <span className="text-sm text-pink-300">{t('gift.badge')}</span>
+            <div className="bg-green-500/5 border border-green-500/30 p-6 text-center">
+              <div className="font-mono text-sm text-zinc-400 mb-2">
+                MindFrame Whale Plan
+              </div>
+              <div className="font-mono text-3xl font-bold text-green-500">
+                $99
+              </div>
+              <div className="font-mono text-xs text-zinc-500 mt-2">
+                Monthly investment
+              </div>
             </div>
+          </div>
+          <div className="mt-4 text-center">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-900 border border-zinc-800 font-mono">
+              <span className="text-zinc-400">ROI:</span>
+              <span className="text-2xl font-bold text-green-500">2000%+</span>
+            </div>
+          </div>
+        </motion.div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
-              {t('gift.title')}{' '}
-              <span className="bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent">
-                {t('gift.titleHighlight')}
-              </span>
-            </h2>
-
-            <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8 leading-relaxed">
-              {t('gift.description')}
-            </p>
-
+        <div className="grid md:grid-cols-3 gap-6">
+          {plans.map((plan, i) => (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-500/10 to-rose-500/10 border border-pink-500/30 text-pink-300"
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className={`relative ${
+                plan.highlight
+                  ? 'md:-mt-4 md:mb-4'
+                  : ''
+              }`}
             >
-              <Heart className="w-5 h-5 text-pink-400" />
-              <span className="font-medium">{t('gift.cta')}</span>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800 px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          {/* Disclaimer */}
-          <div className="mb-8 p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-            <p className="text-xs text-slate-500 text-center leading-relaxed">
-              {t('footer.disclaimer')}
-            </p>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-400 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
+              {plan.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                  <span className="px-4 py-1 bg-green-500 text-black font-mono text-xs font-bold">
+                    {plan.badge}
+                  </span>
                 </div>
+              )}
+
+              <div
+                className={`h-full bg-[#0a0a0a] border p-6 flex flex-col ${
+                  plan.highlight
+                    ? 'border-green-500/50 shadow-lg shadow-green-500/10'
+                    : 'border-zinc-800'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <plan.icon
+                    className={`w-6 h-6 ${
+                      plan.highlight ? 'text-green-500' : 'text-zinc-500'
+                    }`}
+                  />
+                  <span className="font-mono text-xs text-zinc-600">
+                    PLAN_{String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                <h3 className="font-mono text-xl font-bold text-white mb-1">
+                  {plan.name}
+                </h3>
+                <p className="text-sm text-zinc-500 mb-4">{plan.description}</p>
+
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span
+                    className={`font-mono text-4xl font-bold ${
+                      plan.highlight ? 'text-green-500' : 'text-white'
+                    }`}
+                  >
+                    {plan.price}
+                  </span>
+                  <span className="font-mono text-sm text-zinc-500">
+                    {plan.period}
+                  </span>
+                </div>
+
+                <div className="space-y-3 flex-grow mb-6">
+                  {plan.features.map((feature, j) => (
+                    <div
+                      key={j}
+                      className="flex items-center gap-2 text-sm text-zinc-400"
+                    >
+                      <Check
+                        className={`w-4 h-4 ${
+                          plan.highlight ? 'text-green-500' : 'text-zinc-600'
+                        }`}
+                      />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+
+                <motion.a
+                  href="https://t.me/Mind_Frame_bot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full py-3 font-mono text-sm font-bold text-center transition-all ${
+                    plan.highlight
+                      ? 'bg-green-500 text-black hover:bg-green-400'
+                      : 'border border-zinc-700 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-900'
+                  }`}
+                >
+                  [ SELECT PLAN ]
+                </motion.a>
               </div>
-              <span className="text-xl font-bold text-white">MindFrame</span>
-              <span className="text-sm text-slate-500 ml-1">Terminal</span>
-            </div>
-            <p className="text-sm text-slate-500">
-              &copy; {new Date().getFullYear()} MindFrame. All rights reserved.
-            </p>
-            <div className="flex gap-6">
-              <Link href="/privacy" className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
-                Terms of Service
-              </Link>
-            </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 border border-zinc-800 bg-zinc-900/50 font-mono text-xs text-zinc-400">
+            <span className="w-2 h-2 bg-green-500 rounded-full" />
+            7-DAY MONEY-BACK GUARANTEE • NO QUESTIONS ASKED
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+/* --------------------------------------------------------------------------------
+ * FOOTER
+ * -------------------------------------------------------------------------------- */
+
+const Footer = () => {
+  const locale = useLocale();
+
+  return (
+    <footer className="relative py-16 px-4 border-t border-zinc-800">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="font-mono text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
+            {locale === 'ru' ? 'ПРЕКРАТИ БЫТЬ ЛИКВИДНОСТЬЮ.' : "STOP BEING LIQUIDITY."}
+            <span className="block text-green-500">
+              {locale === 'ru' ? 'СТАНЬ ОПЕРАТОРОМ РЫНКА.' : 'BECOME A MARKET OPERATOR.'}
+            </span>
+          </h2>
+          <motion.a
+            href="https://t.me/Mind_Frame_bot"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-block mt-6 px-8 py-4 bg-green-500 text-black font-mono font-bold text-sm sm:text-base"
+          >
+            [ {locale === 'ru' ? 'НАЧАТЬ БЕСПЛАТНО' : 'START FREE'} ]
+          </motion.a>
+        </motion.div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-zinc-800/50">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-sm text-zinc-400">
+              MINDFRAME<span className="text-green-500">_</span>TERMINAL
+            </span>
+            <span className="text-zinc-600">|</span>
+            <span className="font-mono text-xs text-zinc-600">
+              © 2024
+            </span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <Link
+              href="/privacy"
+              className="font-mono text-xs text-zinc-500 hover:text-green-500 transition-colors"
+            >
+              Privacy Protocol
+            </Link>
+            <Link
+              href="/terms"
+              className="font-mono text-xs text-zinc-500 hover:text-green-500 transition-colors"
+            >
+              Terms of Execution
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-2 font-mono text-xs text-zinc-600">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              All systems operational
+            </span>
           </div>
         </div>
-      </footer>
-    </main>
-  );
-}
 
-function PricingCard({
-  name,
-  price,
-  description,
-  features,
-  highlighted = false,
-  badge,
-  icon: Icon,
-  gradient,
-  isLifetime = false,
-}: {
-  name: string;
-  price: string;
-  description?: string;
-  features: string[];
-  highlighted?: boolean;
-  badge?: string;
-  icon?: typeof TrendingUp;
-  gradient?: string;
-  isLifetime?: boolean;
-}) {
+        <div className="mt-8 p-4 bg-zinc-900/50 border border-zinc-800 text-center">
+          <p className="font-mono text-xs text-zinc-600 leading-relaxed">
+            {locale === 'ru'
+              ? 'MindFrame не даёт финансовых советов. Мы даём инструменты для сохранения рассудка.'
+              : 'MindFrame does not provide financial advice. We provide tools to preserve your sanity.'}
+          </p>
+        </div>
+
+        <div className="mt-12 text-center overflow-hidden">
+          <pre className="font-mono text-[8px] sm:text-[10px] text-zinc-800 leading-tight whitespace-pre">
+{`
+███╗   ███╗██╗███╗   ██╗██████╗ ███████╗██████╗  █████╗ ███╗   ███╗███████╗
+████╗ ████║██║████╗  ██║██╔══██╗██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
+██╔████╔██║██║██╔██╗ ██║██║  ██║█████╗  ██████╔╝███████║██╔████╔██║█████╗
+██║╚██╔╝██║██║██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝
+██║ ╚═╝ ██║██║██║ ╚████║██████╔╝██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗
+╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+`}
+          </pre>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+/* --------------------------------------------------------------------------------
+ * MAIN PAGE
+ * -------------------------------------------------------------------------------- */
+
+export default function LandingPage() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      whileHover={{ y: -5 }}
-      className="relative"
-    >
-      {highlighted && (
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl" />
-      )}
-      <Card
-        className={`relative h-full ${
-          highlighted
-            ? 'border-purple-500/50 bg-gradient-to-b from-purple-500/10 to-slate-900/50'
-            : 'border-slate-800 bg-slate-900/50'
-        }`}
-      >
-        {badge && (
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">{badge}</Badge>
-          </div>
-        )}
-        <CardHeader className="text-center pb-4">
-          {Icon && gradient && (
-            <div className={`w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-              <Icon className="w-6 h-6 text-white" />
-            </div>
-          )}
-          <CardTitle className="text-lg text-white">{name}</CardTitle>
-          {description && (
-            <CardDescription className="text-slate-400 text-sm">{description}</CardDescription>
-          )}
-          <div className="mt-3">
-            <span className="text-3xl font-bold text-white">${price}</span>
-            {price !== '0' && (
-              <span className="text-slate-400 text-sm">
-                {isLifetime ? ' lifetime' : '/mo'}
-              </span>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <ul className="space-y-2">
-            {features.map((feature, index) => (
-              <li key={index} className="flex items-start text-slate-300 text-sm">
-                <Check className="mr-2 h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-          <Button
-            className={`mt-6 w-full ${
-              highlighted
-                ? 'bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400'
-                : 'bg-slate-700 hover:bg-slate-600'
-            }`}
-            asChild
-          >
-            <a href="https://t.me/Mind_Frame_bot" target="_blank" rel="noopener noreferrer">
-              {isLifetime ? 'Contact Us' : 'Get Started'}
-            </a>
-          </Button>
-        </CardContent>
-      </Card>
-    </motion.div>
+    <div className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <AnimatedBackground />
+
+      <div
+        className="fixed inset-0 pointer-events-none z-50 opacity-[0.02]"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.03) 2px,
+            rgba(255, 255, 255, 0.03) 4px
+          )`,
+        }}
+      />
+
+      <div className="relative z-10">
+        <Header />
+        <Hero />
+        <PainSection />
+        <TechFeatures />
+        <Protocols />
+        <Pricing />
+        <Footer />
+      </div>
+    </div>
   );
 }
